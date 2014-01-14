@@ -1,4 +1,4 @@
-package tiralabra.tiralabra;
+package tiralabra;
 
 import junit.framework.Test;
 import junit.framework.TestCase;
