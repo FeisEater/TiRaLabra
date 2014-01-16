@@ -12,12 +12,10 @@ public class Point {
     private double x;
     private double y;
     private Set<Point> adjacent;
-    private int i;
-    public Point(double x, double y, int i)
+    public Point(double x, double y)
     {
         this.x = x;
         this.y = y;
-        this.i = i;
         adjacent = new HashSet<>();
     }
     public double X()   {return x;}
@@ -38,8 +36,10 @@ public class Point {
     {
         return adjacent;
     }
-    public String toString()
+    public void removeAllAdjacents()
     {
-        return "" + i;
+        for (Point p : adjacent)
+            p.adjacent.remove(this);
+        adjacent.clear();
     }
 }
