@@ -1,7 +1,10 @@
-This is pdfTeX, Version 3.1415926-2.5-1.40.14 (MiKTeX 2.9) (preloaded format=pdflatex 2014.1.15)  15 JAN 2014 23:26
+This is pdfTeX, Version 3.1415926-2.5-1.40.14 (MiKTeX 2.9) (preloaded format=pdflatex 2014.1.15)  16 JAN 2014 11:34
 entering extended mode
-**E:/My*random*codez/TiRaLabra/Documentation/sourcefiles/Requirements.tex
-("E:/My random codez/TiRaLabra/Documentation/sourcefiles/Requirements.tex"
+**C:/Opiskelu/NetBeansProjects/TiRaLabra/Documentation/sourcefiles/Requirements
+.tex
+
+(C:/Opiskelu/NetBeansProjects/TiRaLabra/Documentation/sourcefiles/Requirements.
+tex
 LaTeX2e <2011/06/27>
 Babel <v3.8m> and hyphenation patterns for english, afrikaans, ancientgreek, ar
 abic, armenian, assamese, basque, bengali, bokmal, bulgarian, catalan, coptic, 
@@ -13,9 +16,9 @@ german-x-2013-05-26, nynorsk, oriya, panjabi, pinyin, polish, portuguese, roman
 ian, russian, sanskrit, serbian, slovak, slovenian, spanish, swedish, swissgerm
 an, tamil, telugu, turkish, turkmen, ukenglish, ukrainian, uppersorbian, usengl
 ishmax, welsh, loaded.
-(E:\Programs\MiKTeX\tex\latex\base\article.cls
+("C:\Program Files\MiKTeX 2.9\tex\latex\base\article.cls"
 Document Class: article 2007/10/19 v1.4h Standard LaTeX document class
-(E:\Programs\MiKTeX\tex\latex\base\size12.clo
+("C:\Program Files\MiKTeX 2.9\tex\latex\base\size12.clo"
 File: size12.clo 2007/10/19 v1.4h Standard LaTeX file (size option)
 )
 \c@part=\count79
@@ -30,31 +33,31 @@ File: size12.clo 2007/10/19 v1.4h Standard LaTeX file (size option)
 \belowcaptionskip=\skip42
 \bibindent=\dimen102
 )
-(E:\Programs\MiKTeX\tex\latex\graphics\graphicx.sty
+("C:\Program Files\MiKTeX 2.9\tex\latex\graphics\graphicx.sty"
 Package: graphicx 1999/02/16 v1.0f Enhanced LaTeX Graphics (DPC,SPQR)
 
-(E:\Programs\MiKTeX\tex\latex\graphics\keyval.sty
+("C:\Program Files\MiKTeX 2.9\tex\latex\graphics\keyval.sty"
 Package: keyval 1999/03/16 v1.13 key=value parser (DPC)
 \KV@toks@=\toks14
 )
-(E:\Programs\MiKTeX\tex\latex\graphics\graphics.sty
+("C:\Program Files\MiKTeX 2.9\tex\latex\graphics\graphics.sty"
 Package: graphics 2009/02/05 v1.0o Standard LaTeX Graphics (DPC,SPQR)
 
-(E:\Programs\MiKTeX\tex\latex\graphics\trig.sty
+("C:\Program Files\MiKTeX 2.9\tex\latex\graphics\trig.sty"
 Package: trig 1999/03/16 v1.09 sin cos tan (DPC)
 )
-(E:\Programs\MiKTeX\tex\latex\00miktex\graphics.cfg
+("C:\Program Files\MiKTeX 2.9\tex\latex\00miktex\graphics.cfg"
 File: graphics.cfg 2007/01/18 v1.5 graphics configuration of teTeX/TeXLive
 )
 Package graphics Info: Driver file: pdftex.def on input line 91.
 
-(E:\Programs\MiKTeX\tex\latex\pdftex-def\pdftex.def
+("C:\Program Files\MiKTeX 2.9\tex\latex\pdftex-def\pdftex.def"
 File: pdftex.def 2011/05/27 v0.06d Graphics/color for pdfTeX
 
-(E:\Programs\MiKTeX\tex\generic\oberdiek\infwarerr.sty
+("C:\Program Files\MiKTeX 2.9\tex\generic\oberdiek\infwarerr.sty"
 Package: infwarerr 2010/04/08 v1.3 Providing info/warning/error messages (HO)
 )
-(E:\Programs\MiKTeX\tex\generic\oberdiek\ltxcmds.sty
+("C:\Program Files\MiKTeX 2.9\tex\generic\oberdiek\ltxcmds.sty"
 Package: ltxcmds 2011/11/09 v1.22 LaTeX kernel commands for general use (HO)
 )
 \Gread@gobject=\count87
@@ -62,7 +65,8 @@ Package: ltxcmds 2011/11/09 v1.22 LaTeX kernel commands for general use (HO)
 \Gin@req@height=\dimen103
 \Gin@req@width=\dimen104
 )
-("E:\My random codez\TiRaLabra\Documentation\sourcefiles\Requirements.aux")
+(C:\Opiskelu\NetBeansProjects\TiRaLabra\Documentation\sourcefiles\Requirements.
+aux)
 LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 3.
 LaTeX Font Info:    ... okay on input line 3.
 LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 3.
@@ -75,8 +79,7 @@ LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 3.
 LaTeX Font Info:    ... okay on input line 3.
 LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 3.
 LaTeX Font Info:    ... okay on input line 3.
-
-(E:\Programs\MiKTeX\tex\context\base\supp-pdf.mkii
+ ("C:\Program Files\MiKTeX 2.9\tex\context\base\supp-pdf.mkii"
 [Loading MPS to PDF converter (version 2006.09.02).]
 \scratchcounter=\count88
 \scratchdimen=\dimen105
@@ -92,93 +95,88 @@ LaTeX Font Info:    ... okay on input line 3.
 ) <pointedgeshape.png, id=1, 401.5pt x 301.125pt>
 File: pointedgeshape.png Graphic file (type png)
  <use pointedgeshape.png>
-Package pdftex.def Info: pointedgeshape.png used on input line 15.
-(pdftex.def)             Requested size: 260.9719pt x 195.72891pt.
+Package pdftex.def Info: pointedgeshape.png used on input line 14.
+(pdftex.def)             Requested size: 200.7495pt x 150.56212pt.
 
 <pointsandangles.png, id=2, 401.5pt x 301.125pt>
 File: pointsandangles.png Graphic file (type png)
  <use pointsandangles.png>
-Package pdftex.def Info: pointsandangles.png used on input line 19.
-(pdftex.def)             Requested size: 260.9719pt x 195.72891pt.
+Package pdftex.def Info: pointsandangles.png used on input line 18.
+(pdftex.def)             Requested size: 200.7495pt x 150.56212pt.
 LaTeX Font Info:    External font `cmex10' loaded for size
-(Font)              <12> on input line 24.
+(Font)              <12> on input line 23.
 LaTeX Font Info:    External font `cmex10' loaded for size
-(Font)              <8> on input line 24.
+(Font)              <8> on input line 23.
 LaTeX Font Info:    External font `cmex10' loaded for size
-(Font)              <6> on input line 24.
+(Font)              <6> on input line 23.
 
 <graph.png, id=3, 401.5pt x 301.125pt>
 File: graph.png Graphic file (type png)
  <use graph.png>
-Package pdftex.def Info: graph.png used on input line 27.
-(pdftex.def)             Requested size: 260.9719pt x 195.72891pt.
+Package pdftex.def Info: graph.png used on input line 26.
+(pdftex.def)             Requested size: 200.7495pt x 150.56212pt.
 
 <trace.png, id=4, 401.5pt x 301.125pt>
 File: trace.png Graphic file (type png)
  <use trace.png>
-Package pdftex.def Info: trace.png used on input line 34.
-(pdftex.def)             Requested size: 260.9719pt x 195.72891pt.
+Package pdftex.def Info: trace.png used on input line 33.
+(pdftex.def)             Requested size: 200.7495pt x 150.56212pt.
 
-Underfull \hbox (badness 10000) in paragraph at lines 5--43
-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 5--43
+Underfull \hbox (badness 10000) in paragraph at lines 5--42
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 5--43
+Underfull \hbox (badness 10000) in paragraph at lines 5--42
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 5--43
+Underfull \hbox (badness 10000) in paragraph at lines 5--42
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 5--43
+Underfull \hbox (badness 10000) in paragraph at lines 5--42
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 5--43
+Underfull \hbox (badness 10000) in paragraph at lines 5--42
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 5--43
+Underfull \hbox (badness 10000) in paragraph at lines 5--42
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 5--43
+Underfull \hbox (badness 10000) in paragraph at lines 5--42
 
  []
 
 [1
 
-{C:/Documents and Settings/All Users/Application Data/MiKTeX/2.9/pdftex/config/
-pdftex.map} <E:/My random codez/TiRaLabra/Documentation/sourcefiles/pointedgesh
-ape.png> <E:/My random codez/TiRaLabra/Documentation/sourcefiles/pointsandangle
-s.png>] [2 <E:/My random codez/TiRaLabra/Documentation/sourcefiles/graph.png>] 
-[3 <E:/My random codez/TiRaLabra/Documentation/sourcefiles/trace.png>]
-("E:\My random codez\TiRaLabra\Documentation\sourcefiles\Requirements.aux") ) 
+{C:/ProgramData/MiKTeX/2.9/pdftex/config/pdftex.map} <C:/Opiskelu/NetBeansProje
+cts/TiRaLabra/Documentation/sourcefiles/pointedgeshape.png> <C:/Opiskelu/NetBea
+nsProjects/TiRaLabra/Documentation/sourcefiles/pointsandangles.png>] [2 <C:/Opi
+skelu/NetBeansProjects/TiRaLabra/Documentation/sourcefiles/graph.png> <C:/Opisk
+elu/NetBeansProjects/TiRaLabra/Documentation/sourcefiles/trace.png>] [3]
+(C:\Opiskelu\NetBeansProjects\TiRaLabra\Documentation\sourcefiles\Requirements.
+aux) ) 
 Here is how much of TeX's memory you used:
- 1142 strings out of 493921
- 14983 string characters out of 3150837
+ 1143 strings out of 493921
+ 15306 string characters out of 3147282
  67001 words of memory out of 3000000
  4475 multiletter control sequences out of 15000+200000
- 6683 words of font info for 24 fonts, out of 3000000 for 9000
+ 6982 words of font info for 25 fonts, out of 3000000 for 9000
  841 hyphenation exceptions out of 8191
- 27i,5n,19p,487b,109s stack positions out of 5000i,500n,10000p,200000b,50000s
-<E
-:/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmbx12.pfb><E:/Programs/MiKTeX
-/fonts/type1/public/amsfonts/cm/cmr12.pfb><E:/Programs/MiKTeX/fonts/type1/publi
-c/amsfonts/cm/cmsy8.pfb>
-Output written on Requirements.pdf (3 pages, 88879 bytes).
+ 27i,6n,19p,497b,127s stack positions out of 5000i,500n,10000p,200000b,50000s
+<C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmbx12.pfb><C
+:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmr12.pfb><C:/Program
+ Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmsy8.pfb>
+Output written on Requirements.pdf (3 pages, 87327 bytes).
 PDF statistics:
  29 PDF objects out of 1000 (max. 8388607)
  0 named destinations out of 1000 (max. 500000)
