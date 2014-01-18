@@ -94,6 +94,8 @@ public class GraphicInterface extends JPanel implements Runnable {
         g.fillOval((int)point.X() - Const.pointWidth / 2, 
             (int)point.Y() - Const.pointWidth / 2,
             Const.pointWidth, Const.pointWidth);
+        g.setColor(Color.cyan);
+        g.drawLine((int)point.X(), (int)point.Y(), point.angleMarker()[0], point.angleMarker()[1]);
     }
     public Color chooseColorByPoint(Point point)
     {
@@ -103,7 +105,9 @@ public class GraphicInterface extends JPanel implements Runnable {
             return Color.orange;
         if (point == dragto)
             return Color.green;
-        return Color.blue;
+        if (point.isVertex())
+            return Color.BLUE;
+        return Color.black;
     }
     public void drawEdge(Graphics g, Color c, Point p1, Point p2)
     {

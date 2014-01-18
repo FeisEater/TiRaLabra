@@ -12,6 +12,8 @@ public class Point {
     private double x;
     private double y;
     private Set<Point> adjacent;
+    private Point leftNeighbour;
+    private Point rightNeighbour;
     public Point(double x, double y)
     {
         this.x = x;
@@ -41,5 +43,32 @@ public class Point {
         for (Point p : adjacent)
             p.adjacent.remove(this);
         adjacent.clear();
+    }
+    public void setLeft(Point p)    {leftNeighbour = p;}
+    public void setRight(Point p)    {rightNeighbour = p;}
+    public double getAngle()
+    {
+        if (leftNeighbour == null || rightNeighbour == null)
+            return -1024;
+        double leftAngle = Math.atan2(leftNeighbour.y - y, leftNeighbour.x - x);
+        double rightAngle = Math.atan2(rightNeighbour.y - y, rightNeighbour.x - x);
+        if (rightAngle < leftAngle) rightAngle += Math.PI * 2;
+        return rightAngle - leftAngle;
+    }
+    public boolean isVertex()
+    {
+        return getAngle() > Math.PI && getAngle() < 2 * Math.PI;
+    }
+    public int[] angleMarker()
+    {
+        int[] coord = {(int)x,(int)y};
+        if (leftNeighbour == null || rightNeighbour == null)    return coord;
+        double leftAngle = Math.atan2(leftNeighbour.y - y, leftNeighbour.x - x);
+        double rightAngle = Math.atan2(rightNeighbour.y - y, rightNeighbour.x - x);
+        if (rightAngle < leftAngle) rightAngle += Math.PI * 2;
+        double middleAngle = (leftAngle + rightAngle) / 2;
+        coord[0] = (int)(x + Math.cos(middleAngle) * 32);
+        coord[1] = (int)(y + Math.sin(middleAngle) * 32);
+        return coord;
     }
 }

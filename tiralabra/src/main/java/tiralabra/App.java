@@ -20,7 +20,8 @@ public class App
     }
     public static void addPoint(int x, int y)
     {
-        points.add(new Point((double)x, (double)y));
+        Point point = new Point((double)x, (double)y);
+        points.add(point);
     }
     public static void removePoint(Point point)
     {
@@ -33,6 +34,10 @@ public class App
         if (p1.getAdjacents().contains(p2))
             p1.removeAdjacent(p2);
         else
+        {
             p1.addAdjacent(p2);
+            //p2.setRight(p1);
+            //p1.setLeft(p2);
+        }
     }
 }
