@@ -18,10 +18,11 @@ public class App
     {
         SwingUtilities.invokeLater(new GraphicInterface());
     }
-    public static void addPoint(int x, int y)
+    public static Point addPoint(int x, int y)
     {
         Point point = new Point((double)x, (double)y);
         points.add(point);
+        return point;
     }
     public static void removePoint(Point point)
     {
@@ -39,5 +40,35 @@ public class App
             //p2.setRight(p1);
             //p1.setLeft(p2);
         }
+    }
+    public static void buildGraph()
+    {
+        for (Point p : points)
+        {
+            if (!p.isVertex())  continue;
+            if (p.getLeft().isVertex())   p.addAdjacent(p.getLeft());
+            if (p.getRight().isVertex())   p.addAdjacent(p.getRight());
+            for (Point q : points)
+            {
+                if (p == q || !q.isVertex()) continue;
+                if (!isBetween(p, p.getDirection(p.getLeft()), p.getDirection(p.getRight()), q) && 
+                    !isBetween(q, q.getDirection(q.getLeft()), q.getDirection(q.getRight()), p))
+                    p.addAdjacent(q);
+            }
+        }
+    }
+    public static boolean isBetween(Point source, double leftAngle, double rightAngle, Point other)
+    {
+        if (leftAngle >= rightAngle)
+        {
+            if (source.getDirection(other) < leftAngle && source.getDirection(other) > rightAngle)
+                return true;
+        }
+        else
+        {
+            if (source.getDirection(other) > rightAngle || source.getDirection(other) < leftAngle)
+                return true;
+        }
+        return false;
     }
 }

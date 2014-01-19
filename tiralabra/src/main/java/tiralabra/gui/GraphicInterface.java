@@ -22,11 +22,13 @@ public class GraphicInterface extends JPanel implements Runnable {
     private Point edgeend;
     private Point dragfrom;
     private Point dragto;
+    private Point begin;
+    private Point prev;
     private Map<Point, Point> previousPoint;
     public GraphicInterface()
     {
         super();
-        addMouseListener(new mouseInput(this));
+        addMouseListener(new MouseInput(this));
     }
     public void startDrag(Point point)
     {
@@ -41,7 +43,14 @@ public class GraphicInterface extends JPanel implements Runnable {
     }
     public void addPoint(int x, int y)
     {
-        App.addPoint(x,y);
+        Point p = App.addPoint(x,y);
+        if (begin == null)  begin = p;
+        else
+        {
+            p.setLeft(prev);
+            prev.setRight(p);
+        }
+        prev = p;
         edgeend = null;
         dragfrom = null;
         dragto = null;
@@ -52,7 +61,12 @@ public class GraphicInterface extends JPanel implements Runnable {
     }
     public void addEdge(Point point)
     {
-        if (point == null)  return;
+        begin.setLeft(prev);
+        prev.setRight(begin);
+        begin = null;
+        prev = null;
+        App.buildGraph();
+/*        if (point == null)  return;
         
         dragfrom = null;
         dragto = null;
@@ -62,7 +76,7 @@ public class GraphicInterface extends JPanel implements Runnable {
         {
             App.toggleEdge(point, edgeend);
             edgeend = null;
-        }
+        }*/
     }
     public boolean wasntDragged(Point point)
     {
@@ -94,6 +108,8 @@ public class GraphicInterface extends JPanel implements Runnable {
         g.fillOval((int)point.X() - Const.pointWidth / 2, 
             (int)point.Y() - Const.pointWidth / 2,
             Const.pointWidth, Const.pointWidth);
+        drawEdge(g, Color.black, point, point.getLeft());
+        drawEdge(g, Color.black, point, point.getRight());
         g.setColor(Color.cyan);
         g.drawLine((int)point.X(), (int)point.Y(), point.angleMarker()[0], point.angleMarker()[1]);
     }
@@ -111,6 +127,7 @@ public class GraphicInterface extends JPanel implements Runnable {
     }
     public void drawEdge(Graphics g, Color c, Point p1, Point p2)
     {
+        if (p1 == null || p2 == null)   return;
         g.setColor(c);
         g.drawLine((int)p1.X(), (int)p1.Y(), (int)p2.X(), (int)p2.Y());
     }

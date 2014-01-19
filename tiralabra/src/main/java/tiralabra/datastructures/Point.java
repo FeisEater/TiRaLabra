@@ -44,16 +44,22 @@ public class Point {
             p.adjacent.remove(this);
         adjacent.clear();
     }
+    public Point getLeft()    {return leftNeighbour;}
+    public Point getRight()    {return rightNeighbour;}
     public void setLeft(Point p)    {leftNeighbour = p;}
     public void setRight(Point p)    {rightNeighbour = p;}
     public double getAngle()
     {
         if (leftNeighbour == null || rightNeighbour == null)
             return -1024;
-        double leftAngle = Math.atan2(leftNeighbour.y - y, leftNeighbour.x - x);
-        double rightAngle = Math.atan2(rightNeighbour.y - y, rightNeighbour.x - x);
+        double leftAngle = getDirection(leftNeighbour);
+        double rightAngle = getDirection(rightNeighbour);
         if (rightAngle < leftAngle) rightAngle += Math.PI * 2;
         return rightAngle - leftAngle;
+    }
+    public double getDirection(Point point)
+    {
+        return Math.atan2(point.y - y, point.x - x);
     }
     public boolean isVertex()
     {
@@ -63,8 +69,8 @@ public class Point {
     {
         int[] coord = {(int)x,(int)y};
         if (leftNeighbour == null || rightNeighbour == null)    return coord;
-        double leftAngle = Math.atan2(leftNeighbour.y - y, leftNeighbour.x - x);
-        double rightAngle = Math.atan2(rightNeighbour.y - y, rightNeighbour.x - x);
+        double leftAngle = getDirection(leftNeighbour);
+        double rightAngle = getDirection(rightNeighbour);
         if (rightAngle < leftAngle) rightAngle += Math.PI * 2;
         double middleAngle = (leftAngle + rightAngle) / 2;
         coord[0] = (int)(x + Math.cos(middleAngle) * 32);

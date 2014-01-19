@@ -11,10 +11,10 @@ import tiralabra.util.Const;
  *
  * @author Pavel
  */
-public class mouseInput implements MouseListener
+public class MouseInput implements MouseListener
 {
     private GraphicInterface gui;
-    public mouseInput(GraphicInterface gui)
+    public MouseInput(GraphicInterface gui)
     {
         this.gui = gui;
     }
