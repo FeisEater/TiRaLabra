@@ -61,8 +61,12 @@ public class GraphicInterface extends JPanel implements Runnable {
     }
     public void addEdge(Point point)
     {
-        begin.setLeft(prev);
-        prev.setRight(begin);
+        if (begin != null && begin != null)
+        {
+            begin.setLeft(prev);
+            prev.setRight(begin);
+        }
+        App.setShapeMode(begin);
         begin = null;
         prev = null;
         App.buildGraph();
@@ -136,10 +140,10 @@ public class GraphicInterface extends JPanel implements Runnable {
         Point next = dragto;
         while (next != null)
         {
-            Point prev = previousPoint.get(next);
-            if (prev != null)
-                drawEdge(g, Color.green, prev, next);
-            next = prev;
+            Point q = previousPoint.get(next);
+            if (q != null)
+                drawEdge(g, Color.green, q, next);
+            next = q;
         }
     }
 }

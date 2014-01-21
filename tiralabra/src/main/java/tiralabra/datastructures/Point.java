@@ -69,12 +69,17 @@ public class Point {
     {
         int[] coord = {(int)x,(int)y};
         if (leftNeighbour == null || rightNeighbour == null)    return coord;
-        double leftAngle = getDirection(leftNeighbour);
-        double rightAngle = getDirection(rightNeighbour);
-        if (rightAngle < leftAngle) rightAngle += Math.PI * 2;
-        double middleAngle = (leftAngle + rightAngle) / 2;
+        double middleAngle = getMiddleDirection();
         coord[0] = (int)(x + Math.cos(middleAngle) * 32);
         coord[1] = (int)(y + Math.sin(middleAngle) * 32);
         return coord;
+    }
+    public double getMiddleDirection()
+    {
+        if (leftNeighbour == null || rightNeighbour == null)    return -1024;
+        double leftAngle = getDirection(leftNeighbour);
+        double rightAngle = getDirection(rightNeighbour);
+        if (rightAngle < leftAngle) rightAngle += Math.PI * 2;
+        return (leftAngle + rightAngle) / 2;
     }
 }

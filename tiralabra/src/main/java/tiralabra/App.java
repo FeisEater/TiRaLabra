@@ -71,4 +71,41 @@ public class App
         }
         return false;
     }
+    public static Point findMiddle(Point begin)
+    {
+        if (begin == null)  return null;
+        Point point = begin;
+        int size = 0;
+        double sumx = 0;
+        double sumy = 0;
+        do
+        {
+            size++;
+            sumx += point.X();
+            sumy += point.Y();
+            point = point.getRight();
+        }   while (point != begin);
+        return new Point(sumx / size, sumy / size);
+    }
+    public static void setShapeMode(Point begin)
+    {
+        if (begin == null)  return;
+        Point point = begin;
+        int reflexsum = 0;
+        int nonreflex = 0;
+        do
+        {
+            if (point.isVertex())   reflexsum++;
+            else    nonreflex++;
+            point = point.getRight();
+        }   while (point != begin);
+        if (reflexsum >= nonreflex)    return;
+        do
+        {
+            Point q = point.getLeft();
+            point.setLeft(point.getRight());
+            point.setRight(q);
+            point = point.getRight();
+        }   while (point != begin);
+    }
 }
