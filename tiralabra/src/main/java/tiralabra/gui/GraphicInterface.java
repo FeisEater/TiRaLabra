@@ -4,7 +4,11 @@ package tiralabra.gui;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.WindowConstants;
@@ -100,6 +104,34 @@ public class GraphicInterface extends JPanel implements Runnable {
     public void paintComponent(Graphics g)
     {
         super.paintComponent(g);
+        Set<Point> used = new HashSet<>();
+        for (Point p : App.points)
+        {
+            if (used.contains(p))   continue;
+            boolean endEverything = false;
+            List<Integer> x = new ArrayList<>();
+            List<Integer> y = new ArrayList<>();
+            Point q = p;
+            do
+            {
+                if (q == null)
+                {
+                    endEverything = true;
+                    break;
+                }
+                x.add((int)q.X());
+                y.add((int)q.Y());
+                used.add(q);
+                q = q.getRight();
+            }   while (p != q);
+            if (endEverything)  break;
+            int[] xPoints = new int[x.size()];
+            for (int i = 0; i < x.size(); i++)  xPoints[i] = x.get(i);
+            int[] yPoints = new int[y.size()];
+            for (int i = 0; i < y.size(); i++)  yPoints[i] = y.get(i);
+            g.setColor(Color.PINK);
+            g.fillPolygon(xPoints, yPoints, xPoints.length);
+        }
         for (Point p : App.points)
             drawPoint(g, p);
         drawShortestPath(g);

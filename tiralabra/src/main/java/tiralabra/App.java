@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.swing.SwingUtilities;
 import tiralabra.datastructures.Point;
+import tiralabra.util.Tools;
 
 /**
  * Hello world!
@@ -91,15 +92,16 @@ public class App
     {
         if (begin == null)  return;
         Point point = begin;
-        int reflexsum = 0;
-        int nonreflex = 0;
+        double anglesum = 0;
+        int pointsum = 0;
         do
         {
-            if (point.isVertex())   reflexsum++;
-            else    nonreflex++;
+            pointsum++;
+            anglesum += point.getAngle();
             point = point.getRight();
         }   while (point != begin);
-        if (reflexsum >= nonreflex)    return;
+        if (Tools.round(anglesum) != Tools.round((pointsum - 2) * Math.PI))
+            return;
         do
         {
             Point q = point.getLeft();
