@@ -40,14 +40,15 @@ public class Dijkstra {
         Point p = points.poll();
         for (Point adj : p.getAdjacents())
         {
-            if (points.contains(adj) && 
-                shortestPaths.get(p) + distance(p, adj) < shortestPaths.get(adj))
-            {
-                points.remove(adj);
-                shortestPaths.put(adj, shortestPaths.get(p) + distance(p, adj));
-                points.add(adj);
-                previousPoint.put(adj, p);
-            }
+            if (!points.contains(adj))  continue;
+             
+            if (shortestPaths.get(p) + distance(p, adj) >= shortestPaths.get(adj))
+                continue;
+
+            points.remove(adj);
+            shortestPaths.put(adj, shortestPaths.get(p) + distance(p, adj));
+            points.add(adj);
+            previousPoint.put(adj, p);
         }
     }
     private static double distance(Point p1, Point p2)

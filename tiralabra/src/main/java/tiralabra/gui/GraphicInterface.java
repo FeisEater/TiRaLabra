@@ -104,34 +104,7 @@ public class GraphicInterface extends JPanel implements Runnable {
     public void paintComponent(Graphics g)
     {
         super.paintComponent(g);
-        Set<Point> used = new HashSet<>();
-        for (Point p : App.points)
-        {
-            if (used.contains(p))   continue;
-            boolean endEverything = false;
-            List<Integer> x = new ArrayList<>();
-            List<Integer> y = new ArrayList<>();
-            Point q = p;
-            do
-            {
-                if (q == null)
-                {
-                    endEverything = true;
-                    break;
-                }
-                x.add((int)q.X());
-                y.add((int)q.Y());
-                used.add(q);
-                q = q.getRight();
-            }   while (p != q);
-            if (endEverything)  break;
-            int[] xPoints = new int[x.size()];
-            for (int i = 0; i < x.size(); i++)  xPoints[i] = x.get(i);
-            int[] yPoints = new int[y.size()];
-            for (int i = 0; i < y.size(); i++)  yPoints[i] = y.get(i);
-            g.setColor(Color.PINK);
-            g.fillPolygon(xPoints, yPoints, xPoints.length);
-        }
+        fillPolygon(g);
         for (Point p : App.points)
             drawPoint(g, p);
         drawShortestPath(g);
@@ -177,5 +150,43 @@ public class GraphicInterface extends JPanel implements Runnable {
                 drawEdge(g, Color.green, q, next);
             next = q;
         }
+    }
+    public void fillPolygon(Graphics g)
+    {
+        Set<Point> used = new HashSet<>();
+        for (Point p : App.points)
+        {
+            if (used.contains(p))   continue;
+            
+            List<Integer> x = new ArrayList<>();
+            List<Integer> y = new ArrayList<>();
+            if (!retrieveCoordinatesFromPolygon(p, x, y, used))
+                continue;
+            
+            g.setColor(Color.PINK);
+            g.fillPolygon(  convertArrayListToArray(x),
+                            convertArrayListToArray(y),
+                            x.size());
+        }
+    }
+    public int[] convertArrayListToArray(List<Integer> list)
+    {
+        int[] result = new int[list.size()];
+        for (int i = 0; i < list.size(); i++)  result[i] = list.get(i);
+        return result;
+    }
+    public boolean retrieveCoordinatesFromPolygon(Point first, List<Integer> x, List<Integer> y, Set<Point> used)
+    {
+        Point q = first;
+        do
+        {
+            if (q == null)
+                return false;
+            x.add((int)q.X());
+            y.add((int)q.Y());
+            used.add(q);
+            q = q.getRight();
+        }   while (first != q);
+        return true;
     }
 }

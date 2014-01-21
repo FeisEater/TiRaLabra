@@ -44,10 +44,13 @@ public class MouseInput implements MouseListener
     public void mouseReleased(MouseEvent e)
     {
         Point chosenPoint = choosePoint(e.getX(), e.getY());
+        
         if (e.getButton() == MouseEvent.BUTTON1)
             gui.addPoint(e.getX(), e.getY());
+        
         else if (e.getButton() == MouseEvent.BUTTON2)
             gui.removePoint(chosenPoint);
+        
         else if (e.getButton() == MouseEvent.BUTTON3)
         {
             if (gui.wasntDragged(chosenPoint))
