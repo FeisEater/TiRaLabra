@@ -1,6 +1,8 @@
 
 package tiralabra.util;
 
+import tiralabra.datastructures.Point;
+
 /**
  *
  * @author Pavel
@@ -21,5 +23,10 @@ public class Tools {
         d /= Const.roundPrecision;
         
         return i + d;
+    }
+    public static double distance(Point p1, Point p2)
+    {
+        return Math.sqrt(Math.pow(p1.X() - p2.X(), 2) +
+                Math.pow(p1.Y() - p2.Y(), 2));
     }
 }

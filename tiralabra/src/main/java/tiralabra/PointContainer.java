@@ -3,6 +3,7 @@ package tiralabra;
 
 import java.util.ArrayList;
 import java.util.List;
+import tiralabra.algorithms.AngleElimination;
 import tiralabra.datastructures.Point;
 import tiralabra.util.Tools;
 
@@ -37,15 +38,7 @@ public class PointContainer {
         for (Point p : points)
         {
             if (!p.isVertex())  continue;
-            if (p.getLeft().isVertex())   p.addAdjacent(p.getLeft());
-            if (p.getRight().isVertex())   p.addAdjacent(p.getRight());
-            for (Point q : points)
-            {
-                if (p == q || !q.isVertex()) continue;
-                if (!p.isBetween(p.getDirection(p.getLeft()), p.getDirection(p.getRight()), q) && 
-                    !q.isBetween(q.getDirection(q.getLeft()), q.getDirection(q.getRight()), p))
-                    p.addAdjacent(q);
-            }
+            AngleElimination.findUnobstructedPoints(p, points);
         }
     }
     public Point findMiddle(Point begin)

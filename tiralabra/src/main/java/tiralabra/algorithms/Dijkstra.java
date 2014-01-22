@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.PriorityQueue;
 import tiralabra.datastructures.Point;
+import tiralabra.util.Tools;
 
 /**
  *
@@ -42,19 +43,14 @@ public class Dijkstra {
         {
             if (!points.contains(adj))  continue;
              
-            if (shortestPaths.get(p) + distance(p, adj) >= shortestPaths.get(adj))
+            if (shortestPaths.get(p) + Tools.distance(p, adj) >= shortestPaths.get(adj))
                 continue;
 
             points.remove(adj);
-            shortestPaths.put(adj, shortestPaths.get(p) + distance(p, adj));
+            shortestPaths.put(adj, shortestPaths.get(p) + Tools.distance(p, adj));
             points.add(adj);
             previousPoint.put(adj, p);
         }
-    }
-    private static double distance(Point p1, Point p2)
-    {
-        return Math.sqrt(Math.pow(p1.X() - p2.X(), 2) +
-                Math.pow(p1.Y() - p2.Y(), 2));
     }
     private static class pointComparator implements Comparator
     {

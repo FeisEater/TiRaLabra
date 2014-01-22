@@ -12,6 +12,7 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.WindowConstants;
 import tiralabra.PointContainer;
+import tiralabra.algorithms.AngleElimination;
 import tiralabra.datastructures.Point;
 import tiralabra.gui.geometrytools.BuildGraph;
 import tiralabra.gui.geometrytools.ChainPolygon;
@@ -46,6 +47,12 @@ public class GraphicInterface extends JPanel implements Runnable {
     public void paintComponent(Graphics g)
     {
         super.paintComponent(g);
+        int pw = 4;
+        g.setColor(Color.green);
+        for (int i = 0; i < frame.getWidth(); i += pw)
+            for (int j = 0; j < frame.getHeight(); j += pw)
+                if (!AngleElimination.isObstructed(i+pw/2, j+pw/2))   g.fillRect(i, j, pw, pw);
+        
         fillPolygon(g);
         for (Point p : points.getPoints())
             drawPoint(g, p);
@@ -61,6 +68,18 @@ public class GraphicInterface extends JPanel implements Runnable {
             Const.pointWidth, Const.pointWidth);
         drawEdge(g, Color.black, point, point.getLeft());
         drawEdge(g, Color.black, point, point.getRight());
+        if (point.getRight() != null)
+        {
+            g.setColor(Color.red);
+            double dir = point.getDirection(point.getRight());
+            int[] xPoints = {(int)(point.getRight().X() - Math.cos(dir) * 16 - Math.cos(dir + Math.PI/2) * 8),
+                            (int)point.getRight().X(),
+                            (int)(point.getRight().X() - Math.cos(dir) * 16 + Math.cos(dir + Math.PI/2) * 8)};
+            int[] yPoints = {(int)(point.getRight().Y() - Math.sin(dir) * 16 - Math.sin(dir + Math.PI/2) * 8),
+                            (int)point.getRight().Y(),
+                            (int)(point.getRight().Y() - Math.sin(dir) * 16 + Math.sin(dir + Math.PI/2) * 8)};
+            g.fillPolygon(xPoints, yPoints, 3);
+        }
         g.setColor(Color.cyan);
         g.drawLine((int)point.X(), (int)point.Y(), point.angleMarker()[0], point.angleMarker()[1]);
     }

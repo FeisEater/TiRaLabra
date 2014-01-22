@@ -23,6 +23,7 @@ public class ChainPolygon extends MouseInput {
     @Override
     public void mouseReleased(MouseEvent e)
     {
+        super.mouseReleased(e);
         Point chosenPoint = choosePoint(e);
         if (e.getButton() == MouseEvent.BUTTON1)
             addPoint(e.getX(), e.getY());
@@ -35,7 +36,7 @@ public class ChainPolygon extends MouseInput {
             else
                 buildPath();
         }
-        super.mouseReleased(e);
+        gui.repaint();
     }
     public void buildPath()
     {
