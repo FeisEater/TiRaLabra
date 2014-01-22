@@ -36,6 +36,8 @@ public class PointContainer {
     public void buildGraph()
     {
         for (Point p : points)
+            p.removeAllAdjacents();
+        for (Point p : points)
         {
             if (!p.isVertex())  continue;
             AngleElimination.findUnobstructedPoints(p, points);

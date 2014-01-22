@@ -16,6 +16,7 @@ public class AngleElimination {
     public static void findUnobstructedPoints(Point p, List<Point> points)
     {
         intervals.clear();
+        if (p == null)  return;
         intervals.add(new AngleInterval(p));
         for (Point q : points)
         {
@@ -24,29 +25,37 @@ public class AngleElimination {
             intervals.add(new AngleInterval(p,q));
         }
         Collections.sort(intervals);
-        System.out.println(intervals);
-        /*if (p.getLeft().isVertex())   p.addAdjacent(p.getLeft());
+        /*List<AngleInterval> curIntervals = new ArrayList<>();
+        for (AngleInterval ai : intervals)
+        {
+            for (AngleInterval ai2 : curIntervals)
+            {
+                if (ai2.rightAngle )
+            }
+            curIntervals.add(ai);
+        }
+        System.out.println(intervals);*/
+        if (p.getLeft().isVertex())   p.addAdjacent(p.getLeft());
         if (p.getRight().isVertex())   p.addAdjacent(p.getRight());
         for (Point q : points)
         {
             if (p == q || !q.isVertex()) continue;
-            if (!p.hasPointBetween(p.getDirection(p.getLeft()), p.getDirection(p.getRight()), q) && 
-                !q.hasPointBetween(q.getDirection(q.getLeft()), q.getDirection(q.getRight()), p))
-                p.addAdjacent(q);
-        }*/
+            if (isObstructed(q))    continue;
+            p.addAdjacent(q);
+        }
     }
-    public static boolean isObstructed(double x, double y)
+    public static boolean isObstructed(Point test)
     {
         for (AngleInterval i : intervals)
         {
-            if (i.isBetween(x, y))  return true;
+            if (i.isBetween(test))  return true;
         }
         return false;
     }
     private static class AngleInterval implements Comparable
     {
-        private double leftAngle;
-        private double rightAngle;
+        public double leftAngle;
+        public double rightAngle;
         private double leftDist;
         private double rightDist;
         private Point src;
@@ -87,9 +96,17 @@ public class AngleElimination {
             leftDist = 0;
             rightDist = 0;
         }
-        public boolean isBetween(double x, double y)
+        public boolean isBetween(Point test)
         {
-            return src.hasPointBetween(rightAngle, leftAngle, new Point(x,y));
+            if (src.hasPointBetween(rightAngle, leftAngle, test))
+            {
+                double right = (rightAngle < leftAngle) ? rightAngle + Math.PI * 2 : rightAngle;
+                double dir = (src.getDirection(test) < leftAngle) ? src.getDirection(test) + Math.PI * 2 : src.getDirection(test);
+                double angleRatio = (dir - leftAngle) / (right - leftAngle);
+                double radius = leftDist + angleRatio * (rightDist - leftDist);
+                if (Tools.distance(src, test) > radius)   return true;
+            }
+            return false;
         }
         private int toDegree(double a)  {return (int)(180 * a / Math.PI);}
         public String toString()

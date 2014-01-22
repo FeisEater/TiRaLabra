@@ -51,12 +51,12 @@ public class GraphicInterface extends JPanel implements Runnable {
         g.setColor(Color.green);
         for (int i = 0; i < frame.getWidth(); i += pw)
             for (int j = 0; j < frame.getHeight(); j += pw)
-                if (!AngleElimination.isObstructed(i+pw/2, j+pw/2))   g.fillRect(i, j, pw, pw);
-        
+                if (!AngleElimination.isObstructed(new Point(i+pw/2, j+pw/2)))
+                    g.fillRect(i, j, pw, pw);
         fillPolygon(g);
         for (Point p : points.getPoints())
             drawPoint(g, p);
-        currentTool.drawInputSpecific(g);
+        currentTool.drawInputSpecific(g);        
     }
     public void drawPoint(Graphics g, Point point)
     {
@@ -68,7 +68,7 @@ public class GraphicInterface extends JPanel implements Runnable {
             Const.pointWidth, Const.pointWidth);
         drawEdge(g, Color.black, point, point.getLeft());
         drawEdge(g, Color.black, point, point.getRight());
-        if (point.getRight() != null)
+        /*if (point.getRight() != null)
         {
             g.setColor(Color.red);
             double dir = point.getDirection(point.getRight());
@@ -79,7 +79,7 @@ public class GraphicInterface extends JPanel implements Runnable {
                             (int)point.getRight().Y(),
                             (int)(point.getRight().Y() - Math.sin(dir) * 16 + Math.sin(dir + Math.PI/2) * 8)};
             g.fillPolygon(xPoints, yPoints, 3);
-        }
+        }*/
         g.setColor(Color.cyan);
         g.drawLine((int)point.X(), (int)point.Y(), point.angleMarker()[0], point.angleMarker()[1]);
     }

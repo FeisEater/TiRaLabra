@@ -6,6 +6,7 @@ import java.awt.Graphics;
 import java.awt.event.MouseEvent;
 import java.util.Map;
 import tiralabra.PointContainer;
+import tiralabra.algorithms.AngleElimination;
 import tiralabra.algorithms.Dijkstra;
 import tiralabra.datastructures.Point;
 import tiralabra.gui.GraphicInterface;
@@ -32,11 +33,20 @@ public class ChainPolygon extends MouseInput {
         else if (e.getButton() == MouseEvent.BUTTON3)
         {
             if (draggedFromPoint == chosenPoint)
-                closeLoop();
+            {
+                if (begin == null)
+                    traceAround(chosenPoint);
+                else
+                    closeLoop();
+            }
             else
                 buildPath();
         }
         gui.repaint();
+    }
+    public void traceAround(Point point)
+    {
+        AngleElimination.findUnobstructedPoints(point, points.getPoints());
     }
     public void buildPath()
     {
