@@ -82,4 +82,18 @@ public class Point {
         if (rightAngle < leftAngle) rightAngle += Math.PI * 2;
         return (leftAngle + rightAngle) / 2;
     }
+    public boolean isBetween(double leftAngle, double rightAngle, Point other)
+    {
+        if (leftAngle >= rightAngle)
+        {
+            if (getDirection(other) < leftAngle && getDirection(other) > rightAngle)
+                return true;
+        }
+        else
+        {
+            if (getDirection(other) > rightAngle || getDirection(other) < leftAngle)
+                return true;
+        }
+        return false;
+    }
 }
