@@ -1,7 +1,7 @@
 
 package tiralabra.util;
 
-import tiralabra.datastructures.Point;
+import tiralabra.datastructures.Vertex;
 
 /**
  *
@@ -24,7 +24,7 @@ public class Tools {
         
         return i + d;
     }
-    public static double distance(Point p1, Point p2)
+    public static double distance(Vertex p1, Vertex p2)
     {
         return Math.sqrt(Math.pow(p1.X() - p2.X(), 2) +
                 Math.pow(p1.Y() - p2.Y(), 2));

@@ -6,7 +6,7 @@ import java.awt.Graphics;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import tiralabra.PointContainer;
-import tiralabra.datastructures.Point;
+import tiralabra.datastructures.Vertex;
 import tiralabra.util.Const;
 
 /**
@@ -18,21 +18,21 @@ public class MouseInput implements MouseListener
     protected PointContainer points;
     protected int draggedFromX;
     protected int draggedFromY;
-    protected Point draggedFromPoint;
+    protected Vertex draggedFromPoint;
     protected int draggedToX;
     protected int draggedToY;
-    protected Point draggedToPoint;
+    protected Vertex draggedToPoint;
     protected GraphicInterface gui;
     public MouseInput(PointContainer p, GraphicInterface gui)
     {
         points = p;
         this.gui = gui;
     }
-    public Point choosePoint(int x, int y)
+    public Vertex choosePoint(int x, int y)
     {
-        Point bestPoint = null;
+        Vertex bestPoint = null;
         double bestDist = Const.pointWidth;
-        for (Point p : points.getPoints())
+        for (Vertex p : points.getPoints())
         {
             double dist = Math.sqrt(Math.pow(p.X() - x, 2) + 
                     Math.pow(p.Y() - y, 2));
@@ -44,12 +44,12 @@ public class MouseInput implements MouseListener
         }
         return bestPoint;
     }
-    public Point choosePoint(MouseEvent e)
+    public Vertex choosePoint(MouseEvent e)
     {
         return choosePoint(e.getX(), e.getY());
     }
     public void drawInputSpecific(Graphics g) {}
-    public Color chooseColorByPoint(Point point)
+    public Color chooseColorByPoint(Vertex point)
     {
         if (point == draggedFromPoint)
             return Color.orange;

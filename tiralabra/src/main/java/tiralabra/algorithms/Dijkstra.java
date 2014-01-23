@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.PriorityQueue;
+import tiralabra.datastructures.Vertex;
 import tiralabra.datastructures.Point;
 import tiralabra.util.Tools;
 
@@ -14,21 +15,21 @@ import tiralabra.util.Tools;
  * @author Pavel
  */
 public class Dijkstra {
-    private static Map<Point, Double> shortestPaths = new HashMap<>();
-    private static Map<Point, Point> previousPoint = new HashMap<>();
-    public static Map<Point, Point> getShortestPaths(Point begin, List<Point> originalPoints)
+    private static Map<Vertex, Double> shortestPaths = new HashMap<>();
+    private static Map<Vertex, Vertex> previousPoint = new HashMap<>();
+    public static Map<Vertex, Vertex> getShortestPaths(Vertex begin, List<Vertex> originalPoints)
     {
-        PriorityQueue<Point> points = initialize(begin, originalPoints);
+        PriorityQueue<Vertex> points = initialize(begin, originalPoints);
         while (!points.isEmpty())
             relaxEdgesOnNextInHeap(points);
         return previousPoint;
     }
-    private static PriorityQueue<Point> initialize(Point begin, List<Point> points)
+    private static PriorityQueue<Vertex> initialize(Vertex begin, List<Vertex> points)
     {
         shortestPaths.clear();
         previousPoint.clear();
-        PriorityQueue<Point> dijkstrapoints = new PriorityQueue<>(11, new pointComparator());
-        for (Point p : points)
+        PriorityQueue<Vertex> dijkstrapoints = new PriorityQueue<>(11, new pointComparator());
+        for (Vertex p : points)
         {
             double d = (p == begin) ? 0 : Double.MAX_VALUE;
             shortestPaths.put(p, d);
@@ -36,10 +37,10 @@ public class Dijkstra {
         }
         return dijkstrapoints;
     }
-    private static void relaxEdgesOnNextInHeap(PriorityQueue<Point> points)
+    private static void relaxEdgesOnNextInHeap(PriorityQueue<Vertex> points)
     {
-        Point p = points.poll();
-        for (Point adj : p.getAdjacents())
+        Vertex p = points.poll();
+        for (Vertex adj : p.getAdjacents())
         {
             if (!points.contains(adj))  continue;
              
@@ -57,9 +58,10 @@ public class Dijkstra {
         @Override
         public int compare(Object o1, Object o2)
         {
-            if (o1.getClass() != Point.class ||
-                o2.getClass() != Point.class)    return 0;
-            return (int)(shortestPaths.get((Point)o1) - shortestPaths.get((Point)o2));
+            if ((o1.getClass() != Vertex.class && o1.getClass() != Point.class) ||
+                (o2.getClass() != Vertex.class && o2.getClass() != Point.class))
+                return 0;
+            return (int)(shortestPaths.get((Vertex)o1) - shortestPaths.get((Vertex)o2));
         }
     }
 }

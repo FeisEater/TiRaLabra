@@ -12,8 +12,8 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.WindowConstants;
 import tiralabra.PointContainer;
-import tiralabra.algorithms.AngleElimination;
 import tiralabra.datastructures.Point;
+import tiralabra.datastructures.Vertex;
 import tiralabra.gui.geometrytools.BuildGraph;
 import tiralabra.gui.geometrytools.ChainPolygon;
 import tiralabra.util.Const;
@@ -47,27 +47,33 @@ public class GraphicInterface extends JPanel implements Runnable {
     public void paintComponent(Graphics g)
     {
         super.paintComponent(g);
-        int pw = 4;
+        fillPolygon(g);
+        for (Vertex p : points.getPoints())
+            drawPoint(g, p);
+        /*int pw = 8;
         g.setColor(Color.green);
         for (int i = 0; i < frame.getWidth(); i += pw)
             for (int j = 0; j < frame.getHeight(); j += pw)
                 if (!AngleElimination.isObstructed(new Point(i+pw/2, j+pw/2)))
-                    g.fillRect(i, j, pw, pw);
-        fillPolygon(g);
-        for (Point p : points.getPoints())
-            drawPoint(g, p);
+                    g.fillRect(i, j, pw, pw);*/
         currentTool.drawInputSpecific(g);        
     }
-    public void drawPoint(Graphics g, Point point)
+    public void drawPoint(Graphics g, Vertex point)
     {
-        for (Point adj : point.getAdjacents())
+        for (Vertex adj : point.getAdjacents())
             drawEdge(g, Color.red, point, adj);
         g.setColor(currentTool.chooseColorByPoint(point));
         g.fillOval((int)point.X() - Const.pointWidth / 2, 
             (int)point.Y() - Const.pointWidth / 2,
             Const.pointWidth, Const.pointWidth);
-        drawEdge(g, Color.black, point, point.getLeft());
-        drawEdge(g, Color.black, point, point.getRight());
+        if (point.getClass() == Point.class)
+        {
+            Point p = (Point)point;
+            drawEdge(g, Color.black, p, p.getLeft());
+            drawEdge(g, Color.black, p, p.getRight());
+            g.setColor(Color.cyan);
+            g.drawLine((int)p.X(), (int)p.Y(), p.angleMarker()[0], p.angleMarker()[1]);
+        }
         /*if (point.getRight() != null)
         {
             g.setColor(Color.red);
@@ -80,10 +86,8 @@ public class GraphicInterface extends JPanel implements Runnable {
                             (int)(point.getRight().Y() - Math.sin(dir) * 16 + Math.sin(dir + Math.PI/2) * 8)};
             g.fillPolygon(xPoints, yPoints, 3);
         }*/
-        g.setColor(Color.cyan);
-        g.drawLine((int)point.X(), (int)point.Y(), point.angleMarker()[0], point.angleMarker()[1]);
     }
-    public void drawEdge(Graphics g, Color c, Point p1, Point p2)
+    public void drawEdge(Graphics g, Color c, Vertex p1, Vertex p2)
     {
         if (p1 == null || p2 == null)   return;
         g.setColor(c);
@@ -92,8 +96,10 @@ public class GraphicInterface extends JPanel implements Runnable {
     public void fillPolygon(Graphics g)
     {
         Set<Point> used = new HashSet<>();
-        for (Point p : points.getPoints())
+        for (Vertex v : points.getPoints())
         {
+            if (v.getClass() != Point.class)    continue;
+            Point p = (Point)v;
             if (used.contains(p)) continue;
             
             List<Integer> x = new ArrayList<>();

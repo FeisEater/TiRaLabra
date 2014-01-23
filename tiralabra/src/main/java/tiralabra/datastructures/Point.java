@@ -1,48 +1,16 @@
 
 package tiralabra.datastructures;
 
-import java.util.HashSet;
-import java.util.Set;
-
 /**
  *
  * @author Pavel
  */
-public class Point {
-    private double x;
-    private double y;
-    private Set<Point> adjacent;
+public class Point extends Vertex {
     private Point leftNeighbour;
     private Point rightNeighbour;
     public Point(double x, double y)
     {
-        this.x = x;
-        this.y = y;
-        adjacent = new HashSet<>();
-    }
-    public double X()   {return x;}
-    public double Y()   {return y;}
-    public void addAdjacent(Point point)
-    {
-        if (point == this)  return;
-        adjacent.add(point);
-        point.adjacent.add(this);
-    }
-    public void removeAdjacent(Point point)
-    {
-        if (point == this)  return;
-        adjacent.remove(point);
-        point.adjacent.remove(this);
-    }
-    public Set<Point> getAdjacents()
-    {
-        return adjacent;
-    }
-    public void removeAllAdjacents()
-    {
-        for (Point p : adjacent)
-            p.adjacent.remove(this);
-        adjacent.clear();
+        super(x,y);
     }
     public Point getLeft()    {return leftNeighbour;}
     public Point getRight()    {return rightNeighbour;}
@@ -57,21 +25,18 @@ public class Point {
         if (rightAngle < leftAngle) rightAngle += Math.PI * 2;
         return rightAngle - leftAngle;
     }
-    public double getDirection(Point point)
-    {
-        return Math.atan2(point.y - y, point.x - x);
-    }
+    @Override
     public boolean isVertex()
     {
         return getAngle() > Math.PI && getAngle() < 2 * Math.PI;
     }
     public int[] angleMarker()
     {
-        int[] coord = {(int)x,(int)y};
+        int[] coord = {(int)X(),(int)Y()};
         if (leftNeighbour == null || rightNeighbour == null)    return coord;
         double middleAngle = getMiddleDirection();
-        coord[0] = (int)(x + Math.cos(middleAngle) * 32);
-        coord[1] = (int)(y + Math.sin(middleAngle) * 32);
+        coord[0] = (int)(X() + Math.cos(middleAngle) * 32);
+        coord[1] = (int)(Y() + Math.sin(middleAngle) * 32);
         return coord;
     }
     public double getMiddleDirection()
@@ -81,19 +46,5 @@ public class Point {
         double rightAngle = getDirection(rightNeighbour);
         if (rightAngle < leftAngle) rightAngle += Math.PI * 2;
         return (leftAngle + rightAngle) / 2;
-    }
-    public boolean hasPointBetween(double leftAngle, double rightAngle, Point other)
-    {
-        if (leftAngle >= rightAngle)
-        {
-            if (getDirection(other) < leftAngle && getDirection(other) > rightAngle)
-                return true;
-        }
-        else
-        {
-            if (getDirection(other) > rightAngle || getDirection(other) < leftAngle)
-                return true;
-        }
-        return false;
     }
 }

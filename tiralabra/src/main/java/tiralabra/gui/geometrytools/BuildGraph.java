@@ -7,7 +7,7 @@ import java.awt.event.MouseEvent;
 import java.util.Map;
 import tiralabra.PointContainer;
 import tiralabra.algorithms.Dijkstra;
-import tiralabra.datastructures.Point;
+import tiralabra.datastructures.Vertex;
 import tiralabra.gui.GraphicInterface;
 import tiralabra.gui.MouseInput;
 
@@ -16,14 +16,14 @@ import tiralabra.gui.MouseInput;
  * @author Pavel
  */
 public class BuildGraph extends MouseInput {
-    private Point edgeend;
-    private Map<Point, Point> previousPoint;
+    private Vertex edgeend;
+    private Map<Vertex, Vertex> previousPoint;
     public BuildGraph(PointContainer p, GraphicInterface gui)   {super(p, gui);}
     @Override
     public void mouseReleased(MouseEvent e)
     {
         super.mouseReleased(e);
-        Point chosenPoint = choosePoint(e);
+        Vertex chosenPoint = choosePoint(e);
         if (e.getButton() == MouseEvent.BUTTON1)
             addPoint(e.getX(), e.getY());
         else if (e.getButton() == MouseEvent.BUTTON2)
@@ -43,14 +43,14 @@ public class BuildGraph extends MouseInput {
     }
     public void addPoint(int x, int y)
     {
-        Point p = points.addPoint(x,y);
+        Vertex p = points.addPoint(x,y);
         edgeend = null;
     }
-    public void removePoint(Point point)
+    public void removePoint(Vertex point)
     {
         points.removePoint(point);
     }
-    public void joinPoints(Point point)
+    public void joinPoints(Vertex point)
     {
         if (point == null)  return;
         
@@ -68,7 +68,7 @@ public class BuildGraph extends MouseInput {
         drawShortestPath(g);
     }
     @Override
-    public Color chooseColorByPoint(Point point)
+    public Color chooseColorByPoint(Vertex point)
     {
         if (point == edgeend)
             return Color.magenta;
@@ -78,10 +78,10 @@ public class BuildGraph extends MouseInput {
     {
         if (previousPoint == null)  return;
 
-        Point next = draggedToPoint;
+        Vertex next = draggedToPoint;
         while (next != null)
         {
-            Point q = previousPoint.get(next);
+            Vertex q = previousPoint.get(next);
             if (q != null)
                 gui.drawEdge(g, Color.green, q, next);
             next = q;

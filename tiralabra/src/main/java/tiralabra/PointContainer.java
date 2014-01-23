@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import tiralabra.algorithms.AngleElimination;
 import tiralabra.datastructures.Point;
+import tiralabra.datastructures.Vertex;
 import tiralabra.util.Tools;
 
 /**
@@ -12,21 +13,27 @@ import tiralabra.util.Tools;
  * @author Pavel
  */
 public class PointContainer {
-    private List<Point> points = new ArrayList<>();
-    public List<Point> getPoints()  {return points;}
-    public Point addPoint(int x, int y)
+    private List<Vertex> points = new ArrayList<>();
+    public List<Vertex> getPoints()  {return points;}
+    public Vertex addPoint(int x, int y)
+    {
+        Vertex point = new Vertex((double)x, (double)y);
+        points.add(point);
+        return point;
+    }
+    public Point addPoint2(int x, int y)
     {
         Point point = new Point((double)x, (double)y);
         points.add(point);
         return point;
     }
-    public void removePoint(Point point)
+    public void removePoint(Vertex point)
     {
         if (point == null)  return;
         point.removeAllAdjacents();
         points.remove(point);
     }
-    public void toggleEdge(Point p1, Point p2)
+    public void toggleEdge(Vertex p1, Vertex p2)
     {
         if (p1.getAdjacents().contains(p2))
             p1.removeAdjacent(p2);
@@ -35,9 +42,9 @@ public class PointContainer {
     }
     public void buildGraph()
     {
-        for (Point p : points)
+        for (Vertex p : points)
             p.removeAllAdjacents();
-        for (Point p : points)
+        for (Vertex p : points)
         {
             if (!p.isVertex())  continue;
             AngleElimination.findUnobstructedPoints(p, points);

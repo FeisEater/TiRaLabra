@@ -9,6 +9,7 @@ import tiralabra.PointContainer;
 import tiralabra.algorithms.AngleElimination;
 import tiralabra.algorithms.Dijkstra;
 import tiralabra.datastructures.Point;
+import tiralabra.datastructures.Vertex;
 import tiralabra.gui.GraphicInterface;
 import tiralabra.gui.MouseInput;
 
@@ -19,13 +20,13 @@ import tiralabra.gui.MouseInput;
 public class ChainPolygon extends MouseInput {
     private Point begin;
     private Point prev;
-    private Map<Point, Point> previousPoint;
+    private Map<Vertex, Vertex> previousPoint;
     public ChainPolygon(PointContainer p, GraphicInterface gui)   {super(p, gui);}
     @Override
     public void mouseReleased(MouseEvent e)
     {
         super.mouseReleased(e);
-        Point chosenPoint = choosePoint(e);
+        Vertex chosenPoint = choosePoint(e);
         if (e.getButton() == MouseEvent.BUTTON1)
             addPoint(e.getX(), e.getY());
         else if (e.getButton() == MouseEvent.BUTTON2)
@@ -35,7 +36,7 @@ public class ChainPolygon extends MouseInput {
             if (draggedFromPoint == chosenPoint)
             {
                 if (begin == null)
-                    traceAround(chosenPoint);
+                    traceAround(e.getX(), e.getY(), chosenPoint);
                 else
                     closeLoop();
             }
@@ -44,9 +45,11 @@ public class ChainPolygon extends MouseInput {
         }
         gui.repaint();
     }
-    public void traceAround(Point point)
+    public void traceAround(int x, int y, Vertex point)
     {
-        AngleElimination.findUnobstructedPoints(point, points.getPoints());
+        points.addPoint(x, y);
+        points.buildGraph();
+        //AngleElimination.findUnobstructedPoints(point, points.getPoints());
     }
     public void buildPath()
     {
@@ -54,7 +57,7 @@ public class ChainPolygon extends MouseInput {
     }
     public void addPoint(int x, int y)
     {
-        Point p = points.addPoint(x,y);
+        Point p = points.addPoint2(x,y);
         if (begin == null)  begin = p;
         else
         {
@@ -64,7 +67,7 @@ public class ChainPolygon extends MouseInput {
         prev = p;
         draggedToPoint = null;
     }
-    public void removePoint(Point point)
+    public void removePoint(Vertex point)
     {
         points.removePoint(point);
         draggedToPoint = null;
@@ -90,10 +93,10 @@ public class ChainPolygon extends MouseInput {
     {
         if (previousPoint == null)  return;
         
-        Point next = draggedToPoint;
+        Vertex next = draggedToPoint;
         while (next != null)
         {
-            Point q = previousPoint.get(next);
+            Vertex q = previousPoint.get(next);
             if (q != null)
                 gui.drawEdge(g, Color.green, q, next);
             next = q;
