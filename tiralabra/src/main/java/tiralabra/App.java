@@ -11,7 +11,7 @@ public class App
 {
     public static void main( String[] args )
     {
-        PointContainer container = new PointContainer();
+        VertexContainer container = new VertexContainer();
         SwingUtilities.invokeLater(new GraphicInterface(container));
     }
 }

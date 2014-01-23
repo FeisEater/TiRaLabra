@@ -5,7 +5,7 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.event.MouseEvent;
 import java.util.Map;
-import tiralabra.PointContainer;
+import tiralabra.VertexContainer;
 import tiralabra.algorithms.Dijkstra;
 import tiralabra.datastructures.Vertex;
 import tiralabra.gui.GraphicInterface;
@@ -18,14 +18,15 @@ import tiralabra.gui.MouseInput;
 public class BuildGraph extends MouseInput {
     private Vertex edgeend;
     private Map<Vertex, Vertex> previousPoint;
-    public BuildGraph(PointContainer p, GraphicInterface gui)   {super(p, gui);}
+    public BuildGraph(VertexContainer p, GraphicInterface gui)
+        {super(p, gui);}
     @Override
     public void mouseReleased(MouseEvent e)
     {
         super.mouseReleased(e);
         Vertex chosenPoint = choosePoint(e);
         if (e.getButton() == MouseEvent.BUTTON1)
-            addPoint(e.getX(), e.getY());
+            addPoint(draggedToX, draggedToY);
         else if (e.getButton() == MouseEvent.BUTTON2)
             removePoint(chosenPoint);
         else if (e.getButton() == MouseEvent.BUTTON3)
@@ -39,16 +40,16 @@ public class BuildGraph extends MouseInput {
     }
     public void buildPath()
     {
-        previousPoint = Dijkstra.getShortestPaths(draggedFromPoint, points.getPoints());
+        previousPoint = Dijkstra.getShortestPaths(draggedFromPoint, points.getVertices());
     }
     public void addPoint(int x, int y)
     {
-        Vertex p = points.addPoint(x,y);
+        Vertex p = points.addVertex(x,y);
         edgeend = null;
     }
     public void removePoint(Vertex point)
     {
-        points.removePoint(point);
+        points.removeVertex(point);
     }
     public void joinPoints(Vertex point)
     {

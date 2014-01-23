@@ -5,8 +5,7 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.event.MouseEvent;
 import java.util.Map;
-import tiralabra.PointContainer;
-import tiralabra.algorithms.AngleElimination;
+import tiralabra.VertexContainer;
 import tiralabra.algorithms.Dijkstra;
 import tiralabra.datastructures.Point;
 import tiralabra.datastructures.Vertex;
@@ -21,14 +20,15 @@ public class ChainPolygon extends MouseInput {
     private Point begin;
     private Point prev;
     private Map<Vertex, Vertex> previousPoint;
-    public ChainPolygon(PointContainer p, GraphicInterface gui)   {super(p, gui);}
+    public ChainPolygon(VertexContainer p, GraphicInterface gui)
+        {super(p, gui);}
     @Override
     public void mouseReleased(MouseEvent e)
     {
         super.mouseReleased(e);
         Vertex chosenPoint = choosePoint(e);
         if (e.getButton() == MouseEvent.BUTTON1)
-            addPoint(e.getX(), e.getY());
+            addPoint(draggedToX, draggedToY);
         else if (e.getButton() == MouseEvent.BUTTON2)
             removePoint(chosenPoint);
         else if (e.getButton() == MouseEvent.BUTTON3)
@@ -47,17 +47,16 @@ public class ChainPolygon extends MouseInput {
     }
     public void traceAround(int x, int y, Vertex point)
     {
-        points.addPoint(x, y);
+        points.addVertex(x, y);
         points.buildGraph();
-        //AngleElimination.findUnobstructedPoints(point, points.getPoints());
     }
     public void buildPath()
     {
-        previousPoint = Dijkstra.getShortestPaths(draggedFromPoint, points.getPoints());
+        previousPoint = Dijkstra.getShortestPaths(draggedFromPoint, points.getVertices());
     }
     public void addPoint(int x, int y)
     {
-        Point p = points.addPoint2(x,y);
+        Point p = points.addPoint(x,y);
         if (begin == null)  begin = p;
         else
         {
@@ -69,7 +68,7 @@ public class ChainPolygon extends MouseInput {
     }
     public void removePoint(Vertex point)
     {
-        points.removePoint(point);
+        points.removeVertex(point);
         draggedToPoint = null;
     }
     public void closeLoop()
@@ -79,7 +78,7 @@ public class ChainPolygon extends MouseInput {
             begin.setLeft(prev);
             prev.setRight(begin);
         }
-        points.setShapeMode(begin);
+        points.setShapeMode(begin, true);
         begin = null;
         prev = null;
         points.buildGraph();

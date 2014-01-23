@@ -64,8 +64,4 @@ public class Vertex {
         }
         return false;
     }
-    public String toString()
-    {
-        return "" + x + " " + y;
-    }
 }

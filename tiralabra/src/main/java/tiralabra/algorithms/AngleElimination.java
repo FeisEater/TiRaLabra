@@ -13,23 +13,38 @@ import tiralabra.util.Tools;
  * @author Pavel
  */
 public class AngleElimination {
-    private static List<AngleInterval> intervals = new ArrayList<AngleInterval>();
-    public static void findUnobstructedPoints(Vertex p, List<Vertex> points)
+    private static List<AngleInterval> intervals = new ArrayList<>();
+    public static void findUnobstructedPoints(Vertex src, List<Vertex> vertices)
     {
         intervals.clear();
-        if (p == null)  return;
-        if (p.getClass() == Point.class)
-            intervals.add(new AngleInterval((Point)p));
-        for (Vertex v : points)
+        if (src == null)  return;
+        findIntervals(src, vertices);
+        buildGraph(src, vertices);
+    }
+    public static boolean isObstructed(Vertex test)
+    {
+        for (AngleInterval i : intervals)
+            if (i.vertexIsObstructed(test))  return true;
+        return false;
+    }
+    private static void findIntervals(Vertex src, List<Vertex> vertices)
+    {
+        if (src.getClass() == Point.class)
+            intervals.add(new AngleInterval((Point)src));
+        
+        for (Vertex v : vertices)
         {
-            if (p == v || v.getClass() != Point.class)
+            if (src == v || v.getClass() != Point.class)
                 continue;
             Point q = (Point)v;
-            if (p == q || q.getRight() == null || q.getRight() == p)
+            if (src == q || q.getRight() == null || q.getRight() == src)
                 continue;
-            intervals.add(new AngleInterval(p,q));
+            intervals.add(new AngleInterval(src,q));
         }
         Collections.sort(intervals);
+    }
+    private static void flattenIntervals()
+    {
         /*List<AngleInterval> curIntervals = new ArrayList<>();
         for (AngleInterval ai : intervals)
         {
@@ -40,42 +55,62 @@ public class AngleElimination {
             curIntervals.add(ai);
         }
         System.out.println(intervals);*/
-        if (p.getClass() == Point.class)
+    }
+    private static void buildGraph(Vertex src, List<Vertex> vertices)
+    {
+        if (src.getClass() == Point.class)
+            connectWithNeighbours((Point)src);
+        for (Vertex q : vertices)
         {
-            Point point = (Point)p;
-            if (point.getLeft().isVertex())
-                point.addAdjacent(point.getLeft());
-            if (point.getRight().isVertex())
-                point.addAdjacent(point.getRight());
-        }
-        for (Vertex q : points)
-        {
-            if (p == q || !q.isVertex()) continue;
-            if (isObstructed(q))    continue;
-            p.addAdjacent(q);
+            if (src == q || !q.isVertex()) continue;
+            if (!isObstructed(q))
+                src.addAdjacent(q);
         }
     }
-    public static boolean isObstructed(Vertex test)
+    private static void connectWithNeighbours(Point src)
     {
-        for (AngleInterval i : intervals)
-        {
-            if (i.isBetween(test))  return true;
-        }
-        return false;
+        if (src.getLeft().isVertex())
+            src.addAdjacent(src.getLeft());
+        if (src.getRight().isVertex())
+            src.addAdjacent(src.getRight());
     }
     private static class AngleInterval implements Comparable
     {
-        public double leftAngle;
-        public double rightAngle;
+        private double leftAngle;
+        private double rightAngle;
         private double leftDist;
         private double rightDist;
         private Vertex src;
-        public AngleInterval(Vertex src, Point p)
+        public AngleInterval(Vertex source, Point p)
+        {
+            Point[] directions = findLeftAndRightAngles(source, p);
+            setAttributes(source, directions[0], directions[1]);
+        }
+        public AngleInterval(Point src)
+        {
+            setAttributes(src, src.getRight(), src.getLeft());
+            leftDist = 0;
+            rightDist = 0;
+        }
+        public void setAttributes(Vertex src, Point leftest, Point rightest)
         {
             this.src = src;
+            if (leftest != null)
+            {
+                leftAngle = src.getDirection(leftest);
+                leftDist = Tools.distance(src, leftest);
+            }
+            if (rightest != null)
+            {
+                rightAngle = src.getDirection(rightest);
+                rightDist = Tools.distance(src, rightest);
+            }
+        }
+        public Point[] findLeftAndRightAngles(Vertex source, Point p)
+        {
             Point leftest;
             Point rightest;
-            if (src.getDirection(p) < src.getDirection(p.getRight()))
+            if (source.getDirection(p) < source.getDirection(p.getRight()))
             {
                 leftest = p;
                 rightest = p.getRight();
@@ -85,57 +120,45 @@ public class AngleElimination {
                 leftest = p.getRight();
                 rightest = p;
             }
-            if ((p.Y() - src.Y()) * (p.getRight().Y() - src.Y()) < 0 && 
-                    src.X() > p.X() + 
-                    Math.cos(p.getDirection(p.getRight())) *
-                    Math.abs(src.Y() - p.Y()))
+            if (anglesCrossoverDirectionLoop(source, p))
             {
                 Point q = leftest;
                 leftest = rightest;
                 rightest = q;
             }
-            leftAngle = src.getDirection(leftest);
-            rightAngle = src.getDirection(rightest);
-            leftDist = Tools.distance(src, leftest);
-            rightDist = Tools.distance(src, rightest);
+            Point[] result = {leftest, rightest};
+            return result;
         }
-        public AngleInterval(Point src)
+        public boolean anglesCrossoverDirectionLoop(Vertex source, Point p)
         {
-            this.src = src;
-            leftAngle = src.getDirection(src.getRight());
-            rightAngle = src.getDirection(src.getLeft());
-            leftDist = 0;
-            rightDist = 0;
+            return (p.Y() - source.Y()) * (p.getRight().Y() - source.Y()) < 0 && 
+                    source.X() > p.X() + 
+                    Math.cos(p.getDirection(p.getRight())) *
+                    Math.abs(source.Y() - p.Y());
         }
-        public boolean isBetween(Vertex test)
+        public boolean vertexIsObstructed(Vertex test)
         {
             if (src.hasPointBetween(rightAngle, leftAngle, test))
             {
-                /*double right = (rightAngle < leftAngle) ? rightAngle + Math.PI * 2 : rightAngle;
-                double dir = (src.getDirection(test) < leftAngle) ? src.getDirection(test) + Math.PI * 2 : src.getDirection(test);
-                double angleRatio = (dir - leftAngle) / (right - leftAngle);
-                double radius = leftDist + angleRatio * (rightDist - leftDist);
-                */
                 if (leftDist <= 0 && rightDist <= 0)    return true;
-                double x1 = leftDist * Math.cos(leftAngle);
-                double y1 = leftDist * Math.sin(leftAngle);
-                double x2 = rightDist * Math.cos(rightAngle);
-                double y2 = rightDist * Math.sin(rightAngle);
-                double testAngle = src.getDirection(test);
-                double radius;
-                if (x2 - x1 > y2 - y1)
-                {
-                    double coeff = (y2-y1)/(x2-x1);
-                    radius = (y1 - x1*coeff)/(Math.sin(testAngle) - coeff * Math.cos(testAngle));
-                }
-                else
-                {
-                    double coeff = (x2-x1)/(y2-y1);
-                    radius = (x1 - y1*coeff)/(Math.cos(testAngle) - coeff * Math.sin(testAngle));                    
-                }
-                if (Tools.distance(src, test) > radius)   return true;
+                if (Tools.distance(src, test) > distanceFromLine(src.getDirection(test)))
+                    return true;
             }
             return false;
+        }
+        public double distanceFromLine(double testAngle)
+        {
+            double x1 = leftDist * Math.cos(leftAngle);
+            double y1 = leftDist * Math.sin(leftAngle);
+            double x2 = rightDist * Math.cos(rightAngle);
+            double y2 = rightDist * Math.sin(rightAngle);
+            if (x2 - x1 > y2 - y1)
+            {
+                double coeff = (y2-y1)/(x2-x1);
+                return (y1 - x1*coeff)/(Math.sin(testAngle) - coeff * Math.cos(testAngle));
+            }
+            double coeff = (x2-x1)/(y2-y1);
+            return (x1 - y1*coeff)/(Math.cos(testAngle) - coeff * Math.sin(testAngle));                    
         }
         @Override
         public int compareTo(Object o)
