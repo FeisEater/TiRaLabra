@@ -12,7 +12,8 @@ import tiralabra.gui.GraphicInterface;
 import tiralabra.gui.MouseInput;
 
 /**
- *
+ * Mouse input tool that lets user position vertices and build the graph
+ * freely by connecting vertices by hand.
  * @author Pavel
  */
 public class BuildGraph extends MouseInput {
@@ -38,19 +39,36 @@ public class BuildGraph extends MouseInput {
         }
         gui.repaint();
     }
+    /**
+     * Finds the shortest path via mouse drag.
+     */
     public void buildPath()
     {
         previousPoint = Dijkstra.getShortestPaths(draggedFromPoint, points.getVertices());
     }
+/**
+ * Adds a vertex.
+ * @param x X coordinate where vertex is created.
+ * @param y Y coordinate where vertex is created.
+ */
     public void addPoint(int x, int y)
     {
         Vertex p = points.addVertex(x,y);
         edgeend = null;
     }
+/**
+ * Removes given vertex.
+ * @param point given vertex.
+ */
     public void removePoint(Vertex point)
     {
         points.removeVertex(point);
     }
+/**
+ * Selects vertex to connect with other vertex. If one was already selected,
+ * adds a connection or removes it if they were already connected.
+ * @param point Chosen vertex.
+ */
     public void joinPoints(Vertex point)
     {
         if (point == null)  return;
@@ -63,11 +81,22 @@ public class BuildGraph extends MouseInput {
             edgeend = null;
         }
     }
+/**
+ * Draws information specific to mouse tool mode.
+ * Draws the shortest path which was selected by buildPath()
+ * @param g Graphics object.
+ */
     @Override
     public void drawInputSpecific(Graphics g)
     {
         drawShortestPath(g);
     }
+/**
+ * Decides what color should the vertex be represented as.
+ * Points that await to be connected with other vertex are colored magenta.
+ * @param point Specific vertex
+ * @return Color of the vertex.
+ */
     @Override
     public Color chooseColorByPoint(Vertex point)
     {
@@ -75,6 +104,10 @@ public class BuildGraph extends MouseInput {
             return Color.magenta;
         return super.chooseColorByPoint(point);
     }
+/**
+ * Draws the shortest path which was selected by buildPath().
+ * @param g Graphics object.
+ */
     public void drawShortestPath(Graphics g)
     {
         if (previousPoint == null)  return;

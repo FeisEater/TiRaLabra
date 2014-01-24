@@ -14,7 +14,8 @@ import tiralabra.gui.GraphicInterface;
 import tiralabra.gui.MouseInput;
 
 /**
- *
+ * Mouse input tool that lets user chain points together to form
+ * polygons.
  * @author Pavel
  */
 public class ChainPolygon extends MouseInput {
@@ -52,10 +53,18 @@ public class ChainPolygon extends MouseInput {
         //points.buildGraph();
         AngleElimination.findUnobstructedPoints(point, points.getVertices());
     }
+    /**
+     * Finds the shortest path via mouse drag.
+     */
     public void buildPath()
     {
         previousPoint = Dijkstra.getShortestPaths(draggedFromPoint, points.getVertices());
     }
+/**
+ * Adds a point and chains it to previously created point.
+ * @param x X coordinate where point is created.
+ * @param y Y coordinate where point is created.
+ */
     public void addPoint(int x, int y)
     {
         Point p = points.addPoint(x,y);
@@ -68,11 +77,19 @@ public class ChainPolygon extends MouseInput {
         prev = p;
         draggedToPoint = null;
     }
+/**
+ * Removes given vertex.
+ * @param point given vertex.
+ */
     public void removePoint(Vertex point)
     {
         points.removeVertex(point);
         draggedToPoint = null;
     }
+/**
+ * Closes the polygon loop by chaining firstly created point
+ * with previously created point.
+ */
     public void closeLoop()
     {
         if (begin != null && prev != null)
@@ -85,11 +102,20 @@ public class ChainPolygon extends MouseInput {
         prev = null;
         points.buildGraph();
     }
+/**
+ * Draws information specific to mouse tool mode.
+ * Draws the shortest path which was selected by buildPath()
+ * @param g Graphics object.
+ */
     @Override
     public void drawInputSpecific(Graphics g)
     {
         drawShortestPath(g);
     }
+/**
+ * Draws the shortest path which was selected by buildPath().
+ * @param g Graphics object.
+ */
     public void drawShortestPath(Graphics g)
     {
         if (previousPoint == null)  return;
