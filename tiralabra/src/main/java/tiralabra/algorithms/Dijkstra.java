@@ -11,12 +11,21 @@ import tiralabra.datastructures.Point;
 import tiralabra.util.Tools;
 
 /**
- *
+ * Dijkstra's algorithm for finding the shortest path in a graph.
  * @author Pavel
  */
 public class Dijkstra {
     private static Map<Vertex, Double> shortestPaths = new HashMap<>();
     private static Map<Vertex, Vertex> previousPoint = new HashMap<>();
+/**
+ * Runs the algorithm.
+ * @param begin Beginning vertex from which the path is generated.
+ * @param originalPoints Set of all vertices in the graph.
+ * @return Map, which tells for each vertex which is its previous vertex
+ *          that leads to the shortest path. To find the shortest path,
+ *          find destination vertex on the map and call the value recursively
+ *          until you get the source vertex. Note that this is the reverse order.
+ */
     public static Map<Vertex, Vertex> getShortestPaths(Vertex begin, List<Vertex> originalPoints)
     {
         PriorityQueue<Vertex> points = initialize(begin, originalPoints);
@@ -24,6 +33,13 @@ public class Dijkstra {
             relaxEdgesOnNextInHeap(points);
         return previousPoint;
     }
+/**
+ * Initializes attributes for the algorithm.
+ * @param begin Beginning vertex from which the path is generated.
+ * @param originalPoints Set of all vertices in the graph.
+ * @return Heap of vertices, which have estimated path lengths. Source vertex's
+ *          value is 0, other vertices' is Double.MAX_VALUE
+ */
     private static PriorityQueue<Vertex> initialize(Vertex begin, List<Vertex> points)
     {
         shortestPaths.clear();
@@ -37,6 +53,10 @@ public class Dijkstra {
         }
         return dijkstrapoints;
     }
+/**
+ * Takes the next vertex in the heap and re-estimates its path length.
+ * @param points Heap of vertices, which have estimated path lengths.
+ */
     private static void relaxEdgesOnNextInHeap(PriorityQueue<Vertex> points)
     {
         Vertex p = points.poll();
@@ -53,6 +73,10 @@ public class Dijkstra {
             previousPoint.put(adj, p);
         }
     }
+/**
+ * Comparator for the vertex heap. Vertex with shortest path length estimate
+ * is first on the heap.
+ */
     private static class pointComparator implements Comparator
     {
         @Override

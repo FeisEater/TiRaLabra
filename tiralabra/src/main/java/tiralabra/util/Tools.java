@@ -4,7 +4,7 @@ package tiralabra.util;
 import tiralabra.datastructures.Vertex;
 
 /**
- *
+ * Miscelanneous small scale algorithms used throughout the program.
  * @author Pavel
  */
 public class Tools {
@@ -24,6 +24,12 @@ public class Tools {
         
         return i + d;
     }
+/**
+ * Calculates distance between two points using the pythagorus theorum.
+ * @param p1 Certain vertex
+ * @param p2 Certain vertex
+ * @return distance between two vertices.
+ */
     public static double distance(Vertex p1, Vertex p2)
     {
         return Math.sqrt(Math.pow(p1.X() - p2.X(), 2) +

@@ -12,6 +12,11 @@ public class Vertex {
     private double x;
     private double y;
     private Set<Vertex> adjacent;
+/**
+ * Constructor.
+ * @param x X coordinate at which vertex is created.
+ * @param y Y coordinate at which vertex is created.
+ */
     public Vertex(double x, double y)
     {
         this.x = x;
@@ -20,36 +25,70 @@ public class Vertex {
     }
     public double X()   {return x;}
     public double Y()   {return y;}
+/**
+ * Joins specified vertex with this vertex in a graph.
+ * @param ver Specified vertex.
+ */
     public void addAdjacent(Vertex ver)
     {
         if (ver == this)  return;
         adjacent.add(ver);
         ver.adjacent.add(this);
     }
+/**
+ * Removes the connection with the specified vertex if there ever
+ * was a connection.
+ * @param ver Specified vertex.
+ */
     public void removeAdjacent(Vertex ver)
     {
         if (ver == this)  return;
         adjacent.remove(ver);
         ver.adjacent.remove(this);
     }
+/**
+ * 
+ * @return Set of vertices that are connected with this vertex.
+ */
     public Set<Vertex> getAdjacents()
     {
         return adjacent;
     }
+/**
+ * Removes all connections with other vertices.
+ */
     public void removeAllAdjacents()
     {
         for (Vertex v : adjacent)
             v.adjacent.remove(this);
         adjacent.clear();
     }
+/**
+ * 
+ * @param ver Specified vertex.
+ * @return direction from this vertex to ver.
+ */
     public double getDirection(Vertex ver)
     {
         return Math.atan2(ver.y - y, ver.x - x);
     }
+/**
+ * Checks if should be considered as a vertex in the graph.
+ * If Vertex class is not extended, is always considered as vertex in the graph.
+ * @return always true.
+ */
     public boolean isVertex()
     {
         return true;
     }
+/**
+ * Checks if specified vertex is between the specified directions from
+ * this Vertex's point of view.
+ * @param leftAngle Specified vertex should be to the right of this direction.
+ * @param rightAngle Specified vertex should be to the left of this direction.
+ * @param other Specified vertex.
+ * @return true if vertex was between the angles.
+ */
     public boolean hasPointBetween(double leftAngle, double rightAngle, Vertex other)
     {
         if (leftAngle >= rightAngle)

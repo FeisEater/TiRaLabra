@@ -6,6 +6,7 @@ import java.awt.Graphics;
 import java.awt.event.MouseEvent;
 import java.util.Map;
 import tiralabra.VertexContainer;
+import tiralabra.algorithms.AngleElimination;
 import tiralabra.algorithms.Dijkstra;
 import tiralabra.datastructures.Point;
 import tiralabra.datastructures.Vertex;
@@ -47,8 +48,9 @@ public class ChainPolygon extends MouseInput {
     }
     public void traceAround(int x, int y, Vertex point)
     {
-        points.addVertex(x, y);
-        points.buildGraph();
+        //points.addVertex(x, y);
+        //points.buildGraph();
+        AngleElimination.findUnobstructedPoints(point, points.getVertices());
     }
     public void buildPath()
     {

@@ -20,13 +20,18 @@ import tiralabra.gui.geometrytools.ChainPolygon;
 import tiralabra.util.Const;
 
 /**
- *
+ * Plain graphic interface to visualise the going-ons of the program
+ * and to let player interact with the program.
  * @author Pavel
  */
 public class GraphicInterface extends JPanel implements Runnable {
     private JFrame frame;
     private VertexContainer points;
     private MouseInput currentTool;
+/**
+ * Constructor.
+ * @param points VertexContainer object.
+ */
     public GraphicInterface(VertexContainer points)
     {
         super();
@@ -48,12 +53,17 @@ public class GraphicInterface extends JPanel implements Runnable {
     public void paintComponent(Graphics g)
     {
         super.paintComponent(g);
-        //fillUnobstructedArea(g, 8);
         fillPolygon(g);
+        fillUnobstructedArea(g, 8);
         for (Vertex p : points.getVertices())
             drawPoint(g, p);
         currentTool.drawInputSpecific(g);        
     }
+/**
+ * Draws certain vertex and its connections with other vertices.
+ * @param g Graphics object.
+ * @param point Vertex that is drawn.
+ */
     public void drawPoint(Graphics g, Vertex point)
     {
         for (Vertex adj : point.getAdjacents())
@@ -71,12 +81,23 @@ public class GraphicInterface extends JPanel implements Runnable {
             g.drawLine((int)p.X(), (int)p.Y(), p.angleMarker()[0], p.angleMarker()[1]);
         }
     }
+/**
+ * Draws a connection between two specified vertices.
+ * @param g Graphics object.
+ * @param c Color of the line.
+ * @param p1 Specified vertex
+ * @param p2 Specified vertex
+ */
     public void drawEdge(Graphics g, Color c, Vertex p1, Vertex p2)
     {
         if (p1 == null || p2 == null)   return;
         g.setColor(c);
         g.drawLine((int)p1.X(), (int)p1.Y(), (int)p2.X(), (int)p2.Y());
     }
+/**
+ * Draws a polygon.
+ * @param g Graphics object.
+ */
     public void fillPolygon(Graphics g)
     {
         Set<Point> used = new HashSet<>();
@@ -97,12 +118,25 @@ public class GraphicInterface extends JPanel implements Runnable {
                             x.size());
         }
     }
+/**
+ * Converts arrayList data to an array.
+ * @param list ArrayList object
+ * @return array that contains all data that ArrayList contains.
+ */
     public int[] convertArrayListToArray(List<Integer> list)
     {
         int[] result = new int[list.size()];
         for (int i = 0; i < list.size(); i++) result[i] = list.get(i);
         return result;
     }
+/**
+ * Collects coordinates from all points in a polygon.
+ * @param first A point in the polygon from which all other points are accessed.
+ * @param x ArrayList of X coordinates.
+ * @param y ArrayList of Y coordinates.
+ * @param used Set of points that were already processed.
+ * @return 
+ */
     public boolean retrieveCoordinatesFromPolygon(Point first, List<Integer> x, List<Integer> y, Set<Point> used)
     {
         Point q = first;
@@ -117,6 +151,12 @@ public class GraphicInterface extends JPanel implements Runnable {
         } while (first != q);
         return true;
     }
+/**
+ * Visualises the area that is unobstructed from the point of view
+ * of the point that was the last one that called the tracing algorithm.
+ * @param g Graphics object.
+ * @param pixelsize Size of the pixel.
+ */
     public void fillUnobstructedArea(Graphics g, int pixelsize)
     {
         g.setColor(Color.green);

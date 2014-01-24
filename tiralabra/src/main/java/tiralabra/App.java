@@ -4,7 +4,7 @@ import tiralabra.gui.GraphicInterface;
 import javax.swing.SwingUtilities;
 
 /**
- * Hello world!
+ * Starting point of the program.
  *
  */
 public class App 
