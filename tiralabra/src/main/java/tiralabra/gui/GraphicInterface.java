@@ -48,7 +48,7 @@ public class GraphicInterface extends JPanel implements Runnable {
     public void paintComponent(Graphics g)
     {
         super.paintComponent(g);
-        fillUnobstructedArea(g, 8);
+        //fillUnobstructedArea(g, 8);
         fillPolygon(g);
         for (Vertex p : points.getVertices())
             drawPoint(g, p);
