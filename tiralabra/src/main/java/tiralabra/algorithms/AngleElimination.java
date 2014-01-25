@@ -157,12 +157,12 @@ public class AngleElimination {
             if (leftest != null)
             {
                 leftAngle = src.getDirection(leftest);
-                leftDist = Tools.distance(src, leftest);
+                leftDist = src.getDistance(leftest);
             }
             if (rightest != null)
             {
                 rightAngle = src.getDirection(rightest);
-                rightDist = Tools.distance(src, rightest);
+                rightDist = src.getDistance(rightest);
             }
         }
 /**
@@ -223,7 +223,7 @@ public class AngleElimination {
             if (src.hasPointBetween(rightAngle, leftAngle, test))
             {
                 if (leftDist <= 0 && rightDist <= 0)    return true;
-                if (Tools.distance(src, test) > distanceFromLine(src.getDirection(test)))
+                if (src.getDistance(test) > distanceFromLine(src.getDirection(test)))
                     return true;
             }
             return false;

@@ -64,11 +64,11 @@ public class Dijkstra {
         {
             if (!points.contains(adj))  continue;
              
-            if (shortestPaths.get(p) + Tools.distance(p, adj) >= shortestPaths.get(adj))
+            if (shortestPaths.get(p) + p.getDistance(adj) >= shortestPaths.get(adj))
                 continue;
 
             points.remove(adj);
-            shortestPaths.put(adj, shortestPaths.get(p) + Tools.distance(p, adj));
+            shortestPaths.put(adj, shortestPaths.get(p) + p.getDistance(adj));
             points.add(adj);
             previousPoint.put(adj, p);
         }

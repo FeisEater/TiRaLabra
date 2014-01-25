@@ -38,9 +38,34 @@ public class ToolsTest {
     public void tearDown() {
     }
 
-    // TODO add test methods here.
-    // The methods must be annotated with annotation @Test. For example:
-    //
-    // @Test
-    // public void hello() {}
+    @Test
+    public void roundsCorrectly1()
+    {
+        assertTrue(Tools.round(1.12345678) == 1.12);
+    }
+    @Test
+    public void roundsCorrectly2()
+    {
+        assertTrue(Tools.round(1.129999345) == 1.13);
+    }
+    @Test
+    public void roundsCorrectly3()
+    {
+        assertTrue(Tools.round(1.12) == 1.12);
+    }
+    @Test
+    public void roundsCorrectly4()
+    {
+        assertTrue(Tools.round(1.1) == 1.1);
+    }
+    @Test
+    public void roundsCorrectly5()
+    {
+        assertTrue(Tools.round(1) == 1);
+    }
+    @Test
+    public void roundsCorrectly6()
+    {
+        assertTrue(Tools.round(2.9999999945) == 3);
+    }
 }

@@ -73,6 +73,17 @@ public class Vertex {
         return Math.atan2(ver.y - y, ver.x - x);
     }
 /**
+ * Calculates distance between this and other vertex.
+ * @param ver Other vertex.
+ * @return distance between two vertices.
+ */
+    public double getDistance(Vertex ver)
+    {
+        return Math.sqrt(Math.pow(ver.X() - x, 2) +
+                Math.pow(ver.Y() - y, 2));
+    }
+
+/**
  * Checks if should be considered as a vertex in the graph.
  * If Vertex class is not extended, is always considered as vertex in the graph.
  * @return always true.

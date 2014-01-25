@@ -52,4 +52,18 @@ public class PointTest {
         }
         assertTrue(true);
     }
+    @Test
+    public void pointIsVertexIfItsAngleIsReflex()
+    {
+        Point center = new Point(0,0);
+        Point left = new Point(1, -1);
+        Point right = new Point(1, 1);
+        center.setLeft(left);
+        center.setRight(right);
+        boolean b1 = !center.isVertex();
+        center.setLeft(right);
+        center.setRight(left);
+        boolean b2 = center.isVertex();
+        assertTrue(b1 && b2);
+    }
 }
