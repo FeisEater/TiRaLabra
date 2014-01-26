@@ -135,7 +135,7 @@ public class GraphicInterface extends JPanel implements Runnable {
  * @param x ArrayList of X coordinates.
  * @param y ArrayList of Y coordinates.
  * @param used Set of points that were already processed.
- * @return 
+ * @return true if coordinates were retrieved correctly.
  */
     public boolean retrieveCoordinatesFromPolygon(Point first, List<Integer> x, List<Integer> y, Set<Point> used)
     {

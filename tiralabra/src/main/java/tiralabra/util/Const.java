@@ -1,7 +1,7 @@
 package tiralabra.util;
 
 /**
- *
+ * Constant variables used throughout the program.
  * @author Pavel
  */
 public class Const {

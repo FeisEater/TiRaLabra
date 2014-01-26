@@ -21,9 +21,9 @@ public class VertexContainer {
  * @param y Y coordinate where vertex is created.
  * @return pointer to the newly created vertex.
  */
-    public Vertex addVertex(int x, int y)
+    public Vertex addVertex(double x, double y)
     {
-        Vertex vertex = new Vertex((double)x, (double)y);
+        Vertex vertex = new Vertex(x, y);
         vertices.add(vertex);
         return vertex;
     }
@@ -33,9 +33,9 @@ public class VertexContainer {
  * @param y Y coordinate where point is created.
  * @return pointer to the newly created point.
  */
-    public Point addPoint(int x, int y)
+    public Point addPoint(double x, double y)
     {
-        Point point = new Point((double)x, (double)y);
+        Point point = new Point(x, y);
         vertices.add(point);
         return point;
     }

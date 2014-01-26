@@ -5,7 +5,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
- *
+ * Vertex in a graph.
  * @author Pavel
  */
 public class Vertex {
@@ -113,5 +113,9 @@ public class Vertex {
                 return true;
         }
         return false;
+    }
+    public String toString()
+    {
+        return "" + x + " " + y;
     }
 }

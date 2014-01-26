@@ -8,7 +8,6 @@ import java.util.Map;
 import java.util.PriorityQueue;
 import tiralabra.datastructures.Vertex;
 import tiralabra.datastructures.Point;
-import tiralabra.util.Tools;
 
 /**
  * Dijkstra's algorithm for finding the shortest path in a graph.

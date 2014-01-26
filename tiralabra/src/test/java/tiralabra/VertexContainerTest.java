@@ -1,6 +1,8 @@
 
 package tiralabra;
 
+import java.util.HashSet;
+import java.util.Set;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -69,8 +71,8 @@ public class VertexContainerTest {
     @Test
     public void edgeIsToggled()
     {
-        Vertex v1 = vc.addPoint(3, 5);
-        Vertex v2 = vc.addPoint(5, 3);
+        Vertex v1 = vc.addVertex(3, 5);
+        Vertex v2 = vc.addVertex(5, 3);
         vc.toggleEdge(v1, v2);
         boolean b1 = v1.getAdjacents().contains(v2) && v2.getAdjacents().contains(v1);
         vc.toggleEdge(v2, v1);
@@ -80,8 +82,8 @@ public class VertexContainerTest {
     @Test
     public void edgeIsToggled2()
     {
-        Vertex v1 = vc.addPoint(3, 5);
-        Vertex v2 = vc.addPoint(5, 3);
+        Vertex v1 = vc.addVertex(3, 5);
+        Vertex v2 = vc.addVertex(5, 3);
         for (int i = 0; i < 1000; i++)
         {
             vc.toggleEdge(v1, v2);
@@ -89,5 +91,107 @@ public class VertexContainerTest {
             if (v1.getAdjacents().isEmpty() == b)   assertTrue(false);
         }
         assertTrue(true);
+    }
+    @Test
+    public void buildsGraph()
+    {
+        Point p1 = vc.addPoint(0,0);
+        Point p2 = vc.addPoint(1,-1);
+        Point p3 = vc.addPoint(1,1);
+        Point p4 = vc.addPoint(1.5, 0.0);
+        Point p5 = vc.addPoint(4,-1);
+        Point p6 = vc.addPoint(4,1);
+        p1.setRight(p2);
+        p2.setLeft(p1);
+        p3.setRight(p1);
+        p1.setLeft(p3);
+        p2.setRight(p3);
+        p3.setLeft(p2);
+        
+        p4.setRight(p5);
+        p5.setLeft(p4);
+        p6.setRight(p4);
+        p4.setLeft(p6);
+        p5.setRight(p6);
+        p6.setLeft(p5);
+        
+        vc.buildGraph();
+
+        Set<Vertex> testadj1 = new HashSet<>();
+        Set<Vertex> testadj2 = new HashSet<>();
+        Set<Vertex> testadj3 = new HashSet<>();
+        Set<Vertex> testadj4 = new HashSet<>();
+        Set<Vertex> testadj5 = new HashSet<>();
+        Set<Vertex> testadj6 = new HashSet<>();
+        testadj1.add(p2);
+        testadj1.add(p3);
+        testadj2.add(p1);
+        testadj2.add(p5);
+        testadj2.add(p4);
+        testadj2.add(p3);
+        testadj3.add(p1);
+        testadj3.add(p6);
+        testadj3.add(p4);
+        testadj3.add(p2);
+        testadj4.add(p2);
+        testadj4.add(p3);
+        testadj4.add(p5);
+        testadj4.add(p6);
+        testadj5.add(p2);
+        testadj5.add(p4);
+        testadj5.add(p6);
+        testadj6.add(p5);
+        testadj6.add(p4);
+        testadj6.add(p3);
+
+        assertTrue(p1.getAdjacents().equals(testadj1) &&
+                p2.getAdjacents().equals(testadj2) &&
+                p3.getAdjacents().equals(testadj3) &&
+                p4.getAdjacents().equals(testadj4) &&
+                p5.getAdjacents().equals(testadj5) &&
+                p6.getAdjacents().equals(testadj6));
+    }
+    @Test
+    public void recognisesWall()
+    {
+        Point p1 = vc.addPoint(0,0);
+        Point p2 = vc.addPoint(1,-1);
+        Point p3 = vc.addPoint(1,1);
+        p1.setRight(p2);
+        p2.setLeft(p1);
+        p3.setRight(p1);
+        p1.setLeft(p3);
+        p2.setRight(p3);
+        p3.setLeft(p2);
+        assertTrue(vc.shapeIsWall(p1) && vc.shapeIsWall(p2) && vc.shapeIsWall(p3));
+    }
+    @Test
+    public void recognisesNonWall()
+    {
+        Point p1 = vc.addPoint(0,0);
+        Point p2 = vc.addPoint(1,-1);
+        Point p3 = vc.addPoint(1,1);
+        p1.setLeft(p2);
+        p2.setRight(p1);
+        p3.setLeft(p1);
+        p1.setRight(p3);
+        p2.setLeft(p3);
+        p3.setRight(p2);
+        assertTrue(!vc.shapeIsWall(p1) && !vc.shapeIsWall(p2) && !vc.shapeIsWall(p3));
+    }
+    @Test
+    public void invertsShape()
+    {
+        Point p1 = vc.addPoint(0,0);
+        Point p2 = vc.addPoint(1,-1);
+        Point p3 = vc.addPoint(1,1);
+        p1.setLeft(p2);
+        p2.setRight(p1);
+        p3.setLeft(p1);
+        p1.setRight(p3);
+        p2.setLeft(p3);
+        p3.setRight(p2);
+        vc.invertShape(p1);
+        assertTrue(vc.shapeIsWall(p1) && vc.shapeIsWall(p2) && vc.shapeIsWall(p3));
     }
 }
