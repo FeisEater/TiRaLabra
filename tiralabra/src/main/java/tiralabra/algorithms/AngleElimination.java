@@ -230,7 +230,6 @@ public class AngleElimination {
             if (src.hasPointBetween(rightAngle, leftAngle, test))
             {
                 if (leftDist <= 0 && rightDist <= 0)    return true;
-                System.out.println(this + ": " + (int)src.getDistance(test) + " " + (int)distanceFromLine(src.getDirection(test)));
                 if (src.getDistance(test) > distanceFromLine(src.getDirection(test)))
                     return true;
             }
@@ -249,7 +248,7 @@ public class AngleElimination {
             double x2 = rightDist * Math.cos(rightAngle);
             double y2 = rightDist * Math.sin(rightAngle);
 //Method uses a formula for drawing a straight line in polar coordinates.
-            if (x2 - x1 > y2 - y1)
+            if (Math.abs(x2 - x1) > Math.abs(y2 - y1))
             {
                 double coeff = (y2-y1)/(x2-x1);
                 return (y1 - x1*coeff)/(Math.sin(testAngle) - coeff * Math.cos(testAngle));

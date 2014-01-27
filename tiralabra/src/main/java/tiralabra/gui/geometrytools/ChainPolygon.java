@@ -22,8 +22,12 @@ public class ChainPolygon extends MouseInput {
     private Point begin;
     private Point prev;
     private Map<Vertex, Vertex> previousPoint;
+    private boolean wallmode;
     public ChainPolygon(VertexContainer p, GraphicInterface gui)
-        {super(p, gui);}
+    {
+        super(p, gui);
+        wallmode = true;
+    }
     @Override
     public void mouseReleased(MouseEvent e)
     {
@@ -85,6 +89,8 @@ public class ChainPolygon extends MouseInput {
     {
         points.removeVertex(point);
         draggedToPoint = null;
+        if (point == null)
+            wallmode = !wallmode;
     }
 /**
  * Closes the polygon loop by chaining firstly created point
@@ -97,7 +103,7 @@ public class ChainPolygon extends MouseInput {
             begin.setLeft(prev);
             prev.setRight(begin);
         }
-        points.setShapeMode(begin, true);
+        points.setShapeMode(begin, wallmode);
         begin = null;
         prev = null;
         points.buildGraph();

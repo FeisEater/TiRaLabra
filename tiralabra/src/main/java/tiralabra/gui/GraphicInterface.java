@@ -112,7 +112,7 @@ public class GraphicInterface extends JPanel implements Runnable {
             if (!retrieveCoordinatesFromPolygon(p, x, y, used))
                 continue;
             
-            g.setColor(Color.PINK);
+            g.setColor((points.shapeIsWall(p)) ? Color.PINK : Color.WHITE);
             g.fillPolygon( convertArrayListToArray(x),
                             convertArrayListToArray(y),
                             x.size());
