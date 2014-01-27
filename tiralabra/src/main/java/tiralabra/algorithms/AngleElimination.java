@@ -6,7 +6,6 @@ import java.util.Collections;
 import java.util.List;
 import tiralabra.datastructures.Point;
 import tiralabra.datastructures.Vertex;
-import tiralabra.util.Tools;
 
 /**
  * Tracing algorithm from the point of view of a vertex.
@@ -59,7 +58,9 @@ public class AngleElimination {
             Point q = (Point)v;
             if (src == q || q.getRight() == null || q.getRight() == src)
                 continue;
-            intervals.add(new AngleInterval(src,q));
+            AngleInterval ai = new AngleInterval(src,q);
+            intervals.add(ai);
+            System.out.println(ai);
         }
         Collections.sort(intervals);
     }
@@ -189,6 +190,8 @@ public class AngleElimination {
             }
 //If line crosses the part where direction calculation jumps the cycle,
 //switch sides.
+            //System.out.println(source + ", " + leftest + ", " + rightest + ": " + Math.abs(source.getDirection(leftest) - source.getDirection(rightest)));
+
             if (anglesCrossoverDirectionLoop(source, p))
             {
                 Point q = leftest;
@@ -208,10 +211,14 @@ public class AngleElimination {
  */
         public boolean anglesCrossoverDirectionLoop(Vertex source, Point p)
         {
-            return (p.Y() - source.Y()) * (p.getRight().Y() - source.Y()) < 0 && //Points of the line are on the opposite sides of the crosspoint Y coordinate.
+//Difference in angles between two points can't be more than 180 degrees.
+//If this is detected, it's interperted as if line crosses the loop jump point.
+            return (Math.abs(source.getDirection(p) - source.getDirection(p.getRight())) > Math.PI);
+/*            return (p.Y() - source.Y()) * (p.getRight().Y() - source.Y()) < 0 && //Points of the line are on the opposite sides of the crosspoint Y coordinate.
                     source.X() > p.X() + 
                     Math.cos(p.getDirection(p.getRight())) *
                     Math.abs(source.Y() - p.Y()); //Checks if source's X coordinate is on the right of the crosspoint.
+*/
         }
 /**
  * Checks if specified vertex is obstructed based on this sector.
@@ -256,6 +263,10 @@ public class AngleElimination {
             if (o.getClass() != this.getClass()) return 0;
             AngleInterval a = (AngleInterval)o;
             return (a.leftAngle > this.leftAngle) ? -1 : 1;
+        }
+        public String toString()
+        {
+            return "" + src + ": " + (int)(180 * leftAngle / Math.PI) + "->" + (int)leftDist + ", " + (int)(180 * rightAngle / Math.PI) + "->" + (int)rightDist;
         }
     }
 }
