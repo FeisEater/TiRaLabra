@@ -2,6 +2,7 @@ package tiralabra;
 
 import tiralabra.gui.GraphicInterface;
 import javax.swing.SwingUtilities;
+import tiralabra.algorithms.AngleElimination;
 import tiralabra.datastructures.Point;
 
 /**
@@ -14,7 +15,7 @@ public class App
     {
         VertexContainer vc = new VertexContainer();
         SwingUtilities.invokeLater(new GraphicInterface(vc));
-        /*
+        
         Point p1 = vc.addPoint(100,200);
         Point p2 = vc.addPoint(200,100);
         Point p3 = vc.addPoint(200,300);
@@ -36,6 +37,7 @@ public class App
         p6.setLeft(p5);
         
         vc.buildGraph();
-*/
+        AngleElimination.findUnobstructedPoints(p4, vc.getVertices());
+        System.out.println(AngleElimination.isObstructed(new Point(150, 210)));
     }
 }

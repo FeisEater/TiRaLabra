@@ -60,7 +60,7 @@ public class AngleElimination {
                 continue;
             AngleInterval ai = new AngleInterval(src,q);
             intervals.add(ai);
-            System.out.println(ai);
+            //System.out.println(ai);
         }
         Collections.sort(intervals);
     }
@@ -230,6 +230,7 @@ public class AngleElimination {
             if (src.hasPointBetween(rightAngle, leftAngle, test))
             {
                 if (leftDist <= 0 && rightDist <= 0)    return true;
+                System.out.println(this + ": " + (int)src.getDistance(test) + " " + (int)distanceFromLine(src.getDirection(test)));
                 if (src.getDistance(test) > distanceFromLine(src.getDirection(test)))
                     return true;
             }
