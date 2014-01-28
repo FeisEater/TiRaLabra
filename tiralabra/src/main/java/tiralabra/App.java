@@ -2,8 +2,6 @@ package tiralabra;
 
 import tiralabra.gui.GraphicInterface;
 import javax.swing.SwingUtilities;
-import tiralabra.algorithms.AngleElimination;
-import tiralabra.datastructures.Point;
 
 /**
  * Starting point of the program.

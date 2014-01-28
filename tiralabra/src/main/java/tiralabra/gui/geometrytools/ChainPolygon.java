@@ -55,7 +55,7 @@ public class ChainPolygon extends MouseInput {
     {
         //points.addVertex(x, y);
         //points.buildGraph();
-        AngleElimination.findUnobstructedPoints(point, points.getVertices());
+        //AngleElimination.findUnobstructedPoints(point, points.getVertices());
     }
     /**
      * Finds the shortest path via mouse drag.
