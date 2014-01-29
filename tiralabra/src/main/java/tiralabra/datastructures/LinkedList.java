@@ -5,33 +5,41 @@ package tiralabra.datastructures;
  *
  * @author Pavel
  */
-public class LinkedList {
+public class LinkedList<E> {
     private class Unit
     {
         private Unit next;
-        private Object value;
-        public Unit(Object o)   {value = o;}
-        public Object getValue()   {return value;}
+        private E value;
+        public Unit(E e)   {value = e;}
+        public E getValue()   {return value;}
         public Unit getNext()   {return next;}
         public void setNext(Unit n)   {next = n;}
     }
     private Unit head;
     private Unit tail;
     private Unit current;
-    public void add(Object o)
+    private int size;
+    public LinkedList() {size = 0;}
+    public void add(E e)
     {
-        Unit u = new Unit(o);
+        Unit u = new Unit(e);
         if (tail != null)   tail.setNext(u);
         tail = u;
-        if (head == null)   head = tail;
+        if (isEmpty())
+        {
+            head = tail;
+            current = head;
+        }
+        size++;
     }
     public void reset()
     {
         current = head;
     }
-    public Object getNext()
+    public E getNext()
     {
-        Object result = current.getValue();
+        if (!hasNext())    return null;
+        E result = current.getValue();
         current = current.getNext();
         return result;
     }
@@ -44,9 +52,17 @@ public class LinkedList {
         head = null;
         tail = null;
         current = null;
+        size = 0;
     }
+    public boolean isEmpty()
+    {
+        return head == null;
+    }
+    public int size()   {return size;}
+    @Override
     public String toString()
     {
+        Unit last = current;
         reset();
         String result = "[";
         while (hasNext())
@@ -55,6 +71,7 @@ public class LinkedList {
             else    result += ", " + getNext().toString();
         }
         result += "]";
+        current = last;
         return result;
     }
 }

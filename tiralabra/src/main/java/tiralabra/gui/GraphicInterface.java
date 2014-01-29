@@ -13,6 +13,7 @@ import javax.swing.JPanel;
 import javax.swing.WindowConstants;
 import tiralabra.VertexContainer;
 import tiralabra.algorithms.AngleElimination;
+import tiralabra.datastructures.LinkedList;
 import tiralabra.datastructures.Point;
 import tiralabra.datastructures.Vertex;
 import tiralabra.gui.geometrytools.BuildGraph;
@@ -107,14 +108,14 @@ public class GraphicInterface extends JPanel implements Runnable {
             Point p = (Point)v;
             if (used.contains(p)) continue;
             
-            List<Integer> x = new ArrayList<>();
-            List<Integer> y = new ArrayList<>();
+            LinkedList<Integer> x = new LinkedList<>();
+            LinkedList<Integer> y = new LinkedList<>();
             if (!retrieveCoordinatesFromPolygon(p, x, y, used))
                 continue;
             
             g.setColor((points.shapeIsWall(p)) ? Color.PINK : Color.WHITE);
-            g.fillPolygon( convertArrayListToArray(x),
-                            convertArrayListToArray(y),
+            g.fillPolygon( convertLinkedListToArray(x),
+                            convertLinkedListToArray(y),
                             x.size());
         }
     }
@@ -123,10 +124,10 @@ public class GraphicInterface extends JPanel implements Runnable {
  * @param list ArrayList object
  * @return array that contains all data that ArrayList contains.
  */
-    public int[] convertArrayListToArray(List<Integer> list)
+    public int[] convertLinkedListToArray(LinkedList<Integer> list)
     {
         int[] result = new int[list.size()];
-        for (int i = 0; i < list.size(); i++) result[i] = list.get(i);
+        for (int i = 0; list.hasNext(); i++) result[i] = list.getNext();
         return result;
     }
 /**
@@ -137,7 +138,7 @@ public class GraphicInterface extends JPanel implements Runnable {
  * @param used Set of points that were already processed.
  * @return true if coordinates were retrieved correctly.
  */
-    public boolean retrieveCoordinatesFromPolygon(Point first, List<Integer> x, List<Integer> y, Set<Point> used)
+    public boolean retrieveCoordinatesFromPolygon(Point first, LinkedList<Integer> x, LinkedList<Integer> y, Set<Point> used)
     {
         Point q = first;
         do

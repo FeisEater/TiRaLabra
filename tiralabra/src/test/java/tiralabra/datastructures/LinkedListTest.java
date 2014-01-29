@@ -41,7 +41,7 @@ public class LinkedListTest {
     @Test
     public void addsStuff()
     {
-        LinkedList list = new LinkedList();
+        LinkedList<String> list = new LinkedList<>();
         list.add("Hello");
         list.add("world");
         list.add("whats");
