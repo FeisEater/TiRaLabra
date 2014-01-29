@@ -30,6 +30,7 @@ public class App
         {
             t.add((int)(Math.random() * 1000));
         }
+        System.out.println(t.toLinkedList());
         System.out.println(t);
     }
 }

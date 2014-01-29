@@ -136,6 +136,20 @@ public class Tree<E> {
         }
         return u;
     }
+    public LinkedList<E> toLinkedList()
+    {
+        LinkedList<E> result = new LinkedList<>();
+        Queue<Unit> q = new Queue<>();
+        q.enqueue(root);
+        while (!q.isEmpty())
+        {
+            Unit u = q.dequeue();
+            result.add(u.value);
+            if (u.left != null)   q.enqueue(u.left);
+            if (u.right != null)   q.enqueue(u.right);
+        }
+        return result;
+    }
     @Override
     public String toString()
     {
