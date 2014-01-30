@@ -5,7 +5,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.PriorityQueue;
+import tiralabra.datastructures.Heap;
 import tiralabra.datastructures.Vertex;
 import tiralabra.datastructures.Point;
 
@@ -27,7 +27,7 @@ public class Dijkstra {
  */
     public static Map<Vertex, Vertex> getShortestPaths(Vertex begin, List<Vertex> originalPoints)
     {
-        PriorityQueue<Vertex> points = initialize(begin, originalPoints);
+        Heap<Vertex> points = initialize(begin, originalPoints);
         while (!points.isEmpty())
             relaxEdgesOnNextInHeap(points);
         return previousPoint;
@@ -39,16 +39,16 @@ public class Dijkstra {
  * @return Heap of vertices, which have estimated path lengths. Source vertex's
  *          value is 0, other vertices' is Double.MAX_VALUE
  */
-    private static PriorityQueue<Vertex> initialize(Vertex begin, List<Vertex> points)
+    private static Heap<Vertex> initialize(Vertex begin, List<Vertex> points)
     {
         shortestPaths.clear();
         previousPoint.clear();
-        PriorityQueue<Vertex> dijkstrapoints = new PriorityQueue<>(11, new pointComparator());
+        Heap<Vertex> dijkstrapoints = new Heap<>(15, new pointComparator());
         for (Vertex p : points)
         {
             double d = (p == begin) ? 0 : Double.MAX_VALUE;
             shortestPaths.put(p, d);
-            dijkstrapoints.add(p);
+            dijkstrapoints.insert(p);
         }
         return dijkstrapoints;
     }
@@ -56,19 +56,19 @@ public class Dijkstra {
  * Takes the next vertex in the heap and re-estimates its path length.
  * @param points Heap of vertices, which have estimated path lengths.
  */
-    private static void relaxEdgesOnNextInHeap(PriorityQueue<Vertex> points)
+    private static void relaxEdgesOnNextInHeap(Heap<Vertex> points)
     {
-        Vertex p = points.poll();
+        Vertex p = points.pop();
         for (Vertex adj : p.getAdjacents())
         {
-            if (!points.contains(adj))  continue;
-             
+            int oldPlace = points.findValue(adj);
+            if (oldPlace == -1)  continue;
+            
             if (shortestPaths.get(p) + p.getDistance(adj) >= shortestPaths.get(adj))
                 continue;
 
-            points.remove(adj);
             shortestPaths.put(adj, shortestPaths.get(p) + p.getDistance(adj));
-            points.add(adj);
+            points.valueChanged(oldPlace);
             previousPoint.put(adj, p);
         }
     }
