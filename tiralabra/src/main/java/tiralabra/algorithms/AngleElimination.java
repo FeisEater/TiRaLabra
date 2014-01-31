@@ -3,7 +3,9 @@ package tiralabra.algorithms;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
+import tiralabra.datastructures.Heap;
 import tiralabra.datastructures.Point;
 import tiralabra.datastructures.Vertex;
 
@@ -12,7 +14,7 @@ import tiralabra.datastructures.Vertex;
  * @author Pavel
  */
 public class AngleElimination {
-    private static List<AngleInterval> intervals = new ArrayList<>();
+    private static Heap<AngleInterval> intervals = new Heap<>(15, new DirectionComparator());
 /**
  * Finds all vertices that are unobstructed from a specified vertex's
  * point of view.
@@ -22,7 +24,7 @@ public class AngleElimination {
  */
     public static List<Vertex> findUnobstructedPoints(Vertex src, List<Vertex> vertices)
     {
-        intervals.clear();
+        intervals.clear(15);
         if (src == null)  return null;
         findIntervals(src, vertices);
         return getUnobstructedVertices(src, vertices);
@@ -34,8 +36,12 @@ public class AngleElimination {
  */
     public static boolean isObstructed(Vertex test)
     {
-        for (AngleInterval i : intervals)
-            if (i.vertexIsObstructed(test))  return true;
+        for (int i = 0; i < intervals.size(); i++)
+        {
+            AngleInterval ai = (AngleInterval)intervals.getArray()[i];
+            if (ai.vertexIsObstructed(test))
+                return true;
+        }
         return false;
     }
 /**
@@ -49,7 +55,7 @@ public class AngleElimination {
 //if src is Point, wall part of the angle should be a sector where everything
 //is obstructed, no matter how close the other vertex is.
         if (src.getClass() == Point.class)
-            intervals.add(new AngleInterval((Point)src));
+            intervals.insert(new AngleInterval((Point)src));
         
         for (Vertex v : vertices)
         {
@@ -59,10 +65,9 @@ public class AngleElimination {
             if (src == q || q.getRight() == null || q.getRight() == src)
                 continue;
             AngleInterval ai = new AngleInterval(src,q);
-            intervals.add(ai);
-            //System.out.println(ai);
+            intervals.insert(ai);
         }
-        Collections.sort(intervals);
+        //Collections.sort(intervals);
     }
 /**
  * Removes redundant sectors and overlapping.
@@ -119,10 +124,10 @@ public class AngleElimination {
  */
     private static class AngleInterval implements Comparable
     {
-        private double leftAngle;
-        private double rightAngle;
-        private double leftDist;
-        private double rightDist;
+        public double leftAngle;
+        public double rightAngle;
+        public double leftDist;
+        public double rightDist;
         private Vertex src;
 /**
  * Constructor. Creates a sector based on a line.
@@ -267,6 +272,18 @@ public class AngleElimination {
         public String toString()
         {
             return "" + src + ": " + (int)(180 * leftAngle / Math.PI) + "->" + (int)leftDist + ", " + (int)(180 * rightAngle / Math.PI) + "->" + (int)rightDist;
+        }
+    }
+    private static class DirectionComparator implements Comparator
+    {
+        @Override
+        public int compare(Object o1, Object o2)
+        {
+            if (o1.getClass() != AngleInterval.class || o2.getClass() != AngleInterval.class)
+                return 0;
+            AngleInterval ai1 = (AngleInterval)o1;
+            AngleInterval ai2 = (AngleInterval)o2;
+            return (int)(ai1.leftAngle - ai2.leftAngle);
         }
     }
 }

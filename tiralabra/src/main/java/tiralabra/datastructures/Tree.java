@@ -14,7 +14,12 @@ public class Tree<E> {
         public Unit right;
         public Unit parent;
         public E value;
-        public Unit(E e)   {value = e;}
+        public boolean isRed;
+        public Unit(E e)
+        {
+            value = e;
+            isRed = true;
+        }
     }
     private Comparator comparator;
     private Unit root;
@@ -28,8 +33,14 @@ public class Tree<E> {
         if (root == null)
         {
             root = tobeAdded;
+            tobeAdded.isRed = false;
             return;
         }
+        findPlacement(tobeAdded);
+        balanceOnInsertion(tobeAdded);
+    }
+    private void findPlacement(Unit tobeAdded)
+    {
         Unit u = root;
         while (true)
         {
@@ -55,59 +66,143 @@ public class Tree<E> {
             }
         }
     }
+    private void balanceOnInsertion(Unit u)
+    {
+        while (true)
+        {
+            if (u == root)
+            {
+                u.isRed = false;
+                return;
+            }
+            if (!u.parent.isRed)    return;
+            Unit a = getAunt(u);
+            if (a != null && a.isRed)
+            {
+                u.parent.isRed = false;
+                a.isRed = false;
+                getGrandParent(u).isRed = true;
+                u = getGrandParent(u);
+            }
+            else
+            {
+                Unit g = getGrandParent(u);
+                if (g == null)  return;
+                if (u == u.parent.right && u.parent == g.left)
+                {
+                    rotateLeft(u.parent);
+                    u = u.left;
+                }
+                else if (u == u.parent.left && u.parent == g.right)
+                {
+                    rotateRight(u.parent);
+                    u = u.right;
+                }
+                u.parent.isRed = false;
+                g.isRed = true;
+                if (u == u.parent.left)
+                    rotateRight(g);
+                else    rotateLeft(g);
+                return;
+            }
+        }
+    }
+    private void rotateLeft(Unit u)
+    {
+        int hookType;
+        if (root == u)   hookType = 0;
+        else if (u == u.parent.left)    hookType = -1;
+        else    hookType = 1;
+        Unit nodesRight = u.right;
+        Unit rightsLeft = nodesRight.left;
+        nodesRight.left = u;
+        if (hookType == 0)  root = nodesRight;
+        else
+        {
+            nodesRight.parent = u.parent;
+            if (hookType == -1) u.parent.left = nodesRight;
+            else    u.parent.right = nodesRight;
+        }
+        u.right = rightsLeft;
+        if (rightsLeft != null)   rightsLeft.parent = u;
+        u.parent = nodesRight;
+    }
+    private void rotateRight(Unit u)
+    {
+        int hookType;
+        if (root == u)   hookType = 0;
+        else if (u == u.parent.left)    hookType = -1;
+        else    hookType = 1;
+        Unit nodesLeft = u.right;
+        Unit leftsRight = nodesLeft.right;
+        nodesLeft.right = u;
+        if (hookType == 0)  root = nodesLeft;
+        else
+        {
+            nodesLeft.parent = u.parent;
+            if (hookType == -1) u.parent.left = nodesLeft;
+            else    u.parent.right = nodesLeft;
+        }
+        u.left = leftsRight;
+        u.parent = nodesLeft;
+    }
+    private Unit getGrandParent(Unit u)
+    {
+        if (u.parent == null)   return null;
+        return u.parent.parent;
+    }
+    private Unit getAunt(Unit u)
+    {
+        Unit g = getGrandParent(u);
+        if (g == null)  return null;
+        if (u.parent == g.left) return g.right;
+        return g.left;
+    }
     public void remove(E e)
     {
         Unit u = find(e);
         if (u == null)  return;
+        
         if (u.left == null && u.right == null)
+            removeNodeWithoutChildren(u);
+        else if (u.left != null && u.right != null)
+            removeNodeWithTwoChildren(u);
+        else    removeNodeWithOneChild(u);
+    }
+    private void removeNodeWithoutChildren(Unit u)
+    {
+        if (root == u)
         {
-            if (root == u)
-            {
-                root = null;
-                return;
-            }
-            if (u.parent.left == u) u.parent.left = null;
-            else    u.parent.right = null;
-            u.parent = null;
+            root = null;
             return;
         }
-        if (u.left != null && u.right != null)
+        if (u.parent.left == u) u.parent.left = null;
+        else    u.parent.right = null;
+        u.parent = null;
+    }
+    private void removeNodeWithTwoChildren(Unit u)
+    {
+        Unit n = getNext(u);
+        u.value = n.value;
+        if (n.parent == u)  u.right = null;
+        else    n.parent.left = null;
+        n.parent = null;
+    }
+    private void removeNodeWithOneChild(Unit u)
+    {
+        Unit n = (u.right == null) ? u.left : u.right;
+        if (u == root)
         {
-            Unit n = getNext(u);
-            u.value = n.value;
-            if (n.parent == u)  u.right = null;
-            else    n.parent.left = null;
-            n.parent = null;
-            return;
+            root = n;
+            u.left = null;
+            u.right = null;
         }
-        if (u.left != null)
+        else
         {
-            if (u == root)
-            {
-                root = u.left;
-                u.left = null;
-            }
-            else
-            {
-                if (u.parent.left == u) u.parent.left = u.left;
-                else    u.parent.right = u.left;
-            }
-            u.parent = null;
+            if (u.parent.left == u) u.parent.left = n;
+            else    u.parent.right = n;
         }
-        if (u.right != null)
-        {
-            if (u == root)
-            {
-                root = u.right;
-                u.right = null;
-            }
-            else
-            {
-                if (u.parent.left == u) u.parent.left = u.right;
-                else    u.parent.right = u.right;
-            }
-            u.parent = null;
-        }
+        u.parent = null;
     }
     private Unit getNext(Unit u)
     {
@@ -166,6 +261,7 @@ public class Tree<E> {
                 result += "\n";
             }
             if (u != root)  result += u.parent.value + "->";
+            if (u.isRed)    result += "r";
             result += u.value + " ";
             if (u.left != null)   q.enqueue(u.left);
             if (u.right != null)   q.enqueue(u.right);

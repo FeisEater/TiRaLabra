@@ -17,6 +17,11 @@ public class Heap<E> {
         heapSize = 0;
         comparator = comp;
     }
+    public void clear(int initialSize)
+    {
+        array = new Object[initialSize];
+        heapSize = 0;
+    }
     public E pop()
     {
         E result = (E)array[0];
