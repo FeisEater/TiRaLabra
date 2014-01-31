@@ -27,13 +27,13 @@ public class App
                 return i1-i2;
             }
         });
-        for (int i = 0; i < 1023; i++)
+        for (int i = 0; i < 15; i++)
         {
             int n = (int)(Math.random() * 10000);
-            System.out.println("adding " + n);
+            //System.out.println("adding " + n);
             t.add(n);
-            System.out.println(t);
-            System.out.println("--------");
+            //System.out.println(t);
+            //System.out.println("--------");
         }
         //System.out.println(t.toLinkedList());
         //Integer i1 = new Integer(10);
@@ -41,7 +41,7 @@ public class App
         //t.insert(i1);
         //t.insert(i2);
         //t.changeValue(i1, new Integer(1));
-        //System.out.println(t);
+        System.out.println(t);
         /*while (!t.isEmpty())
             System.out.print(t.pop() + " ");
         System.out.println("");*/

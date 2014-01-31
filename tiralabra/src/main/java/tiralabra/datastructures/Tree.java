@@ -133,7 +133,7 @@ public class Tree<E> {
         if (root == u)   hookType = 0;
         else if (u == u.parent.left)    hookType = -1;
         else    hookType = 1;
-        Unit nodesLeft = u.right;
+        Unit nodesLeft = u.left;
         Unit leftsRight = nodesLeft.right;
         nodesLeft.right = u;
         if (hookType == 0)  root = nodesLeft;
@@ -144,6 +144,7 @@ public class Tree<E> {
             else    u.parent.right = nodesLeft;
         }
         u.left = leftsRight;
+        if (leftsRight != null)   leftsRight.parent = u;
         u.parent = nodesLeft;
     }
     private Unit getGrandParent(Unit u)
