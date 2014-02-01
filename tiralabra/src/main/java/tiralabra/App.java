@@ -1,6 +1,7 @@
 package tiralabra;
 
 import java.util.Comparator;
+import java.util.Scanner;
 import tiralabra.gui.GraphicInterface;
 import javax.swing.SwingUtilities;
 import tiralabra.datastructures.Heap;
@@ -15,9 +16,19 @@ public class App
     public static void main( String[] args )
     {
         VertexContainer vc = new VertexContainer();
-        SwingUtilities.invokeLater(new GraphicInterface(vc));
-        
-        Tree<Integer> t = new Tree<>(new Comparator() {
+        GraphicInterface g = new GraphicInterface(vc);
+        SwingUtilities.invokeLater(g);
+        Scanner lukija = new Scanner(System.in);
+        while (true)
+        {
+            int i = Integer.parseInt(lukija.nextLine());
+            if (i > 0)
+                g.getTree().add(i);
+            else
+                g.getTree().remove(-i);
+            g.repaint();
+        }
+/*        Tree<Integer> t = new Tree<>(new Comparator() {
             public int compare(Object o1, Object o2)
             {
                 if (o1.getClass() != Integer.class || o2.getClass() != Integer.class)

@@ -1,6 +1,9 @@
 
 package tiralabra.datastructures;
 
+import java.awt.Color;
+import java.awt.Font;
+import java.awt.Graphics;
 import java.util.Comparator;
 
 /**
@@ -38,6 +41,7 @@ public class Tree<E> {
         }
         findPlacement(tobeAdded);
         balanceOnInsertion(tobeAdded);
+        root.parent = null;
     }
     private void findPlacement(Unit tobeAdded)
     {
@@ -159,6 +163,12 @@ public class Tree<E> {
         if (u.parent == g.left) return g.right;
         return g.left;
     }
+    private Unit getSibling(Unit u)
+    {
+        if (u.parent == null)   return null;
+        if (u.parent.left == u) return u.parent.right;
+        return u.parent.left;
+    }
     public void remove(E e)
     {
         Unit u = find(e);
@@ -169,6 +179,7 @@ public class Tree<E> {
         else if (u.left != null && u.right != null)
             removeNodeWithTwoChildren(u);
         else    removeNodeWithOneChild(u);
+        if (root != null)   root.parent = null;
     }
     private void removeNodeWithoutChildren(Unit u)
     {
@@ -178,20 +189,25 @@ public class Tree<E> {
             return;
         }
         if (u.parent.left == u) u.parent.left = null;
-        else    u.parent.right = null;
+        else if (u.parent.right == u)    u.parent.right = null;
         u.parent = null;
+        balanceOnRemoval(u);
     }
     private void removeNodeWithTwoChildren(Unit u)
     {
         Unit n = getNext(u);
         u.value = n.value;
-        if (n.parent == u)  u.right = null;
-        else    n.parent.left = null;
+        Unit removedsRight = n.right;
+        if (n.parent == u)  u.right = removedsRight;
+        else    n.parent.left = removedsRight;
+        if (removedsRight.isRed)    removedsRight.isRed = false;
+        n.right = null;
         n.parent = null;
     }
     private void removeNodeWithOneChild(Unit u)
     {
         Unit n = (u.right == null) ? u.left : u.right;
+        if (n.isRed)    n.isRed = false;
         if (u == root)
         {
             root = n;
@@ -202,8 +218,43 @@ public class Tree<E> {
         {
             if (u.parent.left == u) u.parent.left = n;
             else    u.parent.right = n;
+            n.parent = u.parent;
         }
         u.parent = null;
+    }
+    //TODO: implement case 5 and 6
+    private void balanceOnRemoval(Unit u)
+    {
+        while (u != root)
+        {
+            Unit s = getSibling(u);
+            if (s.isRed)
+            {
+                u.parent.isRed = true;
+                s.isRed = false;
+                if (u == u.parent.left)
+                    rotateLeft(u.parent);
+                if (u == u.parent.right)
+                    rotateRight(u.parent);
+            }
+            if (!s.isRed)
+            {
+                if (!s.left.isRed && !s.right.isRed)
+                {
+                    if (!u.parent.isRed)
+                    {
+                        s.isRed = true;
+                        u = u.parent;
+                    }
+                    else
+                    {
+                        u.parent.isRed = false;
+                        s.isRed = true;
+                        return;
+                    }
+                }
+            }
+        }
     }
     private Unit getNext(Unit u)
     {
@@ -229,6 +280,7 @@ public class Tree<E> {
             if (comparator.compare(e, u.value) < 0)
                 u = u.left;
             else    u = u.right;
+            if (u == null)  return null;
         }
         return u;
     }
@@ -269,5 +321,23 @@ public class Tree<E> {
             if (firstOnLevel == null)   firstOnLevel = (u.left == null) ? u.right : u.left;
         }
         return result;
+    }
+    public void drawTree(Graphics g)
+    {
+        drawNode(root, g, 320, 1);
+    }
+    private void drawNode(Unit n, Graphics g, int x, int y)
+    {
+        if (n == null)  return;
+        g.setColor(n.isRed ? Color.red : Color.GRAY);
+        if (n.parent == null)  g.setColor(Color.DARK_GRAY);
+        g.fillOval(x, y * 64, 32, 32);
+        g.setColor(Color.BLACK);
+        if (n.left != null)   g.drawLine(x+16, y * 64 + 16, x - 128 / y + 16, (y+1) * 64 + 16);
+        if (n.right != null)   g.drawLine(x+16, y * 64 + 16, x + 128 / y + 16, (y+1) * 64 + 16);
+        g.setFont(new Font("Serif", Font.BOLD, 32));
+        g.drawString(n.value.toString(), x, y * 64);
+        drawNode(n.left, g, x - 128 / y, y+1);
+        drawNode(n.right, g, x + 128 / y, y+1);
     }
 }

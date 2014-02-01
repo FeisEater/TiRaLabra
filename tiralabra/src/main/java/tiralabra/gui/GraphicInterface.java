@@ -4,6 +4,7 @@ package tiralabra.gui;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Set;
 import javax.swing.JFrame;
@@ -13,6 +14,7 @@ import tiralabra.VertexContainer;
 import tiralabra.algorithms.AngleElimination;
 import tiralabra.datastructures.LinkedList;
 import tiralabra.datastructures.Point;
+import tiralabra.datastructures.Tree;
 import tiralabra.datastructures.Vertex;
 import tiralabra.gui.geometrytools.BuildGraph;
 import tiralabra.gui.geometrytools.ChainPolygon;
@@ -27,6 +29,7 @@ public class GraphicInterface extends JPanel implements Runnable {
     private JFrame frame;
     private VertexContainer points;
     private MouseInput currentTool;
+    private Tree<Integer> tree;
 /**
  * Constructor.
  * @param points VertexContainer object.
@@ -37,6 +40,16 @@ public class GraphicInterface extends JPanel implements Runnable {
         currentTool = new ChainPolygon(points, this);
         addMouseListener(currentTool);
         this.points = points;
+        tree = new Tree<>(new Comparator() {
+            public int compare(Object o1, Object o2)
+            {
+                if (o1.getClass() != Integer.class || o2.getClass() != Integer.class)
+                    return 0;
+                int i1 = (Integer)o1;
+                int i2 = (Integer)o2;
+                return i1-i2;
+            }
+        });
     }
     @Override
     public void run()
@@ -56,7 +69,12 @@ public class GraphicInterface extends JPanel implements Runnable {
         fillUnobstructedArea(g, 8);
         for (Vertex p : points.getVertices())
             drawPoint(g, p);
-        currentTool.drawInputSpecific(g);        
+        currentTool.drawInputSpecific(g);   
+        tree.drawTree(g);
+    }
+    public Tree<Integer> getTree()
+    {
+        return tree;
     }
 /**
  * Draws certain vertex and its connections with other vertices.
