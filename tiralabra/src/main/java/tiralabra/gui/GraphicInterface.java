@@ -67,10 +67,11 @@ public class GraphicInterface extends JPanel implements Runnable {
         super.paintComponent(g);
         fillPolygon(g);
         fillUnobstructedArea(g, 8);
-        for (Vertex p : points.getVertices())
-            drawPoint(g, p);
+        LinkedList<Vertex> vertices = points.getVertices().toLinkedList();
+        while (vertices.hasNext())
+            drawPoint(g, vertices.getNext());
         currentTool.drawInputSpecific(g);   
-        tree.drawTree(g);
+        //points.getVertices().drawTree(g);
     }
     public Tree<Integer> getTree()
     {
@@ -118,8 +119,10 @@ public class GraphicInterface extends JPanel implements Runnable {
     public void fillPolygon(Graphics g)
     {
         Set<Point> used = new HashSet<>();
-        for (Vertex v : points.getVertices())
+        LinkedList<Vertex> vertices = points.getVertices().toLinkedList();
+        while (vertices.hasNext())
         {
+            Vertex v = vertices.getNext();
             if (v.getClass() != Point.class)    continue;
             Point p = (Point)v;
             if (used.contains(p)) continue;

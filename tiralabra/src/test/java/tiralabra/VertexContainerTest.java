@@ -42,17 +42,19 @@ public class VertexContainerTest {
     public void vertexIsAdded()
     {
         Vertex v = vc.addVertex(3, 5);
+        Vertex test = vc.getVertices().toLinkedList().getNext();
         assertTrue(v.X() == 3 && v.Y() == 5 && 
-                vc.getVertices().get(0).X() == 3 &&
-                vc.getVertices().get(0).Y() == 5);
+                test.X() == 3 &&
+                test.Y() == 5);
     }
     @Test
     public void pointIsAdded()
     {
         Point p = vc.addPoint(3, 5);
+        Vertex test = vc.getVertices().toLinkedList().getNext();
         assertTrue(p.X() == 3 && p.Y() == 5 &&
-                vc.getVertices().get(0).X() == 3 &&
-                vc.getVertices().get(0).Y() == 5);
+                test.X() == 3 &&
+                test.Y() == 5);
     }
     @Test
     public void vertexIsRemoved()

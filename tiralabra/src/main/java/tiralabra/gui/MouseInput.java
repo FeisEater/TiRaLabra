@@ -6,6 +6,7 @@ import java.awt.Graphics;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import tiralabra.VertexContainer;
+import tiralabra.datastructures.LinkedList;
 import tiralabra.datastructures.Vertex;
 import tiralabra.util.Const;
 
@@ -43,8 +44,10 @@ public class MouseInput implements MouseListener
     {
         Vertex bestPoint = null;
         double bestDist = Const.pointWidth;
-        for (Vertex p : points.getVertices())
+        LinkedList<Vertex> vertices = points.getVertices().toLinkedList();
+        while (vertices.hasNext())
         {
+            Vertex p = vertices.getNext();
             double dist = Math.sqrt(Math.pow(p.X() - x, 2) + 
                     Math.pow(p.Y() - y, 2));
             if (dist <= bestDist)

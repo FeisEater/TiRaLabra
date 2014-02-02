@@ -30,6 +30,10 @@ public class Tree<E> {
     {
         comparator = comp;
     }
+    public boolean isEmpty()
+    {
+        return root == null;
+    }
     public void add(E e)
     {
         Unit tobeAdded = new Unit(e);
@@ -188,19 +192,29 @@ public class Tree<E> {
             root = null;
             return;
         }
+        if (!u.isRed)   balanceOnRemoval(u);
         if (u.parent.left == u) u.parent.left = null;
         else if (u.parent.right == u)    u.parent.right = null;
         u.parent = null;
-        balanceOnRemoval(u);
     }
     private void removeNodeWithTwoChildren(Unit u)
     {
         Unit n = getNext(u);
         u.value = n.value;
         Unit removedsRight = n.right;
-        if (n.parent == u)  u.right = removedsRight;
-        else    n.parent.left = removedsRight;
-        if (removedsRight.isRed)    removedsRight.isRed = false;
+        if (n.parent == u)
+        {
+            u.right = removedsRight;
+            if (removedsRight != null)   removedsRight.parent = u;
+        }
+        else
+        {
+            n.parent.left = removedsRight;
+            if (removedsRight != null)   removedsRight.parent = n.parent;
+        }
+        if (isRed(removedsRight))
+            removedsRight.isRed = false;
+        else    balanceOnRemoval(n);
         n.right = null;
         n.parent = null;
     }
@@ -222,13 +236,17 @@ public class Tree<E> {
         }
         u.parent = null;
     }
-    //TODO: implement case 5 and 6
+    private boolean isRed(Unit u)
+    {
+        if (u == null)  return false;
+        return u.isRed;
+    }
     private void balanceOnRemoval(Unit u)
     {
         while (u != root)
         {
             Unit s = getSibling(u);
-            if (s.isRed)
+            if (isRed(s))
             {
                 u.parent.isRed = true;
                 s.isRed = false;
@@ -237,14 +255,17 @@ public class Tree<E> {
                 if (u == u.parent.right)
                     rotateRight(u.parent);
             }
-            if (!s.isRed)
+            s = getSibling(u);
+            if (s == null)  return;
+            if (!isRed(s))
             {
-                if (!s.left.isRed && !s.right.isRed)
+                if (!isRed(s.left) && !isRed(s.right))
                 {
-                    if (!u.parent.isRed)
+                    if (!isRed(u.parent))
                     {
                         s.isRed = true;
                         u = u.parent;
+                        continue;
                     }
                     else
                     {
@@ -253,6 +274,32 @@ public class Tree<E> {
                         return;
                     }
                 }
+                else if (u == u.parent.left && !isRed(s.right) && isRed(s.left))
+                {
+                    s.isRed = true;
+                    s.left.isRed = false;
+                    rotateRight(s);
+                }
+                else if (u == u.parent.right && !isRed(s.left) && isRed(s.right))
+                {
+                    s.isRed = true;
+                    s.right.isRed = false;
+                    rotateLeft(s);
+                }
+            }
+            s = getSibling(u);
+            if (s == null)  return;
+            s.isRed = u.parent.isRed;
+            u.parent.isRed = false;
+            if (u == u.parent.left)
+            {
+                s.right.isRed = false;
+                rotateLeft(u.parent);
+            }
+            else
+            {
+                s.left.isRed = false;
+                rotateRight(u.parent);
             }
         }
     }
@@ -287,6 +334,7 @@ public class Tree<E> {
     public LinkedList<E> toLinkedList()
     {
         LinkedList<E> result = new LinkedList<>();
+        if (isEmpty())  return result;
         Queue<Unit> q = new Queue<>();
         q.enqueue(root);
         while (!q.isEmpty())

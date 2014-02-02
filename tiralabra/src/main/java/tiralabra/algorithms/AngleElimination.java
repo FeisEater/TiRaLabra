@@ -2,10 +2,10 @@
 package tiralabra.algorithms;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import tiralabra.datastructures.Heap;
+import tiralabra.datastructures.LinkedList;
 import tiralabra.datastructures.Point;
 import tiralabra.datastructures.Vertex;
 
@@ -22,7 +22,7 @@ public class AngleElimination {
  * @param vertices A set of all vertices in the program
  * @return Set of vertices that are unobstructed from src.
  */
-    public static List<Vertex> findUnobstructedPoints(Vertex src, List<Vertex> vertices)
+    public static List<Vertex> findUnobstructedPoints(Vertex src, LinkedList<Vertex> vertices)
     {
         intervals.clear(15);
         if (src == null)  return null;
@@ -50,15 +50,16 @@ public class AngleElimination {
  * @param src Vertex, which becomes a center of the sectors.
  * @param vertices A set of all vertices in the program
  */
-    private static void findIntervals(Vertex src, List<Vertex> vertices)
+    private static void findIntervals(Vertex src, LinkedList<Vertex> vertices)
     {
 //if src is Point, wall part of the angle should be a sector where everything
 //is obstructed, no matter how close the other vertex is.
         if (src.getClass() == Point.class)
             intervals.insert(new AngleInterval((Point)src));
         
-        for (Vertex v : vertices)
+        while (vertices.hasNext())
         {
+            Vertex v = vertices.getNext();
             if (src == v || v.getClass() != Point.class)
                 continue;
             Point q = (Point)v;
@@ -67,6 +68,7 @@ public class AngleElimination {
             AngleInterval ai = new AngleInterval(src,q);
             intervals.insert(ai);
         }
+        vertices.reset();
         //Collections.sort(intervals);
     }
 /**
@@ -91,17 +93,19 @@ public class AngleElimination {
  * @param vertices A set of all vertices in the program
  * @return set of unobstructed vertices.
  */
-    private static List<Vertex> getUnobstructedVertices(Vertex src, List<Vertex> vertices)
+    private static List<Vertex> getUnobstructedVertices(Vertex src, LinkedList<Vertex> vertices)
     {
         List<Vertex> unobstructed = new ArrayList<>();
         if (src.getClass() == Point.class)
             addNeighbours((Point)src, unobstructed);
-        for (Vertex q : vertices)
+        while (vertices.hasNext())
         {
+            Vertex q = vertices.getNext();
             if (src == q || !q.isVertex()) continue;
             if (!isObstructed(q))
                 unobstructed.add(q);
         }
+        vertices.reset();
         return unobstructed;
     }
 /**

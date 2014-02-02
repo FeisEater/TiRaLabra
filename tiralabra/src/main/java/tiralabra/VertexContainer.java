@@ -1,10 +1,11 @@
 
 package tiralabra;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Comparator;
 import tiralabra.algorithms.AngleElimination;
+import tiralabra.datastructures.LinkedList;
 import tiralabra.datastructures.Point;
+import tiralabra.datastructures.Tree;
 import tiralabra.datastructures.Vertex;
 import tiralabra.util.Tools;
 
@@ -13,8 +14,19 @@ import tiralabra.util.Tools;
  * @author Pavel
  */
 public class VertexContainer {
-    private List<Vertex> vertices = new ArrayList<>();
-    public List<Vertex> getVertices()  {return vertices;}
+    private class VertexComparator implements Comparator
+    {
+        @Override
+        public int compare(Object o1, Object o2)
+        {
+            Vertex v1 = (Vertex)o1;
+            Vertex v2 = (Vertex)o2;
+            if (v1.X() == v2.X())   return (v1.Y() < v2.Y()) ? -1 : 1;
+            return (v1.X() < v2.X()) ? -1 : 1;
+        }
+    }
+    private Tree<Vertex> vertices = new Tree<>(new VertexComparator());
+    public Tree<Vertex> getVertices()  {return vertices;}
 /**
  * Creates a vertex at a specified position.
  * @param x X coordinate where vertex is created.
@@ -68,12 +80,15 @@ public class VertexContainer {
  */
     public void buildGraph()
     {
-        for (Vertex v : vertices)
-            v.removeAllAdjacents();
-        for (Vertex v : vertices)
+        LinkedList<Vertex> vlist = vertices.toLinkedList();
+        while (vlist.hasNext())
+            vlist.getNext().removeAllAdjacents();
+        vlist.reset();
+        while (vlist.hasNext())
         {
+            Vertex v = vlist.getNext();
             if (!v.isVertex())  continue;
-            for (Vertex w : AngleElimination.findUnobstructedPoints(v, vertices))
+            for (Vertex w : AngleElimination.findUnobstructedPoints(v, vertices.toLinkedList()))
                 v.addAdjacent(w);
         }
     }

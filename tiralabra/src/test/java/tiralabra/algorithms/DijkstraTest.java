@@ -7,6 +7,7 @@
 package tiralabra.algorithms;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import org.junit.After;
@@ -15,6 +16,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
+import tiralabra.datastructures.Tree;
 import tiralabra.datastructures.Vertex;
 
 /**
@@ -42,10 +44,22 @@ public class DijkstraTest {
     public void tearDown() {
     }
 
+    private class VertexComparator implements Comparator
+    {
+        @Override
+        public int compare(Object o1, Object o2)
+        {
+            Vertex v1 = (Vertex)o1;
+            Vertex v2 = (Vertex)o2;
+            if (v1.X() == v2.X())   return (v1.Y() < v2.Y()) ? -1 : 1;
+            return (v1.X() < v2.X()) ? -1 : 1;
+        }
+    }
+
     @Test
     public void findsShortestPath()
     {
-        List<Vertex> vertices = new ArrayList<>();
+        Tree<Vertex> vertices = new Tree<>(new VertexComparator());
         Vertex v1 = new Vertex(0,0);
         Vertex v2 = new Vertex(1,-1);
         Vertex v3 = new Vertex(1,1);
@@ -59,7 +73,7 @@ public class DijkstraTest {
         v4.addAdjacent(v2);
         v4.addAdjacent(v3);
 
-        Map<Vertex, Vertex> paths = Dijkstra.getShortestPaths(v2, vertices);
+        Map<Vertex, Vertex> paths = Dijkstra.getShortestPaths(v2, vertices.toLinkedList());
         assertTrue(""+paths, paths.get(v3) == v1 && paths.get(v1) == v2);
     }
 }

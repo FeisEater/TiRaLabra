@@ -62,7 +62,9 @@ public class Heap<E> {
     }
     public int findValue(E e)
     {
-        int i = 0;
+        for (int i = 0; i < heapSize; i++)
+            if (e == array[i])  return i;
+/*        int i = 0;
         while (getLeft(i) < heapSize && comparator.compare(e, array[getLeft(i)]) > 0)
             i = getLeft(i);
         while (i < heapSize)
@@ -70,7 +72,7 @@ public class Heap<E> {
             if (e == array[i])
                 return i;
             i++;
-        }
+        }*/
         return -1;
     }
     public void increaseArray()

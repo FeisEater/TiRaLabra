@@ -18,8 +18,8 @@ public class App
         VertexContainer vc = new VertexContainer();
         GraphicInterface g = new GraphicInterface(vc);
         SwingUtilities.invokeLater(g);
-        Scanner lukija = new Scanner(System.in);
-        while (true)
+        //Scanner lukija = new Scanner(System.in);
+        /*while (true)
         {
             int i = Integer.parseInt(lukija.nextLine());
             if (i > 0)
@@ -27,7 +27,7 @@ public class App
             else
                 g.getTree().remove(-i);
             g.repaint();
-        }
+        }*/
 /*        Tree<Integer> t = new Tree<>(new Comparator() {
             public int compare(Object o1, Object o2)
             {

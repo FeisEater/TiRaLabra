@@ -44,7 +44,7 @@ public class BuildGraph extends MouseInput {
      */
     public void buildPath()
     {
-        previousPoint = Dijkstra.getShortestPaths(draggedFromPoint, points.getVertices());
+        previousPoint = Dijkstra.getShortestPaths(draggedFromPoint, points.getVertices().toLinkedList());
     }
 /**
  * Adds a vertex.

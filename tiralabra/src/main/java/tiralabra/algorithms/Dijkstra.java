@@ -3,9 +3,9 @@ package tiralabra.algorithms;
 
 import java.util.Comparator;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import tiralabra.datastructures.Heap;
+import tiralabra.datastructures.LinkedList;
 import tiralabra.datastructures.Vertex;
 import tiralabra.datastructures.Point;
 
@@ -25,7 +25,7 @@ public class Dijkstra {
  *          find destination vertex on the map and call the value recursively
  *          until you get the source vertex. Note that this is the reverse order.
  */
-    public static Map<Vertex, Vertex> getShortestPaths(Vertex begin, List<Vertex> originalPoints)
+    public static Map<Vertex, Vertex> getShortestPaths(Vertex begin, LinkedList<Vertex> originalPoints)
     {
         Heap<Vertex> points = initialize(begin, originalPoints);
         while (!points.isEmpty())
@@ -39,13 +39,14 @@ public class Dijkstra {
  * @return Heap of vertices, which have estimated path lengths. Source vertex's
  *          value is 0, other vertices' is Double.MAX_VALUE
  */
-    private static Heap<Vertex> initialize(Vertex begin, List<Vertex> points)
+    private static Heap<Vertex> initialize(Vertex begin, LinkedList<Vertex> points)
     {
         shortestPaths.clear();
         previousPoint.clear();
         Heap<Vertex> dijkstrapoints = new Heap<>(15, new pointComparator());
-        for (Vertex p : points)
+        while (points.hasNext())
         {
+            Vertex p = points.getNext();
             double d = (p == begin) ? 0 : Double.MAX_VALUE;
             shortestPaths.put(p, d);
             dijkstrapoints.insert(p);
