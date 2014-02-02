@@ -2,27 +2,35 @@
 package tiralabra.datastructures;
 
 /**
- *
+ * Iterable list of elements. List is acyclic and can't be iterated
+ * in the other direction.
  * @author Pavel
  */
 public class LinkedList<E> {
-    private class Unit
+/**
+ * Element in the list.
+ */
+    private class Node
     {
-        private Unit next;
+        private Node next;
         private E value;
-        public Unit(E e)   {value = e;}
+        public Node(E e)   {value = e;}
         public E getValue()   {return value;}
-        public Unit getNext()   {return next;}
-        public void setNext(Unit n)   {next = n;}
+        public Node getNext()   {return next;}
+        public void setNext(Node n)   {next = n;}
     }
-    private Unit head;
-    private Unit tail;
-    private Unit current;
+    private Node head;
+    private Node tail;
+    private Node current;
     private int size;
     public LinkedList() {size = 0;}
+/**
+ * Adds an element to the list.
+ * @param e Given element.
+ */
     public void add(E e)
     {
-        Unit u = new Unit(e);
+        Node u = new Node(e);
         if (tail != null)   tail.setNext(u);
         tail = u;
         if (isEmpty())
@@ -32,10 +40,18 @@ public class LinkedList<E> {
         }
         size++;
     }
+/**
+ * Resets the pointer for iterating. After calling this method
+ * getNext will return the first element in the list.
+ */
     public void reset()
     {
         current = head;
     }
+/**
+ * Returns next element in the iterating process.
+ * @return next element.
+ */
     public E getNext()
     {
         if (!hasNext())    return null;
@@ -43,10 +59,17 @@ public class LinkedList<E> {
         current = current.getNext();
         return result;
     }
+/**
+ * 
+ * @return true if iterating the list hasn't reached its conclusion.
+ */
     public boolean hasNext()
     {
         return current != null;
     }
+/**
+ * Removes all elements in the list.
+ */
     public void clear()
     {
         head = null;
@@ -54,15 +77,23 @@ public class LinkedList<E> {
         current = null;
         size = 0;
     }
+/**
+ * 
+ * @return true if list has no elements in it.
+ */
     public boolean isEmpty()
     {
         return head == null;
     }
+/**
+ * 
+ * @return Amount of elements in the list.
+ */
     public int size()   {return size;}
     @Override
     public String toString()
     {
-        Unit last = current;
+        Node last = current;
         reset();
         String result = "[";
         while (hasNext())

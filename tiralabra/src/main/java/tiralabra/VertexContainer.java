@@ -14,6 +14,10 @@ import tiralabra.util.Tools;
  * @author Pavel
  */
 public class VertexContainer {
+/**
+ * Comparator class for placing vertices in a search tree.
+ * Vertices are compared by their coordinates.
+ */
     private class VertexComparator implements Comparator
     {
         @Override

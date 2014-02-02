@@ -122,11 +122,11 @@ public class AngleElimination {
             unobstructed.add(src.getRight());
     }
 /**
- * Interval of angles, which forms a sector. Each edge if the sector
+ * Interval of angles, which forms a sector. Each edge of the sector
  * has a value, which is a distance from the point that caused the
  * creation of the sector. Anything beyond that distance is obstructed.
  */
-    private static class AngleInterval implements Comparable
+    private static class AngleInterval
     {
         public double leftAngle;
         public double rightAngle;
@@ -199,8 +199,6 @@ public class AngleElimination {
             }
 //If line crosses the part where direction calculation jumps the cycle,
 //switch sides.
-            //System.out.println(source + ", " + leftest + ", " + rightest + ": " + Math.abs(source.getDirection(leftest) - source.getDirection(rightest)));
-
             if (anglesCrossoverDirectionLoop(source, p))
             {
                 Point q = leftest;
@@ -267,17 +265,14 @@ public class AngleElimination {
             return (x1 - y1*coeff)/(Math.cos(testAngle) - coeff * Math.sin(testAngle));                    
         }
         @Override
-        public int compareTo(Object o)
-        {
-            if (o.getClass() != this.getClass()) return 0;
-            AngleInterval a = (AngleInterval)o;
-            return (a.leftAngle > this.leftAngle) ? -1 : 1;
-        }
         public String toString()
         {
             return "" + src + ": " + (int)(180 * leftAngle / Math.PI) + "->" + (int)leftDist + ", " + (int)(180 * rightAngle / Math.PI) + "->" + (int)rightDist;
         }
     }
+/**
+ * Comparator class for placing sectors in a heap based on their direction.
+ */
     private static class DirectionComparator implements Comparator
     {
         @Override

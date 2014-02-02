@@ -29,7 +29,6 @@ public class GraphicInterface extends JPanel implements Runnable {
     private JFrame frame;
     private VertexContainer points;
     private MouseInput currentTool;
-    private Tree<Integer> tree;
 /**
  * Constructor.
  * @param points VertexContainer object.
@@ -40,16 +39,6 @@ public class GraphicInterface extends JPanel implements Runnable {
         currentTool = new ChainPolygon(points, this);
         addMouseListener(currentTool);
         this.points = points;
-        tree = new Tree<>(new Comparator() {
-            public int compare(Object o1, Object o2)
-            {
-                if (o1.getClass() != Integer.class || o2.getClass() != Integer.class)
-                    return 0;
-                int i1 = (Integer)o1;
-                int i2 = (Integer)o2;
-                return i1-i2;
-            }
-        });
     }
     @Override
     public void run()
@@ -72,10 +61,6 @@ public class GraphicInterface extends JPanel implements Runnable {
             drawPoint(g, vertices.getNext());
         currentTool.drawInputSpecific(g);   
         //points.getVertices().drawTree(g);
-    }
-    public Tree<Integer> getTree()
-    {
-        return tree;
     }
 /**
  * Draws certain vertex and its connections with other vertices.
@@ -139,9 +124,9 @@ public class GraphicInterface extends JPanel implements Runnable {
         }
     }
 /**
- * Converts arrayList data to an array.
- * @param list ArrayList object
- * @return array that contains all data that ArrayList contains.
+ * Converts LinkedList data to an array.
+ * @param list LinkedList object
+ * @return array that contains all data that LinkedList contains.
  */
     public int[] convertLinkedListToArray(LinkedList<Integer> list)
     {
@@ -152,8 +137,8 @@ public class GraphicInterface extends JPanel implements Runnable {
 /**
  * Collects coordinates from all points in a polygon.
  * @param first A point in the polygon from which all other points are accessed.
- * @param x ArrayList of X coordinates.
- * @param y ArrayList of Y coordinates.
+ * @param x LinkedList of X coordinates.
+ * @param y LinkedList of Y coordinates.
  * @param used Set of points that were already processed.
  * @return true if coordinates were retrieved correctly.
  */

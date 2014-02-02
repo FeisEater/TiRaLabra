@@ -2,29 +2,40 @@
 package tiralabra.datastructures;
 
 /**
- *
+ * Queue that works with 'first in first out' principle.
  * @author Pavel
  */
 public class Queue<E> {
-    private class Unit
+/**
+ * Element of the queue.
+ */
+    private class Node
     {
-        private Unit next;
+        private Node next;
         private E value;
-        public Unit(E e)   {value = e;}
+        public Node(E e)   {value = e;}
         public E getValue()   {return value;}
-        public Unit getNext()   {return next;}
-        public void setNext(Unit n)   {next = n;}
+        public Node getNext()   {return next;}
+        public void setNext(Node n)   {next = n;}
     }
-    private Unit head;
-    private Unit tail;
+    private Node head;
+    private Node tail;
+/**
+ * Enqueues an element to the end of the queue.
+ * @param e given element.
+ */
     public void enqueue(E e)
     {
-        Unit u = new Unit(e);
+        Node u = new Node(e);
         if (tail != null)   tail.setNext(u);
         tail = u;
         if (isEmpty())
             head = tail;
     }
+/**
+ * Dequeues the first element in the queue.
+ * @return first element of the queue.
+ */
     public E dequeue()
     {
         if (isEmpty())  return null;
@@ -33,11 +44,18 @@ public class Queue<E> {
         if (isEmpty())  tail = null;
         return result;
     }
+/**
+ * Removes all elements in the queue.
+ */
     public void clear()
     {
         head = null;
         tail = null;
     }
+/**
+ * 
+ * @return true if no elements in the queue.
+ */
     public boolean isEmpty()
     {
         return head == null;

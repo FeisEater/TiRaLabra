@@ -7,36 +7,53 @@ import java.awt.Graphics;
 import java.util.Comparator;
 
 /**
- *
+ * Binary red-black search tree. On insertion and removal the tree
+ * uses self-balancing techniques to keep the height of the tree
+ * logarithmic in respect to the amount of elements.
  * @author Pavel
  */
 public class Tree<E> {
-    private class Unit
+/**
+ * Element of the tree.
+ */
+    private class Node
     {
-        public Unit left;
-        public Unit right;
-        public Unit parent;
+        public Node left;
+        public Node right;
+        public Node parent;
         public E value;
         public boolean isRed;
-        public Unit(E e)
+        public Node(E e)
         {
             value = e;
             isRed = true;
         }
     }
     private Comparator comparator;
-    private Unit root;
+    private Node root;
+/**
+ * Constructor.
+ * @param comp Comparator class used for placing the element at the correct spot.
+ */
     public Tree(Comparator comp)
     {
         comparator = comp;
     }
+/**
+ * 
+ * @return true if tree has no elements in it.
+ */
     public boolean isEmpty()
     {
         return root == null;
     }
+/**
+ * Adds an element to the tree.
+ * @param e Added element.
+ */
     public void add(E e)
     {
-        Unit tobeAdded = new Unit(e);
+        Node tobeAdded = new Node(e);
         if (root == null)
         {
             root = tobeAdded;
@@ -47,9 +64,13 @@ public class Tree<E> {
         balanceOnInsertion(tobeAdded);
         root.parent = null;
     }
-    private void findPlacement(Unit tobeAdded)
+/**
+ * Finds and places a newly added element at a correct spot.
+ * @param tobeAdded Element that will be added.
+ */
+    private void findPlacement(Node tobeAdded)
     {
-        Unit u = root;
+        Node u = root;
         while (true)
         {
             if (comparator.compare(tobeAdded.value, u.value) < 0)
@@ -74,7 +95,11 @@ public class Tree<E> {
             }
         }
     }
-    private void balanceOnInsertion(Unit u)
+/**
+ * Balances the tree after insertion.
+ * @param u Node that was added and may violate the balance.
+ */
+    private void balanceOnInsertion(Node u)
     {
         while (true)
         {
@@ -84,7 +109,7 @@ public class Tree<E> {
                 return;
             }
             if (!u.parent.isRed)    return;
-            Unit a = getAunt(u);
+            Node a = getAunt(u);
             if (a != null && a.isRed)
             {
                 u.parent.isRed = false;
@@ -94,7 +119,7 @@ public class Tree<E> {
             }
             else
             {
-                Unit g = getGrandParent(u);
+                Node g = getGrandParent(u);
                 if (g == null)  return;
                 if (u == u.parent.right && u.parent == g.left)
                 {
@@ -115,14 +140,18 @@ public class Tree<E> {
             }
         }
     }
-    private void rotateLeft(Unit u)
+/**
+ * Rotates the branch left.
+ * @param u Node which will be rotated left.
+ */
+    private void rotateLeft(Node u)
     {
         int hookType;
         if (root == u)   hookType = 0;
         else if (u == u.parent.left)    hookType = -1;
         else    hookType = 1;
-        Unit nodesRight = u.right;
-        Unit rightsLeft = nodesRight.left;
+        Node nodesRight = u.right;
+        Node rightsLeft = nodesRight.left;
         nodesRight.left = u;
         if (hookType == 0)  root = nodesRight;
         else
@@ -135,14 +164,18 @@ public class Tree<E> {
         if (rightsLeft != null)   rightsLeft.parent = u;
         u.parent = nodesRight;
     }
-    private void rotateRight(Unit u)
+/**
+ * Rotates the branch right.
+ * @param u Node which will be rotated right.
+ */
+    private void rotateRight(Node u)
     {
         int hookType;
         if (root == u)   hookType = 0;
         else if (u == u.parent.left)    hookType = -1;
         else    hookType = 1;
-        Unit nodesLeft = u.left;
-        Unit leftsRight = nodesLeft.right;
+        Node nodesLeft = u.left;
+        Node leftsRight = nodesLeft.right;
         nodesLeft.right = u;
         if (hookType == 0)  root = nodesLeft;
         else
@@ -155,27 +188,46 @@ public class Tree<E> {
         if (leftsRight != null)   leftsRight.parent = u;
         u.parent = nodesLeft;
     }
-    private Unit getGrandParent(Unit u)
+/**
+ * Finds the grandparent of the given node.
+ * @param u Given node.
+ * @return Grandparent of the node.
+ */
+    private Node getGrandParent(Node u)
     {
         if (u.parent == null)   return null;
         return u.parent.parent;
     }
-    private Unit getAunt(Unit u)
+/**
+ * Finds the given node's grandparent's child that isn't node's parent.
+ * @param u Given node.
+ * @return Node's aunt or uncle.
+ */
+    private Node getAunt(Node u)
     {
-        Unit g = getGrandParent(u);
+        Node g = getGrandParent(u);
         if (g == null)  return null;
         if (u.parent == g.left) return g.right;
         return g.left;
     }
-    private Unit getSibling(Unit u)
+/**
+ * Finds the sibling of the given node.
+ * @param u Given node.
+ * @return Sibling of the node.
+ */
+    private Node getSibling(Node u)
     {
         if (u.parent == null)   return null;
         if (u.parent.left == u) return u.parent.right;
         return u.parent.left;
     }
+/**
+ * Removes given element from the tree.
+ * @param e Given element.
+ */
     public void remove(E e)
     {
-        Unit u = find(e);
+        Node u = find(e);
         if (u == null)  return;
         
         if (u.left == null && u.right == null)
@@ -185,7 +237,11 @@ public class Tree<E> {
         else    removeNodeWithOneChild(u);
         if (root != null)   root.parent = null;
     }
-    private void removeNodeWithoutChildren(Unit u)
+/**
+ * Removes a node that has no children.
+ * @param u Removed node.
+ */
+    private void removeNodeWithoutChildren(Node u)
     {
         if (root == u)
         {
@@ -197,11 +253,15 @@ public class Tree<E> {
         else if (u.parent.right == u)    u.parent.right = null;
         u.parent = null;
     }
-    private void removeNodeWithTwoChildren(Unit u)
+/**
+ * Removes a node with two children.
+ * @param u Removed node.
+ */
+    private void removeNodeWithTwoChildren(Node u)
     {
-        Unit n = getNext(u);
+        Node n = getNext(u);
         u.value = n.value;
-        Unit removedsRight = n.right;
+        Node removedsRight = n.right;
         if (n.parent == u)
         {
             u.right = removedsRight;
@@ -218,9 +278,13 @@ public class Tree<E> {
         n.right = null;
         n.parent = null;
     }
-    private void removeNodeWithOneChild(Unit u)
+/**
+ * Removes a node with one child.
+ * @param u Removed node.
+ */
+    private void removeNodeWithOneChild(Node u)
     {
-        Unit n = (u.right == null) ? u.left : u.right;
+        Node n = (u.right == null) ? u.left : u.right;
         if (n.isRed)    n.isRed = false;
         if (u == root)
         {
@@ -236,16 +300,27 @@ public class Tree<E> {
         }
         u.parent = null;
     }
-    private boolean isRed(Unit u)
+/**
+ * Checks if node is red. This check will assume that the node
+ * is black if it's null.
+ * @param u Given node.
+ * @return true if node is red. false if black.
+ */
+    private boolean isRed(Node u)
     {
         if (u == null)  return false;
         return u.isRed;
     }
-    private void balanceOnRemoval(Unit u)
+/**
+ * Balances the tree after removing a node.
+ * @param u Node that was removed. Pointers to the parent, left and right
+ * child are still intact.
+ */
+    private void balanceOnRemoval(Node u)
     {
         while (u != root)
         {
-            Unit s = getSibling(u);
+            Node s = getSibling(u);
             if (isRed(s))
             {
                 u.parent.isRed = true;
@@ -303,25 +378,37 @@ public class Tree<E> {
             }
         }
     }
-    private Unit getNext(Unit u)
+/**
+ * Finds the successor of the given node. Assuming that the tree's elements
+ * are smaller to the left, this method will find the smallest node
+ * that is bigger than the given node.
+ * @param u Given node.
+ * @return Node's successor.
+ */
+    private Node getNext(Node u)
     {
         if (u.right == null)
         {
-            Unit n = u;
+            Node n = u;
             do {
                 u = n;
                 n = n.parent;
             } while (u == n.right);
             return n;
         }
-        Unit n = u.right;
+        Node n = u.right;
         while (n.left != null)
             n = n.left;
         return n;
     }
-    private Unit find(E e)
+/**
+ * Finds the node of a given element. Used to access node's children and parent.
+ * @param e Element that is to be found.
+ * @return Node where element is stored.
+ */
+    private Node find(E e)
     {
-        Unit u = root;
+        Node u = root;
         while (u.value != e)
         {
             if (comparator.compare(e, u.value) < 0)
@@ -331,15 +418,19 @@ public class Tree<E> {
         }
         return u;
     }
+/**
+ * Forms a list of elements in the tree.
+ * @return list of elements in the tree.
+ */
     public LinkedList<E> toLinkedList()
     {
         LinkedList<E> result = new LinkedList<>();
         if (isEmpty())  return result;
-        Queue<Unit> q = new Queue<>();
+        Queue<Node> q = new Queue<>();
         q.enqueue(root);
         while (!q.isEmpty())
         {
-            Unit u = q.dequeue();
+            Node u = q.dequeue();
             result.add(u.value);
             if (u.left != null)   q.enqueue(u.left);
             if (u.right != null)   q.enqueue(u.right);
@@ -350,12 +441,12 @@ public class Tree<E> {
     public String toString()
     {
         String result = "";
-        Queue<Unit> q = new Queue<>();
+        Queue<Node> q = new Queue<>();
         q.enqueue(root);
-        Unit firstOnLevel = null;
+        Node firstOnLevel = null;
         while (!q.isEmpty())
         {
-            Unit u = q.dequeue();
+            Node u = q.dequeue();
             if (u == firstOnLevel)
             {
                 firstOnLevel = null;
@@ -370,11 +461,23 @@ public class Tree<E> {
         }
         return result;
     }
+/**
+ * Draws a visual representation of the tree. Used for debugging.
+ * @param g Graphics object.
+ */
     public void drawTree(Graphics g)
     {
         drawNode(root, g, 320, 1);
     }
-    private void drawNode(Unit n, Graphics g, int x, int y)
+/**
+ * Recursive call to draw relevant information of a single node
+ * and its children.
+ * @param n Node that is drawn.
+ * @param g Graphics object.
+ * @param x X position of the drawn circle.
+ * @param y Layer of the node.
+ */
+    private void drawNode(Node n, Graphics g, int x, int y)
     {
         if (n == null)  return;
         g.setColor(n.isRed ? Color.red : Color.GRAY);
