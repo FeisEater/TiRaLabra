@@ -113,7 +113,7 @@ public class Heap<E> {
 /**
  * Doubles the size of the array.
  */
-    public void increaseArray()
+    private void increaseArray()
     {
         Object[] newArray = new Object[array.length * 2];
         for (int i = 0; i < array.length; i++)
