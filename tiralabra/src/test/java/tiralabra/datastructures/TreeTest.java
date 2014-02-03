@@ -107,4 +107,36 @@ public class TreeTest {
         int height = getTreeHeight(0, field.get(tree));
         assertTrue(height <= 20);
     }
+    @Test
+    public void afterClearingTreeIsEmpty()
+    {
+        for (int i = 0; i < 2048; i++)
+            tree.add((int)(Math.random() * 2048));
+        tree.clear();
+        assertTrue(tree.isEmpty());
+    }
+    @Test
+    public void returnsLinkedList()
+    {
+        for (int i = 0; i < 2048; i++)
+            tree.add(i);
+        LinkedList<Integer> list = tree.toLinkedList();
+        boolean test = true;
+        for (int i = 0; i < 2048; i++)
+        {
+            test = false;
+            list.reset();
+            while (list.hasNext())
+            {
+                int j = list.getNext();
+                if (j == i)
+                {
+                    test = true;
+                    break;
+                }
+            }
+            if (!test)   break;
+        }
+        assertTrue(test);
+    }
 }

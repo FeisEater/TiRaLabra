@@ -48,6 +48,13 @@ public class Tree<E> {
         return root == null;
     }
 /**
+ * Removes all elements in the tree.
+ */
+    public void clear()
+    {
+        root = null;
+    }
+/**
  * Adds an element to the tree.
  * @param e Added element.
  */
