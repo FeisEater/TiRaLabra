@@ -59,4 +59,106 @@ public class HeapTest {
         }
         assertTrue(test);
     }
+    @Test
+    public void heapIsEmptyWhenCleared()
+    {
+        for (int i = 0; i < 1000; i++)
+            heap.insert((int)(Math.random() * 10000));
+        heap.clear(15);
+        assertTrue(heap.isEmpty());
+    }
+    @Test
+    public void heapsSizeIsCorrect()
+    {
+        for (int i = 0; i < 1337; i++)
+            heap.insert((int)(Math.random() * 10000));
+        assertTrue(heap.size() == 1337);
+    }
+    @Test
+    public void poppingHeapDecreasesByOne()
+    {
+        for (int i = 0; i < 1337; i++)
+            heap.insert((int)(Math.random() * 10000));
+        heap.pop();
+        assertTrue(heap.size() == 1336);
+    }
+    @Test
+    public void increasesArrayOnOverflow()
+    {
+        for (int i = 0; i < 14; i++)
+            heap.insert((int)(Math.random() * 10000));
+        boolean b1 = heap.getArray().length == 15;
+        heap.insert((int)(Math.random() * 10000));
+        boolean b2 = heap.getArray().length == 30;
+        assertTrue(b1 && b2);
+    }
+    @Test
+    public void insertsByHeapRules()
+    {
+        for (int i = 1; i < 30; i+=2)
+            heap.insert(i);
+        heap.insert(6);
+        int[] ar = new int[heap.size()];
+        for (int i = 0; i < heap.size(); i++)
+            ar[i] = (i*2) + 1;
+        ar[3] = 6;
+        ar[7] = 7;
+        ar[15] = 15;
+        boolean test = true;
+        for (int i = 0; i < heap.size(); i++)
+            if (ar[i] != (int)heap.getArray()[i])    test = false;
+        assertTrue(test);
+    }
+    @Test
+    public void popsByHeapRules()
+    {
+        for (int i = 1; i < 16; i++)
+            heap.insert(i);
+        heap.pop();
+        int[] ar = new int[heap.size()];
+        for (int i = 0; i < heap.size(); i++)
+            ar[i] = i + 1;
+        ar[0] = 2;
+        ar[1] = 4;
+        ar[3] = 8;
+        ar[7] = 15;
+        boolean test = true;
+        for (int i = 0; i < heap.size(); i++)
+            if (ar[i] != (int)heap.getArray()[i])    test = false;
+        assertTrue(test);
+    }
+    @Test
+    public void decreasesKey()
+    {
+        for (int i = 1; i < 30; i+=2)
+            heap.insert(i);
+        heap.changeValue(19, 2);
+        int[] ar = new int[heap.size()];
+        for (int i = 0; i < heap.size(); i++)
+            ar[i] = (i*2) + 1;
+        ar[1] = 2;
+        ar[4] = 3;
+        ar[9] = 9;
+        boolean test = true;
+        for (int i = 0; i < heap.size(); i++)
+            if (ar[i] != (int)heap.getArray()[i])    test = false;
+        assertTrue(test);
+    }
+    @Test
+    public void increasesKey()
+    {
+        for (int i = 1; i < 30; i+=2)
+            heap.insert(i);
+        heap.changeValue(5, 26);
+        int[] ar = new int[heap.size()];
+        for (int i = 0; i < heap.size(); i++)
+            ar[i] = (i*2) + 1;
+        ar[2] = 11;
+        ar[5] = 23;
+        ar[11] = 26;
+        boolean test = true;
+        for (int i = 0; i < heap.size(); i++)
+            if (ar[i] != (int)heap.getArray()[i])    test = false;
+        assertTrue(test);
+    }
 }
