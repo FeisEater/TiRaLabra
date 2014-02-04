@@ -27,6 +27,7 @@ public class AngleElimination {
         intervals.clear(15);
         if (src == null)  return null;
         findIntervals(src, vertices);
+        flattenIntervals(src);
         return getUnobstructedVertices(src, vertices);
     }
 /**
@@ -74,18 +75,26 @@ public class AngleElimination {
 /**
  * Removes redundant sectors and overlapping.
  */
-    private static void flattenIntervals()
+    private static void flattenIntervals(Vertex src)
     {
-        /*List<AngleInterval> curIntervals = new ArrayList<>();
-        for (AngleInterval ai : intervals)
+        LinkedList<AngleInterval> flat = new LinkedList<>();
+        Heap<AngleInterval> endAngles = new Heap<>(15, new EndDirectionComparator());
+        double lastAngle = -Math.PI;
+        double lastDist = Double.MAX_VALUE;
+        while (!intervals.isEmpty())
         {
-            for (AngleInterval ai2 : curIntervals)
+            AngleInterval ai = intervals.pop();
+            if (!endAngles.isEmpty() && ai.leftAngle > endAngles.peek().rightAngle)
+                endAngles.pop();
+            if (endAngles.isEmpty() || endAngles.peek().distanceFromLine(ai.leftAngle) > ai.leftDist)
             {
-                if (ai2.rightAngle )
+                endAngles.insert(ai);
+                flat.add(new AngleInterval(src, lastAngle, lastDist, ai.rightAngle, ai.rightDist));
+                lastAngle = ai.rightAngle;
+                lastDist = ai.rightDist;
             }
-            curIntervals.add(ai);
         }
-        System.out.println(intervals);*/
+        System.out.println(flat);
     }
 /**
  * Finds unobstructed vertices based on generated sectors.
@@ -133,6 +142,19 @@ public class AngleElimination {
         public double leftDist;
         public double rightDist;
         private Vertex src;
+/**
+ * Constructor. Creates a sector based on a line.
+ * @param source Vertex from which algorithm is tracing.
+ * @param p One point of the line. The other point is p.getRight()
+ */
+        public AngleInterval(Vertex source, double la, double ld, double ra, double rd)
+        {
+            leftAngle = la;
+            rightAngle = ra;
+            leftDist = ld;
+            rightDist = rd;
+            src = source;
+        }
 /**
  * Constructor. Creates a sector based on a line.
  * @param source Vertex from which algorithm is tracing.
@@ -267,11 +289,11 @@ public class AngleElimination {
         @Override
         public String toString()
         {
-            return "" + src + ": " + (int)(180 * leftAngle / Math.PI) + "->" + (int)leftDist + ", " + (int)(180 * rightAngle / Math.PI) + "->" + (int)rightDist;
+            return ""/* + src + ": "*/ + (int)(180 * leftAngle / Math.PI) + "->" + (int)leftDist + ", " + (int)(180 * rightAngle / Math.PI) + "->" + (int)rightDist;
         }
     }
 /**
- * Comparator class for placing sectors in a heap based on their direction.
+ * Comparator class for placing sectors in a heap based on their starting direction.
  */
     private static class DirectionComparator implements Comparator
     {
@@ -283,6 +305,21 @@ public class AngleElimination {
             AngleInterval ai1 = (AngleInterval)o1;
             AngleInterval ai2 = (AngleInterval)o2;
             return (int)(ai1.leftAngle - ai2.leftAngle);
+        }
+    }
+/**
+ * Comparator class for placing sectors in a heap based on their end direction.
+ */
+    private static class EndDirectionComparator implements Comparator
+    {
+        @Override
+        public int compare(Object o1, Object o2)
+        {
+            if (o1.getClass() != AngleInterval.class || o2.getClass() != AngleInterval.class)
+                return 0;
+            AngleInterval ai1 = (AngleInterval)o1;
+            AngleInterval ai2 = (AngleInterval)o2;
+            return (int)(ai1.rightAngle - ai2.rightAngle);
         }
     }
 }

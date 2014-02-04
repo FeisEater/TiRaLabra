@@ -161,4 +161,15 @@ public class HeapTest {
             if (ar[i] != (int)heap.getArray()[i])    test = false;
         assertTrue(test);
     }
+    @Test
+    public void peekingDoesntChangeHeap()
+    {
+        heap.insert(1);
+        for (int i = 0; i < 1336; i++)
+            heap.insert((int)(2 + Math.random() * 10000));
+        int j = -1;
+        for (int i = 0; i < 1337; i++)
+            j = heap.peek();
+        assertTrue(j == 1 && heap.size() == 1337);
+    }
 }

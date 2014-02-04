@@ -47,6 +47,14 @@ public class Heap<E> {
         return result;
     }
 /**
+ * Returns top element in the heap without making changes to the heap.
+ * @return top element in the heap.
+ */
+    public E peek()
+    {
+        return (E)array[0];
+    }
+/**
  * Adds an element to the heap.
  * @param e Object that is inserted.
  */
