@@ -380,7 +380,7 @@ public class Tree<E> {
             }
             else
             {
-                s.left.isRed = false;
+                s.left.isRed = false;   //got nullpointerexception
                 rotateRight(u.parent);
             }
         }

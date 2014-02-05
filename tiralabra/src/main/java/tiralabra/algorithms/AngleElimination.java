@@ -70,31 +70,30 @@ public class AngleElimination {
             intervals.insert(ai);
         }
         vertices.reset();
-        //Collections.sort(intervals);
     }
 /**
  * Removes redundant sectors and overlapping.
  */
     private static void flattenIntervals(Vertex src)
     {
-        LinkedList<AngleInterval> flat = new LinkedList<>();
+/*        LinkedList<AngleInterval> flat = new LinkedList<>();
         Heap<AngleInterval> endAngles = new Heap<>(15, new EndDirectionComparator());
-        double lastAngle = -Math.PI;
-        double lastDist = Double.MAX_VALUE;
+        endAngles.insert(intervals.peek());
         while (!intervals.isEmpty())
         {
             AngleInterval ai = intervals.pop();
-            if (!endAngles.isEmpty() && ai.leftAngle > endAngles.peek().rightAngle)
+            if (ai.rightAngle - ai.leftAngle < 0)   break;
+            while (!endAngles.isEmpty() && ai.leftAngle > endAngles.peek().rightAngle)
                 endAngles.pop();
             if (endAngles.isEmpty() || endAngles.peek().distanceFromLine(ai.leftAngle) > ai.leftDist)
             {
+                flat.add(new AngleInterval(src, endAngles.peek().leftAngle,
+                        endAngles.peek().leftDist, ai.leftAngle,
+                        endAngles.peek().distanceFromLine(ai.leftAngle)));
                 endAngles.insert(ai);
-                flat.add(new AngleInterval(src, lastAngle, lastDist, ai.rightAngle, ai.rightDist));
-                lastAngle = ai.rightAngle;
-                lastDist = ai.rightDist;
             }
         }
-        System.out.println(flat);
+        System.out.println(flat);*/
     }
 /**
  * Finds unobstructed vertices based on generated sectors.
@@ -289,7 +288,7 @@ public class AngleElimination {
         @Override
         public String toString()
         {
-            return ""/* + src + ": "*/ + (int)(180 * leftAngle / Math.PI) + "->" + (int)leftDist + ", " + (int)(180 * rightAngle / Math.PI) + "->" + (int)rightDist;
+            return ""/* + src + ": "*/ + (int)(180 * leftAngle / Math.PI) + "->" + (int)leftDist + ", " + (int)(180 * rightAngle / Math.PI) + "->" + (int)rightDist + "|";
         }
     }
 /**
@@ -304,6 +303,7 @@ public class AngleElimination {
                 return 0;
             AngleInterval ai1 = (AngleInterval)o1;
             AngleInterval ai2 = (AngleInterval)o2;
+            if (ai1.leftAngle == ai2.leftAngle) return (int)(ai1.rightDist - ai2.rightDist);
             return (int)(ai1.leftAngle - ai2.leftAngle);
         }
     }
