@@ -55,11 +55,12 @@ public class GraphicInterface extends JPanel implements Runnable {
     {
         super.paintComponent(g);
         fillPolygon(g);
-        fillUnobstructedArea(g, 8);
+        //fillUnobstructedArea(g, 8);
         LinkedList<Vertex> vertices = points.getVertices().toLinkedList();
         while (vertices.hasNext())
             drawPoint(g, vertices.getNext());
         currentTool.drawInputSpecific(g);   
+        AngleElimination.visualize(g);
         //points.getVertices().drawTree(g);
     }
 /**
@@ -78,8 +79,8 @@ public class GraphicInterface extends JPanel implements Runnable {
         if (point.getClass() == Point.class)
         {
             Point p = (Point)point;
-            drawEdge(g, Color.black, p, p.getLeft());
-            drawEdge(g, Color.black, p, p.getRight());
+            //drawEdge(g, Color.black, p, p.getLeft());
+            //drawEdge(g, Color.black, p, p.getRight());
             g.setColor(Color.cyan);
             g.drawLine((int)p.X(), (int)p.Y(), p.angleMarker()[0], p.angleMarker()[1]);
         }

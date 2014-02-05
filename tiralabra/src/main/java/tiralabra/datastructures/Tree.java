@@ -54,6 +54,13 @@ public class Tree<E> {
     {
         root = null;
     }
+    public E getMin()
+    {
+        Node n = root;
+        while (n.left != null)
+            n = n.left;
+        return n.value;
+    }
 /**
  * Adds an element to the tree.
  * @param e Added element.

@@ -1,12 +1,15 @@
 
 package tiralabra.algorithms;
 
+import java.awt.Color;
+import java.awt.Graphics;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import tiralabra.datastructures.Heap;
 import tiralabra.datastructures.LinkedList;
 import tiralabra.datastructures.Point;
+import tiralabra.datastructures.Tree;
 import tiralabra.datastructures.Vertex;
 
 /**
@@ -15,7 +18,8 @@ import tiralabra.datastructures.Vertex;
  */
 public class AngleElimination {
     private static Heap<AngleInterval> intervals = new Heap<>(15, new DirectionComparator());
-/**
+    private static LinkedList<AngleInterval> list = new LinkedList<>();
+    /**
  * Finds all vertices that are unobstructed from a specified vertex's
  * point of view.
  * @param src Vertex from which algorithm is tracing.
@@ -27,8 +31,22 @@ public class AngleElimination {
         intervals.clear(15);
         if (src == null)  return null;
         findIntervals(src, vertices);
-        flattenIntervals(src);
-        return getUnobstructedVertices(src, vertices);
+        list = flattenIntervals(src);
+        //return getUnobstructedVertices(src, vertices);
+        return new ArrayList<>();
+    }
+    public static void visualize(Graphics g)
+    {
+        list.reset();
+        g.setColor(Color.black);
+        while (list.hasNext())
+        {
+            AngleInterval ai = list.getNext();
+            g.drawLine((int)(ai.src.X() + Math.cos(ai.leftAngle) * ai.leftDist),
+                    (int)(ai.src.Y() + Math.sin(ai.leftAngle) * ai.leftDist),
+                    (int)(ai.src.X() + Math.cos(ai.rightAngle) * ai.rightDist),
+                    (int)(ai.src.Y() + Math.sin(ai.rightAngle) * ai.rightDist));
+        }
     }
 /**
  * Checks if a specified vertex is obstructed.
@@ -74,26 +92,29 @@ public class AngleElimination {
 /**
  * Removes redundant sectors and overlapping.
  */
-    private static void flattenIntervals(Vertex src)
+    private static LinkedList<AngleInterval> flattenIntervals(Vertex src)
     {
         LinkedList<AngleInterval> flat = new LinkedList<>();
         Heap<AngleInterval> endAngles = new Heap<>(15, new EndDirectionComparator());
-        //endAngles.insert(intervals.peek());
+        Tree<AngleInterval> distances = new Tree<>(new DistanceComparator());
         while (!intervals.isEmpty())
         {
-            AngleInterval ai = intervals.pop();
-            if (ai.rightAngle - ai.leftAngle < 0)   break;
-            while (!endAngles.isEmpty() && ai.leftAngle > endAngles.peek().rightAngle)
-                endAngles.pop();
-            if (!endAngles.isEmpty() && endAngles.peek().distanceFromLine(ai.leftAngle) > ai.leftDist)
+            AngleInterval newAngle = intervals.peek();
+            AngleInterval oldAngle = endAngles.peek();
+            if (oldAngle == null || newAngle.leftAngle < oldAngle.rightAngle)
             {
-                flat.add(new AngleInterval(src, endAngles.peek().leftAngle,
-                        endAngles.peek().leftDist, ai.leftAngle,
-                        endAngles.peek().distanceFromLine(ai.leftAngle)));
+                distances.add(newAngle);
+                endAngles.insert(newAngle);
+                intervals.pop();
             }
-            endAngles.insert(ai);
+            else
+            {
+                distances.add(oldAngle);
+                endAngles.pop();
+            }
         }
         System.out.println(flat);
+        return flat;
     }
 /**
  * Finds unobstructed vertices based on generated sectors.
@@ -308,7 +329,7 @@ public class AngleElimination {
         }
     }
 /**
- * Comparator class for placing sectors in a heap based on their end direction.
+ * Comparator class for placing sectors in a heap based on their starting direction.
  */
     private static class EndDirectionComparator implements Comparator
     {
@@ -319,11 +340,23 @@ public class AngleElimination {
                 return 0;
             AngleInterval ai1 = (AngleInterval)o1;
             AngleInterval ai2 = (AngleInterval)o2;
-            if (ai1.leftAngle >= ai2.leftAngle && ai1.leftAngle <= ai2.rightAngle)
-                return (int)(ai1.leftDist - ai2.distanceFromLine(ai1.leftAngle));
-            if (ai1.rightAngle >= ai2.leftAngle && ai1.rightAngle <= ai2.rightAngle)
-                return (int)(ai1.rightDist - ai2.distanceFromLine(ai1.rightAngle));
             return (int)(ai1.rightAngle - ai2.rightAngle);
+        }
+    }
+/**
+ * Comparator class for placing sectors in a heap based on their distance.
+ */
+    private static class DistanceComparator implements Comparator
+    {
+        @Override
+        public int compare(Object o1, Object o2)
+        {
+            if (o1.getClass() != AngleInterval.class || o2.getClass() != AngleInterval.class)
+                return 0;
+            AngleInterval ai1 = (AngleInterval)o1;
+            AngleInterval ai2 = (AngleInterval)o2;
+            if (ai1.leftDist == ai2.leftDist)   return (int)(ai1.rightDist - ai2.rightDist);
+            return (int)(ai1.leftDist - ai2.leftDist);
         }
     }
 }
