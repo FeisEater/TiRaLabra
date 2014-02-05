@@ -76,24 +76,24 @@ public class AngleElimination {
  */
     private static void flattenIntervals(Vertex src)
     {
-/*        LinkedList<AngleInterval> flat = new LinkedList<>();
+        LinkedList<AngleInterval> flat = new LinkedList<>();
         Heap<AngleInterval> endAngles = new Heap<>(15, new EndDirectionComparator());
-        endAngles.insert(intervals.peek());
+        //endAngles.insert(intervals.peek());
         while (!intervals.isEmpty())
         {
             AngleInterval ai = intervals.pop();
             if (ai.rightAngle - ai.leftAngle < 0)   break;
             while (!endAngles.isEmpty() && ai.leftAngle > endAngles.peek().rightAngle)
                 endAngles.pop();
-            if (endAngles.isEmpty() || endAngles.peek().distanceFromLine(ai.leftAngle) > ai.leftDist)
+            if (!endAngles.isEmpty() && endAngles.peek().distanceFromLine(ai.leftAngle) > ai.leftDist)
             {
                 flat.add(new AngleInterval(src, endAngles.peek().leftAngle,
                         endAngles.peek().leftDist, ai.leftAngle,
                         endAngles.peek().distanceFromLine(ai.leftAngle)));
-                endAngles.insert(ai);
             }
+            endAngles.insert(ai);
         }
-        System.out.println(flat);*/
+        System.out.println(flat);
     }
 /**
  * Finds unobstructed vertices based on generated sectors.
@@ -288,7 +288,7 @@ public class AngleElimination {
         @Override
         public String toString()
         {
-            return ""/* + src + ": "*/ + (int)(180 * leftAngle / Math.PI) + "->" + (int)leftDist + ", " + (int)(180 * rightAngle / Math.PI) + "->" + (int)rightDist + "|";
+            return "" + (int)(180 * leftAngle / Math.PI) + "->" + (int)leftDist + ": " + (int)(180 * rightAngle / Math.PI) + "->" + (int)rightDist;
         }
     }
 /**
@@ -319,6 +319,10 @@ public class AngleElimination {
                 return 0;
             AngleInterval ai1 = (AngleInterval)o1;
             AngleInterval ai2 = (AngleInterval)o2;
+            if (ai1.leftAngle >= ai2.leftAngle && ai1.leftAngle <= ai2.rightAngle)
+                return (int)(ai1.leftDist - ai2.distanceFromLine(ai1.leftAngle));
+            if (ai1.rightAngle >= ai2.leftAngle && ai1.rightAngle <= ai2.rightAngle)
+                return (int)(ai1.rightDist - ai2.distanceFromLine(ai1.rightAngle));
             return (int)(ai1.rightAngle - ai2.rightAngle);
         }
     }

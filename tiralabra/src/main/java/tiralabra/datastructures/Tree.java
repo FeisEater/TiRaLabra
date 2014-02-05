@@ -375,12 +375,12 @@ public class Tree<E> {
             u.parent.isRed = false;
             if (u == u.parent.left)
             {
-                s.right.isRed = false;
+                if (s.right != null)   s.right.isRed = false;
                 rotateLeft(u.parent);
             }
             else
             {
-                s.left.isRed = false;   //got nullpointerexception
+                if (s.left != null)   s.left.isRed = false;
                 rotateRight(u.parent);
             }
         }
