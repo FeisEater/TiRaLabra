@@ -53,6 +53,7 @@ public class Heap<E> {
  */
     public E peek()
     {
+        if (isEmpty())  return null;
         return (E)array[0];
     }
 /**

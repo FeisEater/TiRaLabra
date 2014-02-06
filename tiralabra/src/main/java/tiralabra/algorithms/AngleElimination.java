@@ -100,27 +100,19 @@ public class AngleElimination {
         double lastAngle = -Math.PI;
         while (!intervals.isEmpty())
         {
-            System.out.println((lastAngle * 180 / Math.PI));
-            while (!intervals.isEmpty() && lastAngle > intervals.peek().leftAngle)
-            {
-                System.out.println("small left: " + intervals.peek());
-                distances.remove(intervals.pop());
-            }
+            while (!intervals.isEmpty() && intervals.peek().inverse)
+                intervals.pop();
+            if (intervals.isEmpty())    break;
             AngleInterval newAngle = intervals.peek();
-            if (newAngle.leftAngle > newAngle.rightAngle)   break;
             while (!endAngles.isEmpty() && lastAngle > endAngles.peek().rightAngle)
-            {
-                System.out.println("small right: " + endAngles.peek());
                 distances.remove(endAngles.pop());
-            }
             AngleInterval oldAngle = endAngles.peek();
-            if (oldAngle != null && oldAngle.leftAngle > oldAngle.rightAngle)   break;
             Comparator comp = new DistanceComparator();
-            if (oldAngle == null || newAngle.leftAngle < oldAngle.rightAngle)
+            if (oldAngle == null || newAngle.leftAngle <= oldAngle.rightAngle)
             {
                 if (endAngles.isEmpty())
                     lastAngle = newAngle.leftAngle;
-                else if (comp.compare(newAngle, distances.getMin()) < 0)
+                else if (comp.compare(newAngle, distances.getMin()) < 0 && newAngle.leftAngle > lastAngle)
                 {
                     flat.add(new AngleInterval(src, lastAngle, distances.getMin().distanceFromLine(lastAngle),
                         newAngle.leftAngle, distances.getMin().distanceFromLine(newAngle.leftAngle)));
@@ -134,7 +126,7 @@ public class AngleElimination {
             {
                 boolean wasClosest = (oldAngle == distances.getMin());
                 distances.remove(oldAngle);
-                if (wasClosest)
+                if (wasClosest && oldAngle.rightAngle > lastAngle)
                 {
                     flat.add(new AngleInterval(src, lastAngle, oldAngle.distanceFromLine(lastAngle),
                         oldAngle.rightAngle, oldAngle.rightDist));
@@ -142,8 +134,6 @@ public class AngleElimination {
                 }
                 endAngles.pop();
             }
-            //System.out.println(distances);
-            System.out.println(oldAngle + " " + newAngle);
         }
         System.out.println(flat);
         return flat;
@@ -194,6 +184,7 @@ public class AngleElimination {
         public double leftDist;
         public double rightDist;
         private Vertex src;
+        public boolean inverse;
 /**
  * Constructor. Creates a sector based on a line.
  * @param source Vertex from which algorithm is tracing.
@@ -206,6 +197,7 @@ public class AngleElimination {
             leftDist = ld;
             rightDist = rd;
             src = source;
+            inverse = false;
         }
 /**
  * Constructor. Creates a sector based on a line.
@@ -228,6 +220,7 @@ public class AngleElimination {
             setAttributes(src, src.getRight(), src.getLeft());
             leftDist = 0;
             rightDist = 0;
+            inverse = false;
         }
 /**
  * Initializes class attributes.
@@ -265,11 +258,13 @@ public class AngleElimination {
             {
                 leftest = p;
                 rightest = p.getRight();
+                inverse = true;
             }
             else
             {
                 leftest = p.getRight();
                 rightest = p;
+                inverse = false;
             }
 //If line crosses the part where direction calculation jumps the cycle,
 //switch sides.
@@ -356,7 +351,6 @@ public class AngleElimination {
                 return 0;
             AngleInterval ai1 = (AngleInterval)o1;
             AngleInterval ai2 = (AngleInterval)o2;
-            if (ai1.leftAngle == ai2.leftAngle) return (int)(ai1.rightDist - ai2.rightDist);
             return (int)(ai1.leftAngle - ai2.leftAngle);
         }
     }
@@ -372,7 +366,6 @@ public class AngleElimination {
                 return 0;
             AngleInterval ai1 = (AngleInterval)o1;
             AngleInterval ai2 = (AngleInterval)o2;
-            if (ai1.rightAngle == ai2.rightAngle) return (int)(ai1.leftDist - ai2.leftDist);
             return (int)(ai1.rightAngle - ai2.rightAngle);
         }
     }
