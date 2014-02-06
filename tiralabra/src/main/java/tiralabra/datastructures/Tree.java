@@ -56,6 +56,7 @@ public class Tree<E> {
     }
     public E getMin()
     {
+        if (isEmpty())  return null;
         Node n = root;
         while (n.left != null)
             n = n.left;
@@ -422,6 +423,7 @@ public class Tree<E> {
  */
     private Node find(E e)
     {
+        if (isEmpty())  return null;
         Node u = root;
         while (u.value != e)
         {
@@ -454,6 +456,7 @@ public class Tree<E> {
     @Override
     public String toString()
     {
+        if (isEmpty())  return "empty";
         String result = "";
         Queue<Node> q = new Queue<>();
         q.enqueue(root);
@@ -473,7 +476,7 @@ public class Tree<E> {
             if (u.right != null)   q.enqueue(u.right);
             if (firstOnLevel == null)   firstOnLevel = (u.left == null) ? u.right : u.left;
         }
-        return result;
+        return result + "\n---";
     }
 /**
  * Draws a visual representation of the tree. Used for debugging.

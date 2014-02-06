@@ -97,21 +97,53 @@ public class AngleElimination {
         LinkedList<AngleInterval> flat = new LinkedList<>();
         Heap<AngleInterval> endAngles = new Heap<>(15, new EndDirectionComparator());
         Tree<AngleInterval> distances = new Tree<>(new DistanceComparator());
+        double lastAngle = -Math.PI;
         while (!intervals.isEmpty())
         {
+            System.out.println((lastAngle * 180 / Math.PI));
+            while (!intervals.isEmpty() && lastAngle > intervals.peek().leftAngle)
+            {
+                System.out.println("small left: " + intervals.peek());
+                distances.remove(intervals.pop());
+            }
             AngleInterval newAngle = intervals.peek();
+            if (newAngle.leftAngle > newAngle.rightAngle)   break;
+            while (!endAngles.isEmpty() && lastAngle > endAngles.peek().rightAngle)
+            {
+                System.out.println("small right: " + endAngles.peek());
+                distances.remove(endAngles.pop());
+            }
             AngleInterval oldAngle = endAngles.peek();
+            if (oldAngle != null && oldAngle.leftAngle > oldAngle.rightAngle)   break;
+            Comparator comp = new DistanceComparator();
             if (oldAngle == null || newAngle.leftAngle < oldAngle.rightAngle)
             {
+                if (endAngles.isEmpty())
+                    lastAngle = newAngle.leftAngle;
+                else if (comp.compare(newAngle, distances.getMin()) < 0)
+                {
+                    flat.add(new AngleInterval(src, lastAngle, distances.getMin().distanceFromLine(lastAngle),
+                        newAngle.leftAngle, distances.getMin().distanceFromLine(newAngle.leftAngle)));
+                    lastAngle = newAngle.leftAngle;
+                }
                 distances.add(newAngle);
                 endAngles.insert(newAngle);
                 intervals.pop();
             }
             else
             {
-                distances.add(oldAngle);
+                boolean wasClosest = (oldAngle == distances.getMin());
+                distances.remove(oldAngle);
+                if (wasClosest)
+                {
+                    flat.add(new AngleInterval(src, lastAngle, oldAngle.distanceFromLine(lastAngle),
+                        oldAngle.rightAngle, oldAngle.rightDist));
+                    lastAngle = oldAngle.rightAngle;
+                }
                 endAngles.pop();
             }
+            //System.out.println(distances);
+            System.out.println(oldAngle + " " + newAngle);
         }
         System.out.println(flat);
         return flat;
@@ -340,6 +372,7 @@ public class AngleElimination {
                 return 0;
             AngleInterval ai1 = (AngleInterval)o1;
             AngleInterval ai2 = (AngleInterval)o2;
+            if (ai1.rightAngle == ai2.rightAngle) return (int)(ai1.leftDist - ai2.leftDist);
             return (int)(ai1.rightAngle - ai2.rightAngle);
         }
     }

@@ -40,6 +40,7 @@ public class Heap<E> {
  */
     public E pop()
     {
+        if (isEmpty())  return null;
         E result = (E)array[0];
         switchNodes(0, heapSize - 1);
         heapSize--;
