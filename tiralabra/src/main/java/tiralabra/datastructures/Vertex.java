@@ -102,14 +102,26 @@ public class Vertex {
  */
     public boolean hasPointBetween(double leftAngle, double rightAngle, Vertex other)
     {
+        return hasAngleBetween(leftAngle, rightAngle, getDirection(other));
+    }
+/**
+ * Checks if specified angle is between the specified directions from
+ * this Vertex's point of view.
+ * @param leftAngle Specified vertex should be to the right of this direction.
+ * @param rightAngle Specified vertex should be to the left of this direction.
+ * @param testAngle Specified angle
+ * @return true if testAngle is between the angles.
+ */
+    public boolean hasAngleBetween(double leftAngle, double rightAngle, double testAngle)
+    {
         if (leftAngle >= rightAngle)
         {
-            if (getDirection(other) < leftAngle && getDirection(other) > rightAngle)
+            if (testAngle < leftAngle && testAngle > rightAngle)
                 return true;
         }
         else
         {
-            if (getDirection(other) > rightAngle || getDirection(other) < leftAngle)
+            if (testAngle > rightAngle || testAngle < leftAngle)
                 return true;
         }
         return false;

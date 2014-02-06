@@ -95,7 +95,12 @@ public class AngleElimination {
     private static LinkedList<AngleInterval> flattenIntervals(Vertex src)
     {
         LinkedList<AngleInterval> flat = new LinkedList<>();
-        Heap<AngleInterval> endAngles = new Heap<>(15, new EndDirectionComparator());
+        AngleInterval last = intervals.pop();
+        while (!intervals.isEmpty())
+        {
+            AngleInterval ai = intervals.pop();
+        }
+ /*       Heap<AngleInterval> endAngles = new Heap<>(15, new EndDirectionComparator());
         Tree<AngleInterval> distances = new Tree<>(new DistanceComparator());
         double lastAngle = -Math.PI;
         while (!intervals.isEmpty())
@@ -134,7 +139,7 @@ public class AngleElimination {
                 }
                 endAngles.pop();
             }
-        }
+        }*/
         System.out.println(flat);
         return flat;
     }
@@ -381,8 +386,19 @@ public class AngleElimination {
                 return 0;
             AngleInterval ai1 = (AngleInterval)o1;
             AngleInterval ai2 = (AngleInterval)o2;
-            if (ai1.leftDist == ai2.leftDist)   return (int)(ai1.rightDist - ai2.rightDist);
-            return (int)(ai1.leftDist - ai2.leftDist);
+            if (ai1.src.hasAngleBetween(ai1.rightAngle, ai1.leftAngle, ai2.leftAngle))
+            {
+                if (ai2.leftDist > ai1.distanceFromLine(ai2.leftDist))
+                    return -1;
+            }
+            if (ai2.src.hasAngleBetween(ai2.rightAngle, ai2.leftAngle, ai1.leftAngle))
+            {
+                if (ai1.leftDist > ai2.distanceFromLine(ai1.leftDist))
+                    return 1;
+            }
+            return 0;
+            //if (ai1.leftDist == ai2.leftDist)   return (int)(ai1.rightDist - ai2.rightDist);
+            //return (int)(ai1.leftDist - ai2.leftDist);
         }
     }
 }
