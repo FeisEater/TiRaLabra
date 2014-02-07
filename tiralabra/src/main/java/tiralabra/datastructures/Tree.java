@@ -31,6 +31,7 @@ public class Tree<E> {
     }
     private Comparator comparator;
     private Node root;
+    private int size;
 /**
  * Constructor.
  * @param comp Comparator class used for placing the element at the correct spot.
@@ -38,6 +39,7 @@ public class Tree<E> {
     public Tree(Comparator comp)
     {
         comparator = comp;
+        size = 0;
     }
 /**
  * 
@@ -53,6 +55,7 @@ public class Tree<E> {
     public void clear()
     {
         root = null;
+        size = 0;
     }
     public E getMin()
     {
@@ -69,6 +72,7 @@ public class Tree<E> {
     public void add(E e)
     {
         Node tobeAdded = new Node(e);
+        size++;
         if (root == null)
         {
             root = tobeAdded;
@@ -245,6 +249,7 @@ public class Tree<E> {
         Node u = find(e);
         if (u == null)  return;
         
+        size--;
         if (u.left == null && u.right == null)
             removeNodeWithoutChildren(u);
         else if (u.left != null && u.right != null)
@@ -452,6 +457,10 @@ public class Tree<E> {
             if (u.right != null)   q.enqueue(u.right);
         }
         return result;
+    }
+    public int size()
+    {
+        return size;
     }
     @Override
     public String toString()
