@@ -42,6 +42,8 @@ public class AngleElimination {
         while (list.hasNext())
         {
             AngleInterval ai = list.getNext();
+            if ((int)ai.leftDist == 0 && (int)ai.rightDist == 0)
+                continue;
             g.drawLine((int)(ai.src.X() + Math.cos(ai.leftAngle) * ai.leftDist),
                     (int)(ai.src.Y() + Math.sin(ai.leftAngle) * ai.leftDist),
                     (int)(ai.src.X() + Math.cos(ai.rightAngle) * ai.rightDist),
@@ -98,15 +100,16 @@ public class AngleElimination {
         Heap<AngleInterval> endAngles = new Heap<>(15, new EndDirectionComparator());
         Tree<AngleInterval> distances = new Tree<>(new DistanceComparator());
         double lastAngle = -Math.PI;
-        while (!intervals.isEmpty())
+        while (!intervals.isEmpty() || !endAngles.isEmpty())
         {
             AngleInterval newAngle = intervals.peek();
-            while (!endAngles.isEmpty() && lastAngle > endAngles.peek().rightAngle)
+            while (!endAngles.isEmpty() && lastAngle - endAngles.peek().rightAngle > 0 && lastAngle - endAngles.peek().rightAngle < Math.PI)
                 distances.remove(endAngles.pop());
+            if (intervals.isEmpty() && endAngles.isEmpty())    break;
             AngleInterval oldAngle = endAngles.peek();
             Comparator comp = new DistanceComparator();
-            System.out.println(intervals + "stuff: " + distances.size() + " " + distances.getMin());
-            if (oldAngle == null || newAngle.leftAngle < oldAngle.rightAngle)
+            System.out.println(newAngle + " " + oldAngle);
+            if (newAngle != null && (oldAngle == null || newAngle.leftAngle < oldAngle.rightAngle))
             {
                 if (endAngles.isEmpty())
                     lastAngle = newAngle.leftAngle;
@@ -317,6 +320,7 @@ public class AngleElimination {
  */
         public double distanceFromLine(double testAngle)
         {
+            if (leftDist <= 0 && rightDist <= 0)    return 0;
             double x1 = leftDist * Math.cos(leftAngle);
             double y1 = leftDist * Math.sin(leftAngle);
             double x2 = rightDist * Math.cos(rightAngle);
@@ -355,7 +359,7 @@ public class AngleElimination {
                     return 1;
                 return -1;
             }
-            return (int)(ai1.leftAngle - ai2.leftAngle);
+            return (ai1.leftAngle < ai2.leftAngle) ? -1 : 1;
         }
     }
 /**
@@ -376,7 +380,11 @@ public class AngleElimination {
                     return 1;
                 return -1;
             }
-            return (int)(ai1.rightAngle - ai2.rightAngle);
+            /*boolean b1 = (ai1.rightAngle < ai1.leftAngle);
+            boolean b2 = (ai2.rightAngle < ai2.leftAngle);
+            if (b1 == !b2)
+                return (ai1.rightAngle < ai2.rightAngle) ? 1 : -1;*/
+            return (ai1.rightAngle < ai2.rightAngle) ? -1 : 1;
         }
     }
 /**
@@ -422,10 +430,7 @@ public class AngleElimination {
                 return 1;
             if (ai1.rightAngle == ai2.leftAngle && ai1.rightDist == ai2.leftDist)
                 return -1;
-            System.out.println("you fucked up");
             return 0;
-            //if (ai1.leftDist == ai2.leftDist)   return (int)(ai1.rightDist - ai2.rightDist);
-            //return (int)(ai1.leftDist - ai2.leftDist);
         }
     }
 }

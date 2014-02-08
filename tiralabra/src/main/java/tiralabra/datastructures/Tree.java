@@ -16,16 +16,16 @@ public class Tree<E> {
 /**
  * Element of the tree.
  */
-    private class Node
+    protected class Node
     {
         public Node left;
         public Node right;
         public Node parent;
-        public E value;
+        public E key;
         public boolean isRed;
         public Node(E e)
         {
-            value = e;
+            key = e;
             isRed = true;
         }
     }
@@ -63,7 +63,7 @@ public class Tree<E> {
         Node n = root;
         while (n.left != null)
             n = n.left;
-        return n.value;
+        return n.key;
     }
 /**
  * Adds an element to the tree.
@@ -71,7 +71,10 @@ public class Tree<E> {
  */
     public void add(E e)
     {
-        Node tobeAdded = new Node(e);
+        add(new Node(e));
+    }
+    protected void add(Node tobeAdded)
+    {
         size++;
         if (root == null)
         {
@@ -92,7 +95,7 @@ public class Tree<E> {
         Node u = root;
         while (true)
         {
-            if (comparator.compare(tobeAdded.value, u.value) < 0)
+            if (comparator.compare(tobeAdded.key, u.key) < 0)
             {
                 if (u.left == null)
                 {
@@ -280,7 +283,7 @@ public class Tree<E> {
     private void removeNodeWithTwoChildren(Node u)
     {
         Node n = getNext(u);
-        u.value = n.value;
+        u.key = n.key;
         Node removedsRight = n.right;
         if (n.parent == u)
         {
@@ -426,13 +429,13 @@ public class Tree<E> {
  * @param e Element that is to be found.
  * @return Node where element is stored.
  */
-    private Node find(E e)
+    protected Node find(E e)
     {
         if (isEmpty())  return null;
         Node u = root;
-        while (u.value != e)
+        while (u.key != e)
         {
-            if (comparator.compare(e, u.value) < 0)
+            if (comparator.compare(e, u.key) < 0)
                 u = u.left;
             else    u = u.right;
             if (u == null)  return null;
@@ -452,7 +455,7 @@ public class Tree<E> {
         while (!q.isEmpty())
         {
             Node u = q.dequeue();
-            result.add(u.value);
+            result.add(u.key);
             if (u.left != null)   q.enqueue(u.left);
             if (u.right != null)   q.enqueue(u.right);
         }
@@ -478,9 +481,9 @@ public class Tree<E> {
                 firstOnLevel = null;
                 result += "\n";
             }
-            if (u != root)  result += u.parent.value + "->";
+            if (u != root)  result += u.parent.key + "->";
             if (u.isRed)    result += "r";
-            result += u.value + " ";
+            result += u.key + " ";
             if (u.left != null)   q.enqueue(u.left);
             if (u.right != null)   q.enqueue(u.right);
             if (firstOnLevel == null)   firstOnLevel = (u.left == null) ? u.right : u.left;
@@ -513,7 +516,7 @@ public class Tree<E> {
         if (n.left != null)   g.drawLine(x+16, y * 64 + 16, x - 128 / y + 16, (y+1) * 64 + 16);
         if (n.right != null)   g.drawLine(x+16, y * 64 + 16, x + 128 / y + 16, (y+1) * 64 + 16);
         g.setFont(new Font("Serif", Font.BOLD, 32));
-        g.drawString(n.value.toString(), x, y * 64);
+        g.drawString(n.key.toString(), x, y * 64);
         drawNode(n.left, g, x - 128 / y, y+1);
         drawNode(n.right, g, x + 128 / y, y+1);
     }
