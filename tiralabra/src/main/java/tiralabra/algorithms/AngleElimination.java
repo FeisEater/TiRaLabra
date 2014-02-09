@@ -110,7 +110,7 @@ public class AngleElimination {
         while (!startAngles.isEmpty() || !endAngles.isEmpty())
         {
             AngleInterval newAngle = startAngles.peek();
-            while (!endAngles.isEmpty() && lastAngle - endAngles.peek().rightAngle > 0 && lastAngle - endAngles.peek().rightAngle < Math.PI && endAngles.peek().leftAngle < endAngles.peek().rightAngle)
+            while (!endAngles.isEmpty() && lastAngle > endAngles.peek().rightAngle && endAngles.peek().leftAngle < endAngles.peek().rightAngle)
                 distances.remove(endAngles.pop());
             if (startAngles.isEmpty() && endAngles.isEmpty())    break;
             AngleInterval oldAngle = endAngles.peek();
