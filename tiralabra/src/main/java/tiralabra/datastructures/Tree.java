@@ -57,6 +57,10 @@ public class Tree<E> {
         root = null;
         size = 0;
     }
+/**
+ * 
+ * @return smallest element in a tree.
+ */
     public E getMin()
     {
         if (isEmpty())  return null;
@@ -73,6 +77,10 @@ public class Tree<E> {
     {
         add(new Node(e));
     }
+/**
+ * Adds an element to the tree.
+ * @param tobeAdded Added node.
+ */
     protected void add(Node tobeAdded)
     {
         if (!contains(tobeAdded.key))   size++;
@@ -444,6 +452,11 @@ public class Tree<E> {
         }
         return u;
     }
+/**
+ * True if tree contains the specified element.
+ * @param e specified element
+ * @return true if tree contains the specified element.
+ */
     public boolean contains(E e)
     {
         return find(e) != null;
@@ -467,6 +480,10 @@ public class Tree<E> {
         }
         return result;
     }
+/**
+ * 
+ * @return amount of elements in the tree.
+ */
     public int size()
     {
         return size;

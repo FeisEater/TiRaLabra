@@ -9,6 +9,9 @@ import java.util.Comparator;
  */
 public class TreeMap<K, V> extends Tree {
     public TreeMap(Comparator comp) {super(comp);}
+/**
+ * Element of the treemap.
+ */
     protected class MapNode extends Tree.Node
     {
         public MapNode(K k, V v)
@@ -18,12 +21,23 @@ public class TreeMap<K, V> extends Tree {
         }
         public V value;
     }
+/**
+ * Retrieves element by the key.
+ * @param key Key of the element.
+ * @return Value of the element.
+ */
     public V get(K key)
     {
         MapNode n = (MapNode)find(key);
         if (n == null)  return null;
         return n.value;
     }
+/**
+ * Adds a new key-value pair to the map. If map has an element of the
+ * given key, changes that element's value.
+ * @param key Key of the element.
+ * @param value Value of the element.
+ */
     public void put(K key, V value)
     {
         if (contains(key))

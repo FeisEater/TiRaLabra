@@ -44,6 +44,10 @@ public class Queue<E> {
         if (isEmpty())  tail = null;
         return result;
     }
+/**
+ * Retrieves the first element in a queue without making changes in the queue.
+ * @return first element of the queue.
+ */
     public E peek()
     {
         if (isEmpty())  return null;
