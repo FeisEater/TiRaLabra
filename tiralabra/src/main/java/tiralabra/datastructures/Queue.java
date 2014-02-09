@@ -44,6 +44,12 @@ public class Queue<E> {
         if (isEmpty())  tail = null;
         return result;
     }
+    public E peek()
+    {
+        if (isEmpty())  return null;
+        E result = head.getValue();
+        return result;
+    }
 /**
  * Removes all elements in the queue.
  */

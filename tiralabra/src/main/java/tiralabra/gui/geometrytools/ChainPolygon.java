@@ -4,11 +4,11 @@ package tiralabra.gui.geometrytools;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.event.MouseEvent;
-import java.util.Map;
 import tiralabra.VertexContainer;
 import tiralabra.algorithms.AngleElimination;
 import tiralabra.algorithms.Dijkstra;
 import tiralabra.datastructures.Point;
+import tiralabra.datastructures.TreeMap;
 import tiralabra.datastructures.Vertex;
 import tiralabra.gui.GraphicInterface;
 import tiralabra.gui.MouseInput;
@@ -21,7 +21,7 @@ import tiralabra.gui.MouseInput;
 public class ChainPolygon extends MouseInput {
     private Point begin;
     private Point prev;
-    private Map<Vertex, Vertex> previousPoint;
+    private TreeMap<Vertex, Vertex> previousPoint;
     private boolean wallmode;
     public ChainPolygon(VertexContainer p, GraphicInterface gui)
     {
@@ -106,7 +106,7 @@ public class ChainPolygon extends MouseInput {
         points.setShapeMode(begin, wallmode);
         begin = null;
         prev = null;
-        //points.buildGraph();
+        points.buildGraph();
     }
 /**
  * Draws information specific to mouse tool mode.

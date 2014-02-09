@@ -4,9 +4,6 @@ package tiralabra.gui;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
-import java.util.Comparator;
-import java.util.HashSet;
-import java.util.Set;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.WindowConstants;
@@ -19,6 +16,7 @@ import tiralabra.datastructures.Vertex;
 import tiralabra.gui.geometrytools.BuildGraph;
 import tiralabra.gui.geometrytools.ChainPolygon;
 import tiralabra.util.Const;
+import tiralabra.util.VertexComparator;
 
 /**
  * Plain graphic interface to visualise the going-ons of the program
@@ -55,7 +53,7 @@ public class GraphicInterface extends JPanel implements Runnable {
     {
         super.paintComponent(g);
         fillPolygon(g);
-        //fillUnobstructedArea(g, 8);
+        //fillUnobstructedArea(g, 4);
         LinkedList<Vertex> vertices = points.getVertices().toLinkedList();
         while (vertices.hasNext())
             drawPoint(g, vertices.getNext());
@@ -70,8 +68,9 @@ public class GraphicInterface extends JPanel implements Runnable {
  */
     public void drawPoint(Graphics g, Vertex point)
     {
-        for (Vertex adj : point.getAdjacents())
-            drawEdge(g, Color.red, point, adj);
+        LinkedList<Vertex> list = point.getAdjacents().toLinkedList();
+        while (list.hasNext())
+            drawEdge(g, Color.red, point, list.getNext());
         g.setColor(currentTool.chooseColorByPoint(point));
         g.fillOval((int)point.X() - Const.pointWidth / 2, 
             (int)point.Y() - Const.pointWidth / 2,
@@ -104,7 +103,7 @@ public class GraphicInterface extends JPanel implements Runnable {
  */
     public void fillPolygon(Graphics g)
     {
-        Set<Point> used = new HashSet<>();
+        Tree<Point> used = new Tree<>(new VertexComparator());
         LinkedList<Vertex> vertices = points.getVertices().toLinkedList();
         while (vertices.hasNext())
         {
@@ -143,7 +142,7 @@ public class GraphicInterface extends JPanel implements Runnable {
  * @param used Set of points that were already processed.
  * @return true if coordinates were retrieved correctly.
  */
-    public boolean retrieveCoordinatesFromPolygon(Point first, LinkedList<Integer> x, LinkedList<Integer> y, Set<Point> used)
+    public boolean retrieveCoordinatesFromPolygon(Point first, LinkedList<Integer> x, LinkedList<Integer> y, Tree<Point> used)
     {
         Point q = first;
         do

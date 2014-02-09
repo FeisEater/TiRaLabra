@@ -1,8 +1,6 @@
 
 package tiralabra.util;
 
-import tiralabra.datastructures.Vertex;
-
 /**
  * Miscelanneous small scale algorithms used throughout the program.
  * @author Pavel

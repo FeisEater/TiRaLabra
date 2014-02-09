@@ -1,34 +1,19 @@
 
 package tiralabra;
 
-import java.util.Comparator;
 import tiralabra.algorithms.AngleElimination;
 import tiralabra.datastructures.LinkedList;
 import tiralabra.datastructures.Point;
 import tiralabra.datastructures.Tree;
 import tiralabra.datastructures.Vertex;
 import tiralabra.util.Tools;
+import tiralabra.util.VertexComparator;
 
 /**
  * Contains all vertices and points created in the program.
  * @author Pavel
  */
 public class VertexContainer {
-/**
- * Comparator class for placing vertices in a search tree.
- * Vertices are compared by their coordinates.
- */
-    private class VertexComparator implements Comparator
-    {
-        @Override
-        public int compare(Object o1, Object o2)
-        {
-            Vertex v1 = (Vertex)o1;
-            Vertex v2 = (Vertex)o2;
-            if (v1.X() == v2.X())   return (v1.Y() < v2.Y()) ? -1 : 1;
-            return (v1.X() < v2.X()) ? -1 : 1;
-        }
-    }
     private Tree<Vertex> vertices = new Tree<>(new VertexComparator());
     public Tree<Vertex> getVertices()  {return vertices;}
 /**
@@ -92,8 +77,9 @@ public class VertexContainer {
         {
             Vertex v = vlist.getNext();
             if (!v.isVertex())  continue;
-            for (Vertex w : AngleElimination.findUnobstructedPoints(v, vertices.toLinkedList()))
-                v.addAdjacent(w);
+            LinkedList<Vertex> graphList = AngleElimination.findUnobstructedPoints(v, vertices.toLinkedList());
+            while (graphList.hasNext())
+                v.addAdjacent(graphList.getNext());
         }
     }
 /**

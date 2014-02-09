@@ -4,9 +4,9 @@ package tiralabra.gui.geometrytools;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.event.MouseEvent;
-import java.util.Map;
 import tiralabra.VertexContainer;
 import tiralabra.algorithms.Dijkstra;
+import tiralabra.datastructures.TreeMap;
 import tiralabra.datastructures.Vertex;
 import tiralabra.gui.GraphicInterface;
 import tiralabra.gui.MouseInput;
@@ -18,7 +18,7 @@ import tiralabra.gui.MouseInput;
  */
 public class BuildGraph extends MouseInput {
     private Vertex edgeend;
-    private Map<Vertex, Vertex> previousPoint;
+    private TreeMap<Vertex, Vertex> previousPoint;
     public BuildGraph(VertexContainer p, GraphicInterface gui)
         {super(p, gui);}
     @Override

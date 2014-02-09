@@ -2,20 +2,20 @@
 package tiralabra.algorithms;
 
 import java.util.Comparator;
-import java.util.HashMap;
-import java.util.Map;
 import tiralabra.datastructures.Heap;
 import tiralabra.datastructures.LinkedList;
 import tiralabra.datastructures.Vertex;
 import tiralabra.datastructures.Point;
+import tiralabra.datastructures.TreeMap;
+import tiralabra.util.VertexComparator;
 
 /**
  * Dijkstra's algorithm for finding the shortest path in a graph.
  * @author Pavel
  */
 public class Dijkstra {
-    private static Map<Vertex, Double> shortestPaths = new HashMap<>();
-    private static Map<Vertex, Vertex> previousPoint = new HashMap<>();
+    private static TreeMap<Vertex, Double> shortestPaths = new TreeMap<>(new VertexComparator());
+    private static TreeMap<Vertex, Vertex> previousPoint = new TreeMap<>(new VertexComparator());
 /**
  * Runs the algorithm.
  * @param begin Beginning vertex from which the path is generated.
@@ -25,7 +25,7 @@ public class Dijkstra {
  *          find destination vertex on the map and call the value recursively
  *          until you get the source vertex. Note that this is the reverse order.
  */
-    public static Map<Vertex, Vertex> getShortestPaths(Vertex begin, LinkedList<Vertex> originalPoints)
+    public static TreeMap<Vertex, Vertex> getShortestPaths(Vertex begin, LinkedList<Vertex> originalPoints)
     {
         Heap<Vertex> points = initialize(begin, originalPoints);
         while (!points.isEmpty())
@@ -43,7 +43,7 @@ public class Dijkstra {
     {
         shortestPaths.clear();
         previousPoint.clear();
-        Heap<Vertex> dijkstrapoints = new Heap<>(15, new pointComparator());
+        Heap<Vertex> dijkstrapoints = new Heap<>(15, new DijkstraComparator());
         while (points.hasNext())
         {
             Vertex p = points.getNext();
@@ -60,8 +60,10 @@ public class Dijkstra {
     private static void relaxEdgesOnNextInHeap(Heap<Vertex> points)
     {
         Vertex p = points.pop();
-        for (Vertex adj : p.getAdjacents())
+        LinkedList<Vertex> list = p.getAdjacents().toLinkedList();
+        while (list.hasNext())
         {
+            Vertex adj = list.getNext();
             int oldPlace = points.findValue(adj);
             if (oldPlace == -1)  continue;
             
@@ -77,7 +79,7 @@ public class Dijkstra {
  * Comparator for the vertex heap. Vertex with shortest path length estimate
  * is first on the heap.
  */
-    private static class pointComparator implements Comparator
+    private static class DijkstraComparator implements Comparator
     {
         @Override
         public int compare(Object o1, Object o2)
@@ -85,7 +87,7 @@ public class Dijkstra {
             if ((o1.getClass() != Vertex.class && o1.getClass() != Point.class) ||
                 (o2.getClass() != Vertex.class && o2.getClass() != Point.class))
                 return 0;
-            return (int)(shortestPaths.get((Vertex)o1) - shortestPaths.get((Vertex)o2));
+            return (shortestPaths.get((Vertex)o1) < shortestPaths.get((Vertex)o2)) ? -1 : 1;
         }
     }
 }

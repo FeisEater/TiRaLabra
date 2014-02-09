@@ -1,8 +1,7 @@
 
 package tiralabra.datastructures;
 
-import java.util.HashSet;
-import java.util.Set;
+import tiralabra.util.VertexComparator;
 
 /**
  * Vertex in a graph.
@@ -11,7 +10,7 @@ import java.util.Set;
 public class Vertex {
     private double x;
     private double y;
-    private Set<Vertex> adjacent;
+    private Tree<Vertex> adjacent;
 /**
  * Constructor.
  * @param x X coordinate at which vertex is created.
@@ -21,7 +20,7 @@ public class Vertex {
     {
         this.x = x;
         this.y = y;
-        adjacent = new HashSet<>();
+        adjacent = new Tree<>(new VertexComparator());
     }
     public double X()   {return x;}
     public double Y()   {return y;}
@@ -50,7 +49,7 @@ public class Vertex {
  * 
  * @return Set of vertices that are connected with this vertex.
  */
-    public Set<Vertex> getAdjacents()
+    public Tree<Vertex> getAdjacents()
     {
         return adjacent;
     }
@@ -59,8 +58,9 @@ public class Vertex {
  */
     public void removeAllAdjacents()
     {
-        for (Vertex v : adjacent)
-            v.adjacent.remove(this);
+        LinkedList<Vertex> list = adjacent.toLinkedList();
+        while (list.hasNext())
+            list.getNext().adjacent.remove(this);
         adjacent.clear();
     }
 /**
@@ -131,4 +131,5 @@ public class Vertex {
     {
         return "" + x + " " + y;
     }
+
 }

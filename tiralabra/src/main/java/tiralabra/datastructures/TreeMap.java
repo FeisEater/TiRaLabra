@@ -26,6 +26,27 @@ public class TreeMap<K, V> extends Tree {
     }
     public void put(K key, V value)
     {
-        add(new MapNode(key, value));
+        if (contains(key))
+        {
+            MapNode mn = (MapNode)find(key);
+            mn.value = value;
+        }
+        else
+            add(new MapNode(key, value));
+    }
+    @Override
+    public String toString()
+    {
+        String result = "[";
+        Queue<MapNode> q = new Queue<>();
+        q.enqueue((MapNode)root);
+        while (!q.isEmpty())
+        {
+            MapNode n = q.dequeue();
+            if (n.left != null) q.enqueue((MapNode)n.left);
+            if (n.right != null) q.enqueue((MapNode)n.right);
+            result += n.key + "=" + n.value + ", ";
+        }
+        return result + "]";
     }
 }

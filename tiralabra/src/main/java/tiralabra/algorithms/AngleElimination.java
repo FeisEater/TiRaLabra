@@ -3,12 +3,11 @@ package tiralabra.algorithms;
 
 import java.awt.Color;
 import java.awt.Graphics;
-import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.List;
 import tiralabra.datastructures.Heap;
 import tiralabra.datastructures.LinkedList;
 import tiralabra.datastructures.Point;
+import tiralabra.datastructures.Queue;
 import tiralabra.datastructures.Tree;
 import tiralabra.datastructures.Vertex;
 
@@ -17,26 +16,24 @@ import tiralabra.datastructures.Vertex;
  * @author Pavel
  */
 public class AngleElimination {
-    private static Heap<AngleInterval> intervals = new Heap<>(15, new DirectionComparator());
-    private static LinkedList<AngleInterval> list = new LinkedList<>();
-    /**
+    private static LinkedList<AngleInterval> list;
+/**
  * Finds all vertices that are unobstructed from a specified vertex's
  * point of view.
  * @param src Vertex from which algorithm is tracing.
  * @param vertices A set of all vertices in the program
  * @return Set of vertices that are unobstructed from src.
  */
-    public static List<Vertex> findUnobstructedPoints(Vertex src, LinkedList<Vertex> vertices)
+    public static LinkedList<Vertex> findUnobstructedPoints(Vertex src, LinkedList<Vertex> vertices)
     {
-        intervals.clear(15);
         if (src == null)  return null;
-        findIntervals(src, vertices);
-        list = flattenIntervals(src);
-        //return getUnobstructedVertices(src, vertices);
-        return new ArrayList<>();
+        Heap<AngleInterval> allIntervals = findIntervals(src, vertices);
+        list = flattenIntervals(src, allIntervals);
+        return getUnobstructedVertices(src, vertices);
     }
     public static void visualize(Graphics g)
     {
+        if (list == null)   return;
         list.reset();
         g.setColor(Color.black);
         while (list.hasNext())
@@ -57,9 +54,12 @@ public class AngleElimination {
  */
     public static boolean isObstructed(Vertex test)
     {
-        for (int i = 0; i < intervals.size(); i++)
+        //System.out.println(list);
+        if (list == null)   return true;
+        list.reset();
+        while (list.hasNext())
         {
-            AngleInterval ai = (AngleInterval)intervals.getArray()[i];
+            AngleInterval ai = list.getNext();
             if (ai.vertexIsObstructed(test))
                 return true;
         }
@@ -71,8 +71,9 @@ public class AngleElimination {
  * @param src Vertex, which becomes a center of the sectors.
  * @param vertices A set of all vertices in the program
  */
-    private static void findIntervals(Vertex src, LinkedList<Vertex> vertices)
+    private static Heap<AngleInterval> findIntervals(Vertex src, LinkedList<Vertex> vertices)
     {
+        Heap<AngleInterval> intervals = new Heap<>(15, new DirectionComparator());
 //if src is Point, wall part of the angle should be a sector where everything
 //is obstructed, no matter how close the other vertex is.
         if (src.getClass() == Point.class)
@@ -90,54 +91,63 @@ public class AngleElimination {
             intervals.insert(ai);
         }
         vertices.reset();
+        return intervals;
     }
 /**
  * Removes redundant sectors and overlapping.
  */
-    private static LinkedList<AngleInterval> flattenIntervals(Vertex src)
+    private static LinkedList<AngleInterval> flattenIntervals(Vertex src, Heap<AngleInterval> startAngles)
     {
-        LinkedList<AngleInterval> flat = new LinkedList<>();
+        int opt = startAngles.size();
+        Queue<AngleInterval> flat = new Queue<>();
+//Uncomment this if the code won't work!
+        //while (!startAngles.isEmpty())
+        //    flat.add(startAngles.pop());
+//Now, ladies and gentlemen, give it up for the shittiest code in the world!
         Heap<AngleInterval> endAngles = new Heap<>(15, new EndDirectionComparator());
         Tree<AngleInterval> distances = new Tree<>(new DistanceComparator());
         double lastAngle = -Math.PI;
-        while (!intervals.isEmpty() || !endAngles.isEmpty())
+        while (!startAngles.isEmpty() || !endAngles.isEmpty())
         {
-            AngleInterval newAngle = intervals.peek();
-            while (!endAngles.isEmpty() && lastAngle - endAngles.peek().rightAngle > 0 && lastAngle - endAngles.peek().rightAngle < Math.PI)
+            AngleInterval newAngle = startAngles.peek();
+            while (!endAngles.isEmpty() && lastAngle - endAngles.peek().rightAngle > 0 && lastAngle - endAngles.peek().rightAngle < Math.PI && endAngles.peek().leftAngle < endAngles.peek().rightAngle)
                 distances.remove(endAngles.pop());
-            if (intervals.isEmpty() && endAngles.isEmpty())    break;
+            if (startAngles.isEmpty() && endAngles.isEmpty())    break;
             AngleInterval oldAngle = endAngles.peek();
             Comparator comp = new DistanceComparator();
-            System.out.println(newAngle + " " + oldAngle);
             if (newAngle != null && (oldAngle == null || newAngle.leftAngle < oldAngle.rightAngle))
             {
                 if (endAngles.isEmpty())
                     lastAngle = newAngle.leftAngle;
-                else if (comp.compare(newAngle, distances.getMin()) < 0)
+                else if (comp.compare(newAngle, distances.getMin()) < 0 && lastAngle != newAngle.leftAngle)
                 {
-                    flat.add(new AngleInterval(src, lastAngle, distances.getMin().distanceFromLine(lastAngle),
+                    flat.enqueue(new AngleInterval(src, lastAngle, distances.getMin().distanceFromLine(lastAngle),
                         newAngle.leftAngle, distances.getMin().distanceFromLine(newAngle.leftAngle)));
                     lastAngle = newAngle.leftAngle;
                 }
                 distances.add(newAngle);
                 endAngles.insert(newAngle);
-                intervals.pop();
+                startAngles.pop();
             }
             else
             {
                 boolean wasClosest = (oldAngle == distances.getMin());
                 distances.remove(oldAngle);
-                if (wasClosest)
+                if (wasClosest && lastAngle != oldAngle.rightAngle)
                 {
-                    flat.add(new AngleInterval(src, lastAngle, oldAngle.distanceFromLine(lastAngle),
+                    flat.enqueue(new AngleInterval(src, lastAngle, oldAngle.distanceFromLine(lastAngle),
                         oldAngle.rightAngle, oldAngle.rightDist));
                     lastAngle = oldAngle.rightAngle;
                 }
+                //if (oldAngle.leftAngle > oldAngle.rightAngle && oldAngle.distanceFromLine(flat.peek().leftAngle) < flat.peek().leftDist)
+                //    flat.dequeue();
                 endAngles.pop();
             }
         }
-        System.out.println(flat);
-        return flat;
+        LinkedList<AngleInterval> result = new LinkedList<>();
+        while (!flat.isEmpty())
+            result.add(flat.dequeue());
+        return result;
     }
 /**
  * Finds unobstructed vertices based on generated sectors.
@@ -145,9 +155,9 @@ public class AngleElimination {
  * @param vertices A set of all vertices in the program
  * @return set of unobstructed vertices.
  */
-    private static List<Vertex> getUnobstructedVertices(Vertex src, LinkedList<Vertex> vertices)
+    private static LinkedList<Vertex> getUnobstructedVertices(Vertex src, LinkedList<Vertex> vertices)
     {
-        List<Vertex> unobstructed = new ArrayList<>();
+        LinkedList<Vertex> unobstructed = new LinkedList<>();
         if (src.getClass() == Point.class)
             addNeighbours((Point)src, unobstructed);
         while (vertices.hasNext())
@@ -166,7 +176,7 @@ public class AngleElimination {
  * @param src Point, whose neighbours will be added.
  * @param unobstructed List of unobstructed vertices.
  */
-    private static void addNeighbours(Point src, List<Vertex> unobstructed)
+    private static void addNeighbours(Point src, LinkedList<Vertex> unobstructed)
     {
         if (src.getLeft().isVertex())
             unobstructed.add(src.getLeft());
@@ -363,7 +373,7 @@ public class AngleElimination {
         }
     }
 /**
- * Comparator class for placing sectors in a heap based on their starting direction.
+ * Comparator class for placing sectors in a heap based on their ending direction.
  */
     private static class EndDirectionComparator implements Comparator
     {
@@ -380,10 +390,10 @@ public class AngleElimination {
                     return 1;
                 return -1;
             }
-            /*boolean b1 = (ai1.rightAngle < ai1.leftAngle);
+            boolean b1 = (ai1.rightAngle < ai1.leftAngle);
             boolean b2 = (ai2.rightAngle < ai2.leftAngle);
             if (b1 == !b2)
-                return (ai1.rightAngle < ai2.rightAngle) ? 1 : -1;*/
+                return (ai1.rightAngle < ai2.rightAngle) ? 1 : -1;
             return (ai1.rightAngle < ai2.rightAngle) ? -1 : 1;
         }
     }
@@ -399,9 +409,12 @@ public class AngleElimination {
                 return 0;
             AngleInterval ai1 = (AngleInterval)o1;
             AngleInterval ai2 = (AngleInterval)o2;
+            boolean b1 = (ai1.rightAngle < ai1.leftAngle);
+            boolean b2 = (ai2.rightAngle < ai2.leftAngle);
+            boolean b3 = (b1 == b2) ? (ai2.rightAngle < ai1.rightAngle) : (ai2.rightAngle > ai1.rightAngle);
             if (ai1.leftAngle == ai2.leftAngle && ai1.leftDist == ai2.leftDist)
             {
-                if (ai2.rightAngle < ai1.rightAngle)
+                if (b3)
                 {
                     if (ai2.rightDist < ai1.distanceFromLine(ai2.rightAngle))
                         return 1;
@@ -430,6 +443,8 @@ public class AngleElimination {
                 return 1;
             if (ai1.rightAngle == ai2.leftAngle && ai1.rightDist == ai2.leftDist)
                 return -1;
+            if (ai1.leftAngle == ai2.leftAngle)
+                return (ai1.leftDist < ai2.leftDist) ? -1 : 1;
             return 0;
         }
     }

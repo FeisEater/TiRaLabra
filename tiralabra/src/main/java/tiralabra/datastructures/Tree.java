@@ -30,7 +30,7 @@ public class Tree<E> {
         }
     }
     private Comparator comparator;
-    private Node root;
+    protected Node root;
     private int size;
 /**
  * Constructor.
@@ -75,7 +75,7 @@ public class Tree<E> {
     }
     protected void add(Node tobeAdded)
     {
-        size++;
+        if (!contains(tobeAdded.key))   size++;
         if (root == null)
         {
             root = tobeAdded;
@@ -250,7 +250,8 @@ public class Tree<E> {
     public void remove(E e)
     {
         Node u = find(e);
-        if (u == null)  return;
+        if (u == null)
+            return;
         
         size--;
         if (u.left == null && u.right == null)
@@ -431,7 +432,8 @@ public class Tree<E> {
  */
     protected Node find(E e)
     {
-        if (isEmpty())  return null;
+        if (isEmpty())
+            return null;
         Node u = root;
         while (u.key != e)
         {
@@ -441,6 +443,10 @@ public class Tree<E> {
             if (u == null)  return null;
         }
         return u;
+    }
+    public boolean contains(E e)
+    {
+        return find(e) != null;
     }
 /**
  * Forms a list of elements in the tree.
@@ -464,6 +470,16 @@ public class Tree<E> {
     public int size()
     {
         return size;
+    }
+    @Override
+    public boolean equals(Object o)
+    {
+        if (o.getClass() != Tree.class) return false;
+        Tree t = (Tree)o;
+        LinkedList list = toLinkedList();
+        while (list.hasNext())
+            if (!t.contains(list.getNext()))    return false;
+        return size == t.size();
     }
     @Override
     public String toString()

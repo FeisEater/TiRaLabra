@@ -17,6 +17,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import tiralabra.datastructures.Tree;
+import tiralabra.datastructures.TreeMap;
 import tiralabra.datastructures.Vertex;
 
 /**
@@ -73,7 +74,7 @@ public class DijkstraTest {
         v4.addAdjacent(v2);
         v4.addAdjacent(v3);
 
-        Map<Vertex, Vertex> paths = Dijkstra.getShortestPaths(v2, vertices.toLinkedList());
+        TreeMap<Vertex, Vertex> paths = Dijkstra.getShortestPaths(v2, vertices.toLinkedList());
         assertTrue(""+paths, paths.get(v3) == v1 && paths.get(v1) == v2);
     }
 }

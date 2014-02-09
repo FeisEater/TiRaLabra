@@ -1,8 +1,6 @@
 
 package tiralabra;
 
-import java.util.HashSet;
-import java.util.Set;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -10,7 +8,9 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import tiralabra.datastructures.Point;
+import tiralabra.datastructures.Tree;
 import tiralabra.datastructures.Vertex;
+import tiralabra.util.VertexComparator;
 
 /**
  *
@@ -94,7 +94,7 @@ public class VertexContainerTest {
         }
         assertTrue(true);
     }
-/*    @Test
+    @Test
     public void buildsGraph()
     {
         Point p1 = vc.addPoint(0,0);
@@ -119,14 +119,16 @@ public class VertexContainerTest {
         
         vc.buildGraph();
 
-        Set<Vertex> testadj1 = new HashSet<>();
-        Set<Vertex> testadj2 = new HashSet<>();
-        Set<Vertex> testadj3 = new HashSet<>();
-        Set<Vertex> testadj4 = new HashSet<>();
-        Set<Vertex> testadj5 = new HashSet<>();
-        Set<Vertex> testadj6 = new HashSet<>();
+        Tree<Vertex> testadj1 = new Tree<>(new VertexComparator());
+        Tree<Vertex> testadj2 = new Tree<>(new VertexComparator());
+        Tree<Vertex> testadj3 = new Tree<>(new VertexComparator());
+        Tree<Vertex> testadj4 = new Tree<>(new VertexComparator());
+        Tree<Vertex> testadj5 = new Tree<>(new VertexComparator());
+        Tree<Vertex> testadj6 = new Tree<>(new VertexComparator());
         testadj1.add(p2);
         testadj1.add(p3);
+        //testadj1.add(p5);   //remove this
+        //testadj1.add(p6);   //remove this
         testadj2.add(p1);
         testadj2.add(p5);
         testadj2.add(p4);
@@ -142,17 +144,19 @@ public class VertexContainerTest {
         testadj5.add(p2);
         testadj5.add(p4);
         testadj5.add(p6);
+        //testadj5.add(p1);   //remove this
         testadj6.add(p5);
         testadj6.add(p4);
         testadj6.add(p3);
-
+        //testadj6.add(p1);   //remove this
+        
         assertTrue(p1.getAdjacents().equals(testadj1) &&
                 p2.getAdjacents().equals(testadj2) &&
                 p3.getAdjacents().equals(testadj3) &&
                 p4.getAdjacents().equals(testadj4) &&
                 p5.getAdjacents().equals(testadj5) &&
                 p6.getAdjacents().equals(testadj6));
-    }*/
+    }
     @Test
     public void recognisesWall()
     {
