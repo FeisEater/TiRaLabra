@@ -139,4 +139,21 @@ public class TreeTest {
         }
         assertTrue(test);
     }
+    @Test
+    public void returnsSmallestElement()
+    {
+        tree.add(0);
+        for (int i = 0; i < 2048; i++)
+            tree.add((int)(1 + Math.random() * 2048));
+        assertTrue(tree.getMin() == 0);
+    }
+    @Test
+    public void noSmallestElementIfTreeIsEmpty()
+    {
+        for (int i = 0; i < 2048; i++)
+            tree.add((int)(Math.random() * 2048));
+        tree.clear();
+        assertTrue(tree.getMin() == null);
+    }
+    //Test contains method
 }

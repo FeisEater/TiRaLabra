@@ -55,7 +55,7 @@ public class TreeMap<K, V> extends Tree {
     {
         String result = "[";
         Queue<MapNode> q = new Queue<>();
-        q.enqueue((MapNode)root);
+        if (!isEmpty())   q.enqueue((MapNode)root);
         while (!q.isEmpty())
         {
             MapNode n = q.dequeue();

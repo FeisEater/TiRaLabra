@@ -15,6 +15,43 @@ import static org.junit.Assert.*;
  */
 public class HeapTest {
     private Heap<Integer> heap;
+    private Heap<MyInteger> treeHeap;
+    private TreeMap<MyInteger, Integer> tree;
+    private class MyInteger
+    {
+        public int myInt;
+        public int id;
+        public MyInteger(int i)
+        {
+            myInt = i;
+            id = i;
+        }
+        @Override
+        public String toString()
+        {
+            return "" + myInt;
+        }
+    }
+    private class MyIntegerComparator implements Comparator
+    {
+        @Override
+        public int compare(Object o1, Object o2)
+        {
+            MyInteger m1 = (MyInteger)o1;
+            MyInteger m2 = (MyInteger)o2;
+            return m1.myInt - m2.myInt;
+        }
+    }
+    private class IDComparator implements Comparator
+    {
+        @Override
+        public int compare(Object o1, Object o2)
+        {
+            MyInteger m1 = (MyInteger)o1;
+            MyInteger m2 = (MyInteger)o2;
+            return m1.id - m2.id;
+        }
+    }
     private class IntegerComparator implements Comparator
     {
         @Override
@@ -37,7 +74,9 @@ public class HeapTest {
     
     @Before
     public void setUp() {
+        tree = new TreeMap<>(new IDComparator());
         heap = new Heap<>(15, new IntegerComparator());
+        treeHeap = new Heap<>(15, new MyIntegerComparator(), tree);
     }
     
     @After
@@ -127,40 +166,56 @@ public class HeapTest {
             if (ar[i] != (int)heap.getArray()[i])    test = false;
         assertTrue(test);
     }
-/*    @Test
+    @Test
     public void decreasesKey()
     {
+        MyInteger[] integers = new MyInteger[30];
         for (int i = 1; i < 30; i+=2)
-            heap.insert(i);
-        heap.changeValue(19, 2);
-        int[] ar = new int[heap.size()];
-        for (int i = 0; i < heap.size(); i++)
-            ar[i] = (i*2) + 1;
-        ar[1] = 2;
-        ar[4] = 3;
-        ar[9] = 9;
+        {
+            integers[i] = new MyInteger(i);
+            treeHeap.insert(integers[i]);
+        }
+        integers[19].myInt = 2;
+        treeHeap.valueChanged(integers[19]);
+        MyInteger[] ar = new MyInteger[treeHeap.size()];
+        for (int i = 0; i < treeHeap.size(); i++)
+            ar[i] = new MyInteger((i*2) + 1);
+        ar[1].myInt = 2;
+        ar[4].myInt = 3;
+        ar[9].myInt = 9;
         boolean test = true;
-        for (int i = 0; i < heap.size(); i++)
-            if (ar[i] != (int)heap.getArray()[i])    test = false;
+        for (int i = 0; i < treeHeap.size(); i++)
+        {
+            MyInteger m = (MyInteger)treeHeap.getArray()[i];
+            if (ar[i].myInt != m.myInt)    test = false;
+        }
         assertTrue(test);
     }
     @Test
     public void increasesKey()
     {
+        MyInteger[] integers = new MyInteger[30];
         for (int i = 1; i < 30; i+=2)
-            heap.insert(i);
-        heap.changeValue(5, 26);
-        int[] ar = new int[heap.size()];
-        for (int i = 0; i < heap.size(); i++)
-            ar[i] = (i*2) + 1;
-        ar[2] = 11;
-        ar[5] = 23;
-        ar[11] = 26;
+        {
+            integers[i] = new MyInteger(i);
+            treeHeap.insert(integers[i]);
+        }
+        integers[5].myInt = 26;
+        treeHeap.valueChanged(integers[5]);
+        MyInteger[] ar = new MyInteger[treeHeap.size()];
+        for (int i = 0; i < treeHeap.size(); i++)
+            ar[i] = new MyInteger((i*2) + 1);
+        ar[2].myInt = 11;
+        ar[5].myInt = 23;
+        ar[11].myInt = 26;
         boolean test = true;
-        for (int i = 0; i < heap.size(); i++)
-            if (ar[i] != (int)heap.getArray()[i])    test = false;
+        for (int i = 0; i < treeHeap.size(); i++)
+        {
+            MyInteger m = (MyInteger)treeHeap.getArray()[i];
+            if (ar[i].myInt != m.myInt)    test = false;
+        }
         assertTrue(test);
-    }*/
+    }
     @Test
     public void peekingDoesntChangeHeap()
     {
@@ -172,4 +227,5 @@ public class HeapTest {
             j = heap.peek();
         assertTrue(j == 1 && heap.size() == 1337);
     }
+    //Test treemap stuff
 }
