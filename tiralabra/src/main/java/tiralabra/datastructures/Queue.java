@@ -4,6 +4,7 @@ package tiralabra.datastructures;
 /**
  * Queue that works with 'first in first out' principle.
  * @author Pavel
+ * @param <E> Class of queue's elements.
  */
 public class Queue<E> {
 /**

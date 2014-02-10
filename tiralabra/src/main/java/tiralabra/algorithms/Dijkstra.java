@@ -43,7 +43,7 @@ public class Dijkstra {
     {
         shortestPaths.clear();
         previousPoint.clear();
-        Heap<Vertex> dijkstrapoints = new Heap<>(15, new DijkstraComparator());
+        Heap<Vertex> dijkstrapoints = new Heap<>(15, new DijkstraComparator(), new TreeMap(new VertexComparator()));
         while (points.hasNext())
         {
             Vertex p = points.getNext();
@@ -64,14 +64,12 @@ public class Dijkstra {
         while (list.hasNext())
         {
             Vertex adj = list.getNext();
-            int oldPlace = points.findValue(adj);
-            if (oldPlace == -1)  continue;
             
             if (shortestPaths.get(p) + p.getDistance(adj) >= shortestPaths.get(adj))
                 continue;
 
             shortestPaths.put(adj, shortestPaths.get(p) + p.getDistance(adj));
-            points.valueChanged(oldPlace);
+            points.valueChanged(adj);
             previousPoint.put(adj, p);
         }
     }

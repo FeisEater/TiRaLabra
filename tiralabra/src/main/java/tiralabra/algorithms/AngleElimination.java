@@ -31,6 +31,10 @@ public class AngleElimination {
         list = flattenIntervals(src, allIntervals);
         return getUnobstructedVertices(src, vertices);
     }
+/**
+ * Visualizes generated angle intervals for debugging purposes.
+ * @param g Graphics object.
+ */
     public static void visualize(Graphics g)
     {
         if (list == null)   return;
@@ -204,12 +208,14 @@ public class AngleElimination {
         public double leftDist;
         public double rightDist;
         private Vertex src;
-        public boolean inverse;
 /**
- * Constructor. Creates a sector based on a line.
+ * Constructor. Creates a sector based on specific attributes.
  * @param source Vertex from which algorithm is tracing.
- * @param p One point of the line. The other point is p.getRight()
- */
+ * @param la Left-most angle of the sector.
+ * @param ld Maximum distance of the left-most angle.
+ * @param ra Right-most angle of the sector.
+ * @param rd Maximum distance of the right-most angle.
+*/
         public AngleInterval(Vertex source, double la, double ld, double ra, double rd)
         {
             leftAngle = la;
@@ -217,7 +223,6 @@ public class AngleElimination {
             leftDist = ld;
             rightDist = rd;
             src = source;
-            inverse = false;
         }
 /**
  * Constructor. Creates a sector based on a line.
@@ -240,7 +245,6 @@ public class AngleElimination {
             setAttributes(src, src.getRight(), src.getLeft());
             leftDist = 0;
             rightDist = 0;
-            inverse = false;
         }
 /**
  * Initializes class attributes.
@@ -278,13 +282,11 @@ public class AngleElimination {
             {
                 leftest = p;
                 rightest = p.getRight();
-                inverse = true;
             }
             else
             {
                 leftest = p.getRight();
                 rightest = p;
-                inverse = false;
             }
 //If line crosses the part where direction calculation jumps the cycle,
 //switch sides.
@@ -407,7 +409,7 @@ public class AngleElimination {
         }
     }
 /**
- * Comparator class for placing sectors in a heap based on their distance.
+ * Comparator class for placing sectors in a tree based on their distance.
  */
     private static class DistanceComparator implements Comparator
     {

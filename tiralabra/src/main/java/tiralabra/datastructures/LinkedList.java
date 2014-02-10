@@ -5,6 +5,7 @@ package tiralabra.datastructures;
  * Iterable list of elements. List is acyclic and can't be iterated
  * in the other direction.
  * @author Pavel
+ * @param <E> Class of list's elements.
  */
 public class LinkedList<E> {
 /**

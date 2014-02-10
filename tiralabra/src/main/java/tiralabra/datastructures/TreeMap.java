@@ -4,8 +4,10 @@ package tiralabra.datastructures;
 import java.util.Comparator;
 
 /**
- *
+ * A map of key-value pairs stored in a search tree.
  * @author Pavel
+ * @param <K> Key object's class.
+ * @param <V> Value object's class.
  */
 public class TreeMap<K, V> extends Tree {
     public TreeMap(Comparator comp) {super(comp);}

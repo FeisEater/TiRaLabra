@@ -11,6 +11,7 @@ import java.util.Comparator;
  * uses self-balancing techniques to keep the height of the tree
  * logarithmic in respect to the amount of elements.
  * @author Pavel
+ * @param <E> Class of the elements in the tree.
  */
 public class Tree<E> {
 /**
@@ -32,6 +33,7 @@ public class Tree<E> {
     private Comparator comparator;
     protected Node root;
     private int size;
+    private Node min;
 /**
  * Constructor.
  * @param comp Comparator class used for placing the element at the correct spot.
@@ -56,6 +58,7 @@ public class Tree<E> {
     {
         root = null;
         size = 0;
+        min = null;
     }
 /**
  * 
@@ -64,10 +67,7 @@ public class Tree<E> {
     public E getMin()
     {
         if (isEmpty())  return null;
-        Node n = root;
-        while (n.left != null)
-            n = n.left;
-        return n.key;
+        return min.key;
     }
 /**
  * Adds an element to the tree.
@@ -87,12 +87,15 @@ public class Tree<E> {
         if (root == null)
         {
             root = tobeAdded;
+            min = tobeAdded;
             tobeAdded.isRed = false;
             return;
         }
         findPlacement(tobeAdded);
         balanceOnInsertion(tobeAdded);
         root.parent = null;
+        if (comparator.compare(tobeAdded.key, min.key) < 0)
+            min = tobeAdded;
     }
 /**
  * Finds and places a newly added element at a correct spot.
@@ -260,6 +263,10 @@ public class Tree<E> {
         Node u = find(e);
         if (u == null)
             return;
+        
+        if (size <= 1)  min = null;
+        else if (e == min.key)
+            min = getNext(min);
         
         size--;
         if (u.left == null && u.right == null)

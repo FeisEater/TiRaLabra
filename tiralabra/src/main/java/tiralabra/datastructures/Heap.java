@@ -9,11 +9,13 @@ import java.util.Comparator;
  * defines the heap as maximum heap). Elements are stored in an array,
  * and all pointers are accessed via array indexes.
  * @author Pavel
+ * @param <E> Class of stored elements.
  */
 public class Heap<E> {
     private Object[] array;
     private int heapSize;
     private Comparator comparator;
+    private TreeMap<E, Integer> indexes;
 /**
  * Constructor
  * @param initialSize Initial size of heap's array.
@@ -26,6 +28,17 @@ public class Heap<E> {
         comparator = comp;
     }
 /**
+ * Constructor
+ * @param initialSize Initial size of heap's array.
+ * @param comp Comparator class used in the heap.
+ * @param ind TreeMap for retrieving indexes based on an element.
+ */
+    public Heap(int initialSize, Comparator comp, TreeMap<E, Integer> ind)
+    {
+        this(initialSize, comp);
+        indexes = ind;
+    }
+/**
  * Removes all elements in the heap.
  * @param initialSize new size of the array.
  */
@@ -33,6 +46,7 @@ public class Heap<E> {
     {
         array = new Object[initialSize];
         heapSize = 0;
+        if (indexes != null)    indexes.clear();
     }
 /**
  * Returns and deletes the first element of the heap.
@@ -67,9 +81,13 @@ public class Heap<E> {
                 comparator.compare(e, array[getParent(newPlace)]) < 0)
         {
             array[newPlace] = array[getParent(newPlace)];
+            if (indexes != null)
+                indexes.put((E)array[newPlace], newPlace);
             newPlace = getParent(newPlace);
         }
         array[newPlace] = e;
+        if (indexes != null)
+            indexes.put(e, newPlace);
         heapSize++;
         if (heapSize >= array.length)
             increaseArray();
@@ -77,10 +95,11 @@ public class Heap<E> {
 /**
  * Notifies the heap of an element that has changed its value,
  * taking care that heap's structure is not violated.
- * @param changeAt Index at which element's value is changed.
+ * @param changedValue Element of the heap that has changed its value.
  */
-    public void valueChanged(int changeAt)
+    public void valueChanged(E changedValue)
     {
+        int changeAt = indexes.get(changedValue);
         while (changeAt > 0 &&
                 comparator.compare(array[changeAt], array[getParent(changeAt)]) < 0)
         {
@@ -94,21 +113,21 @@ public class Heap<E> {
  * @param oldV Elements current value.
  * @param newV Value to which the element is changed.
  */
-    public void changeValue(E oldV, E newV)
+/*    public void changeValue(E oldV, E newV)
     {
         int i = findValue(oldV);
         array[i] = newV;
         valueChanged(i);
-    }
+    }*/
 /**
  * Finds the index of a specified element
  * @param e Given element
  * @return Index of the element
  */
-    public int findValue(E e)
+/*    public int findValue(E e)
     {
         for (int i = 0; i < heapSize; i++)
-            if (e == array[i])  return i;
+            if (e == array[i])  return i;*/
 /*        int i = 0;
         while (getLeft(i) < heapSize && comparator.compare(e, array[getLeft(i)]) > 0)
             i = getLeft(i);
@@ -118,8 +137,8 @@ public class Heap<E> {
                 return i;
             i++;
         }*/
-        return -1;
-    }
+/*        return -1;
+    }*/
 /**
  * Doubles the size of the array.
  */
@@ -192,6 +211,11 @@ public class Heap<E> {
         Object o = array[i1];
         array[i1] = array[i2];
         array[i2] = o;
+        if (indexes != null)
+        {
+            indexes.put((E)array[i1], i1);
+            indexes.put((E)array[i2], i2);
+        }
     }
 /**
  * 
