@@ -54,7 +54,6 @@ public class AngleElimination {
  */
     public static boolean isObstructed(Vertex test)
     {
-        //System.out.println(list);
         if (list == null)   return true;
         list.reset();
         while (list.hasNext())
@@ -114,9 +113,8 @@ public class AngleElimination {
                 distances.remove(endAngles.pop());
             if (startAngles.isEmpty() && endAngles.isEmpty())    break;
             AngleInterval oldAngle = endAngles.peek();
-            System.out.println(oldAngle + " " + (lastAngle * 180 / Math.PI));
             Comparator comp = new DistanceComparator();
-            if (newAngle != null && (oldAngle == null || newAngle.leftAngle < oldAngle.rightAngle))
+            if (newAngle != null && (oldAngle == null || ((oldAngle.leftAngle < oldAngle.rightAngle && newAngle.leftAngle < oldAngle.rightAngle) || oldAngle.leftAngle > oldAngle.rightAngle)))
             {
                 if (endAngles.isEmpty())
                     lastAngle = newAngle.leftAngle;
@@ -140,14 +138,24 @@ public class AngleElimination {
                         oldAngle.rightAngle, oldAngle.rightDist));
                     lastAngle = oldAngle.rightAngle;
                 }
-                //if (oldAngle.leftAngle > oldAngle.rightAngle && oldAngle.distanceFromLine(flat.peek().leftAngle) < flat.peek().leftDist)
-                //    flat.dequeue();
+                while (oldAngle.leftAngle > oldAngle.rightAngle && oldAngle.distanceFromLine(flat.peek().leftAngle) < flat.peek().leftDist && flat.peek().leftAngle < oldAngle.rightAngle)
+                {
+                    if (flat.peek().rightAngle > oldAngle.rightAngle)
+                    {
+                        double newDist = flat.peek().distanceFromLine(oldAngle.rightDist);
+                        flat.peek().leftAngle = oldAngle.rightAngle;
+                        flat.peek().leftDist = newDist;
+                        flat.enqueue(flat.dequeue());
+                    }
+                    else    flat.dequeue();
+                }
                 endAngles.pop();
             }
         }
         LinkedList<AngleInterval> result = new LinkedList<>();
         while (!flat.isEmpty())
             result.add(flat.dequeue());
+        System.out.println(opt + " -> " + result.size());
         return result;
     }
 /**

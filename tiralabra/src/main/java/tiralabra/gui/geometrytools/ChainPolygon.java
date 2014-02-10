@@ -106,7 +106,7 @@ public class ChainPolygon extends MouseInput {
         points.setShapeMode(begin, wallmode);
         begin = null;
         prev = null;
-        //points.buildGraph();
+        points.buildGraph();
     }
 /**
  * Draws information specific to mouse tool mode.
