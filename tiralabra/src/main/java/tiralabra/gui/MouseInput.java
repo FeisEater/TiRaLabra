@@ -113,11 +113,7 @@ public class MouseInput implements MouseInputListener
     public void mouseExited(MouseEvent e) {}
 
     @Override
-    public void mouseDragged(MouseEvent e)
-    {
-        points.addVertex(e.getX(), e.getY());
-        gui.repaint();
-    }
+    public void mouseDragged(MouseEvent e)  {}
 
     @Override
     public void mouseMoved(MouseEvent e) {}
