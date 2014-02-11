@@ -142,6 +142,7 @@ public class AngleElimination {
                         oldAngle.rightAngle, oldAngle.rightDist));
                     lastAngle = oldAngle.rightAngle;
                 }
+                //got nullpointer
                 while (oldAngle.leftAngle > oldAngle.rightAngle && oldAngle.distanceFromLine(flat.peek().leftAngle) < flat.peek().leftDist && flat.peek().leftAngle < oldAngle.rightAngle)
                 {
                     if (flat.peek().rightAngle > oldAngle.rightAngle)

@@ -5,6 +5,7 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import javax.swing.event.MouseInputListener;
 import tiralabra.VertexContainer;
 import tiralabra.datastructures.LinkedList;
 import tiralabra.datastructures.Vertex;
@@ -14,7 +15,7 @@ import tiralabra.util.Const;
  * Handles mouse input. Can be extended to implement differrent commands.
  * @author Pavel
  */
-public class MouseInput implements MouseListener
+public class MouseInput implements MouseInputListener
 {
     protected VertexContainer points;
     protected int draggedFromX;
@@ -110,4 +111,14 @@ public class MouseInput implements MouseListener
     public void mouseEntered(MouseEvent e) {}
     @Override
     public void mouseExited(MouseEvent e) {}
+
+    @Override
+    public void mouseDragged(MouseEvent e)
+    {
+        points.addVertex(e.getX(), e.getY());
+        gui.repaint();
+    }
+
+    @Override
+    public void mouseMoved(MouseEvent e) {}
 }

@@ -35,6 +35,7 @@ public class GraphicInterface extends JPanel implements Runnable {
     {
         super();
         currentTool = new ChainPolygon(points, this);
+        addMouseMotionListener(currentTool);
         addMouseListener(currentTool);
         this.points = points;
     }
