@@ -4,7 +4,6 @@ package tiralabra.gui;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import javax.swing.event.MouseInputListener;
 import tiralabra.VertexContainer;
 import tiralabra.datastructures.LinkedList;

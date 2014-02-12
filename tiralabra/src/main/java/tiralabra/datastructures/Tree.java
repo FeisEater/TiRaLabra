@@ -265,7 +265,7 @@ public class Tree<E> {
             return;
         
         if (size <= 1)  min = null;
-        else if (e == min.key)
+        else if (min != null && e == min.key)  //nullpointer
             min = getNext(min);
         
         size--;
@@ -432,7 +432,8 @@ public class Tree<E> {
             do {
                 u = n;
                 n = n.parent;
-            } while (u == n.right);
+                if (n == null)  return null;
+            } while (u == n.right); //got nullpointer
             return n;
         }
         Node n = u.right;
