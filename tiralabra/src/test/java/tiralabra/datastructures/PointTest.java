@@ -47,8 +47,8 @@ public class PointTest {
         {
             center.setLeft(new Point(32 * Math.cos(d), 32 * Math.sin(d)));
             center.setRight(new Point(32 * Math.cos(d + Math.PI / 2), 32 * Math.sin(d + Math.PI / 2)));
-            double angle = Tools.round(center.getAngle());
-            if (angle != Tools.round(Math.PI / 2))  assertTrue(false);
+            double angle = Tools.round(center.getAngle(), 100);
+            if (angle != Tools.round(Math.PI / 2, 100))  assertTrue(false);
         }
         assertTrue(true);
     }

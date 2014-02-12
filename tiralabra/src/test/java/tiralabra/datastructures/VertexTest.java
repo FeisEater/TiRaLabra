@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 
 package tiralabra.datastructures;
 
@@ -79,16 +74,16 @@ public class VertexTest {
     {
         Vertex v1 = new Vertex(0,0);
         Vertex v2 = new Vertex(3,4);
-        assertTrue(Tools.round(v1.getDistance(v2)) == 5 &&
-                Tools.round(v2.getDistance(v1)) == 5);
+        assertTrue(Tools.round(v1.getDistance(v2), 100) == 5 &&
+                Tools.round(v2.getDistance(v1), 100) == 5);
     }
     @Test
     public void calculatesDirection()
     {
         Vertex v1 = new Vertex(0,0);
         Vertex v2 = new Vertex(1,1);
-        assertTrue(Tools.round(v1.getDirection(v2)) == Tools.round(Math.PI / 4) &&
-                Tools.round(v2.getDirection(v1)) == Tools.round(-3 * Math.PI / 4));
+        assertTrue(Tools.round(v1.getDirection(v2), 100) == Tools.round(Math.PI / 4, 100) &&
+                Tools.round(v2.getDirection(v1), 100) == Tools.round(-3 * Math.PI / 4, 100));
     }
     @Test
     public void pointIsBetweenAngles()

@@ -117,7 +117,7 @@ public class VertexContainer {
 //  where n is amount of sides (ie amount of points)
 //A wall polygon will not abide the law, because all its corners
 //are inverted compared to non-wall polygon.
-        return Tools.round(anglesum) != Tools.round((pointsum - 2) * Math.PI);
+        return Tools.round(anglesum, 10000) != Tools.round((pointsum - 2) * Math.PI, 10000);
     }
 /**
  * Inverts all angles in a polygon. Sets a new angle for all

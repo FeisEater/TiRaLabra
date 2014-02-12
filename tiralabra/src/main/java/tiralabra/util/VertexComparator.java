@@ -6,7 +6,7 @@ import tiralabra.datastructures.Point;
 import tiralabra.datastructures.Vertex;
 
 /**
- *
+ * Comparator class for placing vertices in a data structure.
  * @author Pavel
  */
 public class VertexComparator implements Comparator

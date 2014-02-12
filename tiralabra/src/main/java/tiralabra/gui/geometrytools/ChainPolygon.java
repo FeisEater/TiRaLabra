@@ -33,6 +33,7 @@ public class ChainPolygon extends MouseInput {
     @Override
     public void mousePressed(MouseEvent e)
     {
+        super.mousePressed(e);
         if (e.getButton() == MouseEvent.BUTTON1)
             startedDrawing = true;
     }

@@ -10,6 +10,7 @@ import tiralabra.datastructures.Point;
 import tiralabra.datastructures.Queue;
 import tiralabra.datastructures.Tree;
 import tiralabra.datastructures.Vertex;
+import tiralabra.util.Tools;
 
 /**
  * Tracing algorithm from the point of view of a vertex.
@@ -258,12 +259,12 @@ public class AngleElimination {
             this.src = src;
             if (leftest != null)
             {
-                leftAngle = src.getDirection(leftest);
+                leftAngle = Tools.round(src.getDirection(leftest), 10000);
                 leftDist = src.getDistance(leftest);
             }
             if (rightest != null)
             {
-                rightAngle = src.getDirection(rightest);
+                rightAngle = Tools.round(src.getDirection(rightest), 10000);
                 rightDist = src.getDistance(rightest);
             }
         }

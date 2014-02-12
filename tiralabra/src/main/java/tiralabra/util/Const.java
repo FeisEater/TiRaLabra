@@ -7,6 +7,6 @@ package tiralabra.util;
 public class Const {
 /** Width of the point that visualises vertex. */
     public static final int pointWidth = 8;
-/** Precision at which numbers are rounded off. Increase to increase precision. */
-    public static final int roundPrecision = 100;
+    public static final double brushWidth = 8;
+    public static final double circlePrecision = 8;
 }

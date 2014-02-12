@@ -15,6 +15,7 @@ import tiralabra.datastructures.Tree;
 import tiralabra.datastructures.Vertex;
 import tiralabra.gui.geometrytools.BuildGraph;
 import tiralabra.gui.geometrytools.ChainPolygon;
+import tiralabra.gui.geometrytools.FreeDraw;
 import tiralabra.util.Const;
 import tiralabra.util.VertexComparator;
 
@@ -34,7 +35,7 @@ public class GraphicInterface extends JPanel implements Runnable {
     public GraphicInterface(VertexContainer points)
     {
         super();
-        currentTool = new ChainPolygon(points, this);
+        currentTool = new FreeDraw(points, this);
         addMouseMotionListener(currentTool);
         addMouseListener(currentTool);
         this.points = points;
@@ -71,7 +72,7 @@ public class GraphicInterface extends JPanel implements Runnable {
     {
         LinkedList<Vertex> list = point.getAdjacents().toLinkedList();
         while (list.hasNext())
-            drawEdge(g, Color.red, point, list.getNext());
+            drawEdge(g, Color.LIGHT_GRAY, point, list.getNext());
         g.setColor(currentTool.chooseColorByPoint(point));
         g.fillOval((int)point.X() - Const.pointWidth / 2, 
             (int)point.Y() - Const.pointWidth / 2,
