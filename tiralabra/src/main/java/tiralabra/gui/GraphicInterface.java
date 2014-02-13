@@ -60,7 +60,7 @@ public class GraphicInterface extends JPanel implements Runnable {
         while (vertices.hasNext())
             drawPoint(g, vertices.getNext());
         currentTool.drawInputSpecific(g);   
-        AngleElimination.visualize(g);
+        //AngleElimination.visualize(g);
         //points.getVertices().drawTree(g);
     }
 /**

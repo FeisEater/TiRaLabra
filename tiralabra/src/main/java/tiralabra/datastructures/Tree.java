@@ -94,7 +94,7 @@ public class Tree<E> {
         findPlacement(tobeAdded);
         balanceOnInsertion(tobeAdded);
         root.parent = null;
-        if (comparator.compare(tobeAdded.key, min.key) < 0)
+        if (comparator.compare(tobeAdded.key, min.key) < 0) //got nullpointer
             min = tobeAdded;
     }
 /**

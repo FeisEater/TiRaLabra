@@ -161,7 +161,7 @@ public class AngleElimination {
         LinkedList<AngleInterval> result = new LinkedList<>();
         while (!flat.isEmpty())
             result.add(flat.dequeue());
-        System.out.println(opt + " -> " + result.size());
+        //System.out.println(opt + " -> " + result.size());
         return result;
     }
 /**

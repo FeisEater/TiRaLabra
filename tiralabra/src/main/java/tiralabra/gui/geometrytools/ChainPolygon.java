@@ -23,19 +23,10 @@ public class ChainPolygon extends MouseInput {
     private Point prev;
     private TreeMap<Vertex, Vertex> previousPoint;
     private boolean wallmode;
-    private boolean startedDrawing;
     public ChainPolygon(VertexContainer p, GraphicInterface gui)
     {
         super(p, gui);
         wallmode = true;
-        startedDrawing = false;
-    }
-    @Override
-    public void mousePressed(MouseEvent e)
-    {
-        super.mousePressed(e);
-        if (e.getButton() == MouseEvent.BUTTON1)
-            startedDrawing = true;
     }
     @Override
     public void mouseReleased(MouseEvent e)
@@ -43,8 +34,7 @@ public class ChainPolygon extends MouseInput {
         super.mouseReleased(e);
         Vertex chosenPoint = choosePoint(e);
         if (e.getButton() == MouseEvent.BUTTON1)
-            closeLoop();
-            //addPoint(draggedToX, draggedToY);
+            addPoint(draggedToX, draggedToY);
         else if (e.getButton() == MouseEvent.BUTTON2)
             removePoint(chosenPoint);
         else if (e.getButton() == MouseEvent.BUTTON3)
@@ -53,22 +43,13 @@ public class ChainPolygon extends MouseInput {
             {
                 if (begin == null)
                     traceAround(e.getX(), e.getY(), chosenPoint);
-                //else
-                //    closeLoop();
+                else
+                    closeLoop();
             }
             else
                 buildPath();
         }
         gui.repaint();
-    }
-    @Override
-    public void mouseDragged(MouseEvent e)
-    {
-        if (startedDrawing)
-        {
-            addPoint(e.getX(), e.getY());
-            gui.repaint();
-        }
     }
     public void traceAround(int x, int y, Vertex point)
     {
@@ -117,7 +98,6 @@ public class ChainPolygon extends MouseInput {
  */
     public void closeLoop()
     {
-        startedDrawing = false;
         if (begin != null && prev != null)
         {
             begin.setLeft(prev);
