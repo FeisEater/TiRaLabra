@@ -327,7 +327,7 @@ public class AngleElimination {
  */
         public boolean vertexIsObstructed(Vertex test)
         {
-            if (src.hasPointBetween(rightAngle, leftAngle, test))
+            if (src.hasPointBetween(leftAngle, rightAngle, test))
             {
                 if (leftDist <= 0 && rightDist <= 0)    return true;
                 if (src.getDistance(test) > distanceFromLine(src.getDirection(test)))
@@ -440,13 +440,13 @@ public class AngleElimination {
                     return 1;
                 }
             }
-            if (ai1.src.hasAngleBetween(ai1.rightAngle, ai1.leftAngle, ai2.leftAngle))
+            if (Tools.hasAngleBetween(ai1.leftAngle, ai1.rightAngle, ai2.leftAngle))
             {
                 if (ai2.leftDist < ai1.distanceFromLine(ai2.leftAngle))
                     return 1;
                 return -1;
             }
-            if (ai2.src.hasAngleBetween(ai2.rightAngle, ai2.leftAngle, ai1.leftAngle))
+            if (Tools.hasAngleBetween(ai2.leftAngle, ai2.rightAngle, ai1.leftAngle))
             {
                 if (ai1.leftDist < ai2.distanceFromLine(ai1.leftAngle))
                     return -1;

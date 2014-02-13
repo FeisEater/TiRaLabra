@@ -90,8 +90,8 @@ public class VertexTest {
     {
         Vertex src = new Vertex(0,0);
         Vertex v = new Vertex(1,0);
-        Vertex left = new Vertex(1, 1);
-        Vertex right = new Vertex(1, -1);
+        Vertex right = new Vertex(1, 1);
+        Vertex left = new Vertex(1, -1);
         assertTrue(src.hasPointBetween(src.getDirection(left), src.getDirection(right), v));
     }
     @Test
@@ -99,8 +99,8 @@ public class VertexTest {
     {
         Vertex src = new Vertex(0,0);
         Vertex v = new Vertex(-1,0);
-        Vertex left = new Vertex(-1, -1);
-        Vertex right = new Vertex(-1, 1);
+        Vertex right = new Vertex(-1, -1);
+        Vertex left = new Vertex(-1, 1);
         assertTrue(src.hasPointBetween(src.getDirection(left), src.getDirection(right), v));
     }
     @Test
@@ -108,8 +108,8 @@ public class VertexTest {
     {
         Vertex src = new Vertex(0,0);
         Vertex v = new Vertex(-1,0);
-        Vertex left = new Vertex(1, 1);
-        Vertex right = new Vertex(1, -1);
+        Vertex right = new Vertex(1, 1);
+        Vertex left = new Vertex(1, -1);
         assertTrue(!src.hasPointBetween(src.getDirection(left), src.getDirection(right), v));
     }
     @Test
@@ -117,8 +117,8 @@ public class VertexTest {
     {
         Vertex src = new Vertex(0,0);
         Vertex v = new Vertex(1,0);
-        Vertex left = new Vertex(-1, -1);
-        Vertex right = new Vertex(-1, 1);
+        Vertex right = new Vertex(-1, -1);
+        Vertex left = new Vertex(-1, 1);
         assertTrue(!src.hasPointBetween(src.getDirection(left), src.getDirection(right), v));
     }
 }
