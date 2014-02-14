@@ -58,7 +58,13 @@ public class FreeDraw extends MouseInput {
     {
         if (last != null && Math.sqrt(Math.pow(x - last.x, 2) + Math.pow(y - last.y, 2)) < Const.brushWidth)
             return;
-        last = new Spline(x, y, last);
+        Spline s = new Spline(x, y, last);
+        if (last != null && last.prev != null)
+        {
+            last.angle = (getAngle(s) + getAngle(last)) / 2;
+            System.out.println((last.angle * 180 / Math.PI));
+        }
+        last = s;
         if (isStraightAngle())
             last.prev = last.prev.prev;
     }
@@ -76,9 +82,22 @@ public class FreeDraw extends MouseInput {
     }
     public void constructPolygon()
     {
+        if (last == null)   return;
         Spline s = last;
         Spline next = null;
-        Point side = null;
+        constructCircle(s, getAngle(s));
+        while (s.prev.prev != null)
+        {
+            next = s;
+            s = s.prev;
+            points.addPoint(s.x + Const.brushWidth * Math.cos(s.angle + Math.PI / 2),
+                    s.y + Const.brushWidth * Math.sin(s.angle + Math.PI / 2));
+            points.addPoint(s.x + Const.brushWidth * Math.cos(s.angle - Math.PI / 2),
+                    s.y + Const.brushWidth * Math.sin(s.angle - Math.PI / 2));
+        }
+        if (next != null)
+            constructCircle(s, Math.PI + getAngle(next));
+/*        Spline next = null;
         Stack<Point> otherSide = new Stack<>();
         while (s != null)
         {
@@ -119,14 +138,29 @@ public class FreeDraw extends MouseInput {
                 else    begin = q;
                 p = q;
             }
-            begin.setLeft(p);
-            p.setRight(begin);
+            //begin.setLeft(p);
+            //p.setRight(begin);
             //points.setShapeMode(p, true);
             next = s;
             s = s.prev;
-        }
+        }*/
         last = null;
         //points.buildGraph();
+    }
+    private void constructCircle(Spline s, double ignoredAngle)
+    {
+        for (double i = -Math.PI; i < Math.PI; i += circleStep)
+        {
+            if (ignoredAngle < -Math.PI)   ignoredAngle += Math.PI * 2;
+            else if (ignoredAngle > Math.PI)   ignoredAngle -= Math.PI * 2;
+            double left = ignoredAngle - Math.PI / 2 - circleStep / 2;
+            if (left < -Math.PI)    left += Math.PI * 2;
+            double right = ignoredAngle + Math.PI / 2 + circleStep / 2;
+            if (right > Math.PI)    right -= Math.PI * 2;
+            if (!Tools.hasAngleBetween(left, right, i))
+                continue;
+            points.addPoint(s.x + Const.brushWidth * Math.cos(i), s.y + Const.brushWidth * Math.sin(i));
+        }
     }
     @Override
     public void drawInputSpecific(Graphics g)
@@ -148,11 +182,13 @@ public class FreeDraw extends MouseInput {
         private int x;
         private int y;
         private Spline prev;
+        private double angle;
         public Spline(int ix, int iy, Spline iprev)
         {
             x = ix;
             y = iy;
             prev = iprev;
+            angle = -1024;
         }
         public String toString()
         {
