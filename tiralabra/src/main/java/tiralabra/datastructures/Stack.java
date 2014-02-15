@@ -25,6 +25,7 @@ public class Stack<E> {
     }
     public E pop()
     {
+        if (isEmpty())  return null;
         E result = top.value;
         top = top.prev;
         return result;

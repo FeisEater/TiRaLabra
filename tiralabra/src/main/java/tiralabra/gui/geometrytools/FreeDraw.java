@@ -5,12 +5,16 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.event.MouseEvent;
 import tiralabra.VertexContainer;
+import tiralabra.algorithms.Dijkstra;
 import tiralabra.datastructures.Point;
 import tiralabra.datastructures.Stack;
+import tiralabra.datastructures.TreeMap;
+import tiralabra.datastructures.Vertex;
 import tiralabra.gui.GraphicInterface;
 import tiralabra.gui.MouseInput;
 import tiralabra.util.Const;
 import tiralabra.util.Tools;
+import tiralabra.util.VertexComparator;
 
 /**
  *
@@ -20,10 +24,15 @@ public class FreeDraw extends MouseInput {
     private final double circleStep = 2 * Math.PI / Const.circlePrecision;
     private boolean startedDrawing;
     private Spline last;
-    
+    private Vertex endA;
+    private Vertex endB;
+    private boolean toggleEnd;
+    private TreeMap<Vertex, Vertex> previousPoint;
+
     public FreeDraw(VertexContainer p, GraphicInterface gui) {
         super(p, gui);
         startedDrawing = false;
+        toggleEnd = false;
     }
     @Override
     public void mousePressed(MouseEvent e)
@@ -41,8 +50,26 @@ public class FreeDraw extends MouseInput {
             startedDrawing = false;
             constructPolygon();
         }
-        else
+        else if (e.getButton() == MouseEvent.BUTTON2)
+        {
             points.getVertices().clear();
+        }
+        else if (e.getButton() == MouseEvent.BUTTON3)
+        {
+            toggleEnd = !toggleEnd;
+            if (toggleEnd)
+            {
+                points.removeVertex(endA);
+                endA = points.addVertex(e.getX(), e.getY());
+            }
+            else
+            {
+                points.removeVertex(endB);
+                endB = points.addVertex(e.getX(), e.getY());
+            }
+            points.buildGraph();
+            buildPath();
+        }
         gui.repaint();
     }
     @Override
@@ -61,8 +88,9 @@ public class FreeDraw extends MouseInput {
         Spline s = new Spline(x, y, last);
         if (last != null && last.prev != null)
         {
-            last.angle = (getAngle(s) + getAngle(last)) / 2;
-            System.out.println((last.angle * 180 / Math.PI));
+            if (Math.abs(getAngle(s) - getAngle(last)) > 1.5 * Math.PI)
+                last.angle = (getAngle(s) - getAngle(last)) / 2;
+            else    last.angle = (getAngle(s) + getAngle(last)) / 2;
         }
         last = s;
         if (isStraightAngle())
@@ -85,51 +113,19 @@ public class FreeDraw extends MouseInput {
         if (last == null)   return;
         Spline s = last;
         Spline next = null;
-        constructCircle(s, getAngle(s));
-        while (s.prev.prev != null)
+        Point p = null;
+        Point begin = null;
+        Stack<Point> stack = new Stack<>();
+        while (s.prev != null)
         {
             next = s;
             s = s.prev;
-            points.addPoint(s.x + Const.brushWidth * Math.cos(s.angle + Math.PI / 2),
-                    s.y + Const.brushWidth * Math.sin(s.angle + Math.PI / 2));
-            points.addPoint(s.x + Const.brushWidth * Math.cos(s.angle - Math.PI / 2),
-                    s.y + Const.brushWidth * Math.sin(s.angle - Math.PI / 2));
-        }
-        if (next != null)
-            constructCircle(s, Math.PI + getAngle(next));
-/*        Spline next = null;
-        Stack<Point> otherSide = new Stack<>();
-        while (s != null)
-        {
-            Point begin = null;
-            Point p = null;
-            for (double i = -Math.PI; i < Math.PI; i += circleStep)
+            if (s.prev != null)
             {
-                if (s.prev != null)
-                {
-                    p = null;
-                    double angle = getAngle(s);
-                    double left = angle - Math.PI / 2 - circleStep / 2;
-                    if (left < -Math.PI)    left += Math.PI * 2;
-                    double right = angle + Math.PI / 2 + circleStep / 2;
-                    if (right > Math.PI)    right -= Math.PI * 2;
-                    if (!Tools.hasAngleBetween(left, right, i))
-                        continue;
-                }
-                if (next != null)
-                {
-                    p = null;
-                    double angle = Math.PI + getAngle(next);
-                    if (angle < -Math.PI)   angle += Math.PI * 2;
-                    else if (angle > Math.PI)   angle -= Math.PI * 2;
-                    double left = angle - Math.PI / 2 - circleStep / 2;
-                    if (left < -Math.PI)    left += Math.PI * 2;
-                    double right = angle + Math.PI / 2 + circleStep / 2;
-                    if (right > Math.PI)    right -= Math.PI * 2;
-                    if (!Tools.hasAngleBetween(left, right, i))
-                        continue;
-                }
-                Point q = points.addPoint(s.x + Const.brushWidth * Math.cos(i), s.y + Const.brushWidth * Math.sin(i));
+                Point q = points.addPoint(s.x + Const.brushWidth * Math.cos(s.angle + Math.PI / 2),
+                        s.y + Const.brushWidth * Math.sin(s.angle + Math.PI / 2));
+                stack.add(points.addPoint(s.x + Const.brushWidth * Math.cos(s.angle - Math.PI / 2),
+                        s.y + Const.brushWidth * Math.sin(s.angle - Math.PI / 2)));
                 if (p != null)
                 {
                     p.setRight(q);
@@ -138,29 +134,50 @@ public class FreeDraw extends MouseInput {
                 else    begin = q;
                 p = q;
             }
-            //begin.setLeft(p);
-            //p.setRight(begin);
-            //points.setShapeMode(p, true);
-            next = s;
-            s = s.prev;
-        }*/
-        last = null;
-        //points.buildGraph();
-    }
-    private void constructCircle(Spline s, double ignoredAngle)
-    {
-        for (double i = -Math.PI; i < Math.PI; i += circleStep)
-        {
-            if (ignoredAngle < -Math.PI)   ignoredAngle += Math.PI * 2;
-            else if (ignoredAngle > Math.PI)   ignoredAngle -= Math.PI * 2;
-            double left = ignoredAngle - Math.PI / 2 - circleStep / 2;
-            if (left < -Math.PI)    left += Math.PI * 2;
-            double right = ignoredAngle + Math.PI / 2 + circleStep / 2;
-            if (right > Math.PI)    right -= Math.PI * 2;
-            if (!Tools.hasAngleBetween(left, right, i))
-                continue;
-            points.addPoint(s.x + Const.brushWidth * Math.cos(i), s.y + Const.brushWidth * Math.sin(i));
         }
+        if (next != null)
+            p = constructCircle(s, Math.PI + getAngle(next), p);
+        while (!stack.isEmpty())
+        {
+            Point q = stack.pop();
+            if (p != null)
+            {
+                p.setRight(q);
+                q.setLeft(p);
+            }
+            p = q;
+        }
+        p = constructCircle(last, getAngle(last), p);
+        begin.setLeft(p);
+        p.setRight(begin);
+        last = null;
+        points.buildGraph();
+    }
+    private Point constructCircle(Spline s, double ignoredAngle, Point p)
+    {
+        if (ignoredAngle < -Math.PI)   ignoredAngle += Math.PI * 2;
+        else if (ignoredAngle > Math.PI)   ignoredAngle -= Math.PI * 2;
+        double left = ignoredAngle - Math.PI / 2 - circleStep / 2;
+        if (left < -Math.PI)    left += Math.PI * 2;
+        double right = ignoredAngle + Math.PI / 2 + circleStep / 2;
+        if (right > Math.PI)    right -= Math.PI * 2;
+        boolean looped = (left < right);
+        for (double i = left; !looped || i <= right; i += circleStep)
+        {
+            if (i > Math.PI)
+            {
+                looped = true;
+                i -= Math.PI * 2;
+            }
+            Point q = points.addPoint(s.x + Const.brushWidth * Math.cos(i), s.y + Const.brushWidth * Math.sin(i));
+            if (p != null)
+            {
+                p.setRight(q);
+                q.setLeft(p);
+            }
+            p = q;
+        }
+        return p;
     }
     @Override
     public void drawInputSpecific(Graphics g)
@@ -176,6 +193,38 @@ public class FreeDraw extends MouseInput {
                 g.drawLine(s.x, s.y, s.prev.x, s.prev.y);
             s = s.prev;
         }
+        drawShortestPath(g);
+    }
+    /**
+     * Finds the shortest path via mouse drag.
+     */
+    public void buildPath()
+    {
+        previousPoint = Dijkstra.getShortestPaths(endA, points.getVertices().toLinkedList());
+    }
+/**
+ * Draws the shortest path which was selected by buildPath().
+ * @param g Graphics object.
+ */
+    public void drawShortestPath(Graphics g)
+    {
+        if (previousPoint == null)  return;
+        
+        Vertex next = endB;
+        while (next != null)
+        {
+            Vertex q = previousPoint.get(next);
+            if (q != null)
+                gui.drawEdge(g, Color.blue, q, next);
+            next = q;
+        }
+    }
+    @Override
+    public Color chooseColorByPoint(Vertex vertex)
+    {
+        if (vertex == endA) return Color.MAGENTA;
+        if (vertex == endB) return Color.red;
+        return super.chooseColorByPoint(vertex);
     }
     private class Spline
     {
