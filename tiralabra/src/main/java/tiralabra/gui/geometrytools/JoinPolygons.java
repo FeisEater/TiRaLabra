@@ -67,6 +67,10 @@ public class JoinPolygons extends MouseInput {
         lastRight.setLeft(firstLeft);
         firstRight.setLeft(lastLeft);
         lastLeft.setRight(firstRight);
+        firstLeft = null;
+        firstRight = null;
+        lastLeft = null;
+        lastRight = null;
     }
 /**
  * Decides what color should the vertex be represented as.

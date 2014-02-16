@@ -105,9 +105,9 @@ public class GraphicInterface extends JPanel implements Runnable {
  */
     public void drawPoint(Graphics g, Vertex point)
     {
-        //LinkedList<Vertex> list = point.getAdjacents().toLinkedList();
-        //while (list.hasNext())
-        //    drawEdge(g, Color.LIGHT_GRAY, point, list.getNext());
+        LinkedList<Vertex> list = point.getAdjacents().toLinkedList();
+        while (list.hasNext())
+            drawEdge(g, Color.white, point, list.getNext());
         //if (point != points.endA && point != points.endB)   return;
         g.setColor(currentTool.chooseColorByPoint(point));
         g.fillOval((int)point.X() - Const.pointWidth / 2, 
@@ -118,8 +118,8 @@ public class GraphicInterface extends JPanel implements Runnable {
             Point p = (Point)point;
             drawEdge(g, Color.PINK, p, p.getLeft());
             drawEdge(g, Color.PINK, p, p.getRight());
-            g.setColor(Color.cyan);
-            g.drawLine((int)p.X(), (int)p.Y(), p.angleMarker()[0], p.angleMarker()[1]);
+            //g.setColor(Color.cyan);
+            //g.drawLine((int)p.X(), (int)p.Y(), p.angleMarker()[0], p.angleMarker()[1]);
         }
     }
 /**
