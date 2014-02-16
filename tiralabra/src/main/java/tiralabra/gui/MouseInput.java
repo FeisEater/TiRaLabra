@@ -58,6 +58,7 @@ public class MouseInput implements MouseInputListener
         }
         return bestPoint;
     }
+    public void close() {}
 /**
  * Finds a vertex at mouse's coordinates.
  * @param e MouseEvent object.
@@ -79,6 +80,10 @@ public class MouseInput implements MouseInputListener
  */
     public Color chooseColorByPoint(Vertex point)
     {
+        if (point == points.endA)
+            return Color.MAGENTA;
+        if (point == points.endB)
+            return Color.red;
         if (point == draggedFromPoint)
             return Color.orange;
         if (point == draggedToPoint)
@@ -110,10 +115,8 @@ public class MouseInput implements MouseInputListener
     public void mouseEntered(MouseEvent e) {}
     @Override
     public void mouseExited(MouseEvent e) {}
-
     @Override
     public void mouseDragged(MouseEvent e)  {}
-
     @Override
     public void mouseMoved(MouseEvent e) {}
 }

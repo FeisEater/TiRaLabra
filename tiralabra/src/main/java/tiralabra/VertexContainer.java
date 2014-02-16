@@ -2,9 +2,11 @@
 package tiralabra;
 
 import tiralabra.algorithms.AngleElimination;
+import tiralabra.algorithms.Dijkstra;
 import tiralabra.datastructures.LinkedList;
 import tiralabra.datastructures.Point;
 import tiralabra.datastructures.Tree;
+import tiralabra.datastructures.TreeMap;
 import tiralabra.datastructures.Vertex;
 import tiralabra.util.Tools;
 import tiralabra.util.VertexComparator;
@@ -16,6 +18,10 @@ import tiralabra.util.VertexComparator;
 public class VertexContainer {
     private Tree<Vertex> vertices = new Tree<>(new VertexComparator());
     public Tree<Vertex> getVertices()  {return vertices;}
+        
+    public Vertex endA;
+    public Vertex endB;
+    
 /**
  * Creates a vertex at a specified position.
  * @param x X coordinate where vertex is created.

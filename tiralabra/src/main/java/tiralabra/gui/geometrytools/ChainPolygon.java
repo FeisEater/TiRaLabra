@@ -21,12 +21,14 @@ import tiralabra.gui.MouseInput;
 public class ChainPolygon extends MouseInput {
     private Point begin;
     private Point prev;
-    private TreeMap<Vertex, Vertex> previousPoint;
     private boolean wallmode;
     public ChainPolygon(VertexContainer p, GraphicInterface gui)
     {
         super(p, gui);
         wallmode = true;
+        System.out.println("Chain Polygon mode: Left button to place and string points together.\n"
+                + "Middle button to toggle wall mode.\n"
+                + "Right button to close the polygon of placed points.");
     }
     @Override
     public void mouseReleased(MouseEvent e)
@@ -36,33 +38,19 @@ public class ChainPolygon extends MouseInput {
         if (e.getButton() == MouseEvent.BUTTON1)
             addPoint(draggedToX, draggedToY);
         else if (e.getButton() == MouseEvent.BUTTON2)
-            removePoint(chosenPoint);
+            toggleWallMode(chosenPoint);
         else if (e.getButton() == MouseEvent.BUTTON3)
         {
-            if (draggedFromPoint == chosenPoint)
-            {
-                if (begin == null)
-                    traceAround(e.getX(), e.getY(), chosenPoint);
-                else
-                    closeLoop();
-            }
+            if (begin == null)
+                traceAround(e.getX(), e.getY(), chosenPoint);
             else
-                buildPath();
+                closeLoop();
         }
         gui.repaint();
     }
     public void traceAround(int x, int y, Vertex point)
     {
-        //points.addVertex(x, y);
-        //points.buildGraph();
         AngleElimination.findUnobstructedPoints(point, points.getVertices().toLinkedList());
-    }
-    /**
-     * Finds the shortest path via mouse drag.
-     */
-    public void buildPath()
-    {
-        previousPoint = Dijkstra.getShortestPaths(draggedFromPoint, points.getVertices().toLinkedList());
     }
 /**
  * Adds a point and chains it to previously created point.
@@ -85,12 +73,9 @@ public class ChainPolygon extends MouseInput {
  * Removes given vertex.
  * @param point given vertex.
  */
-    public void removePoint(Vertex point)
+    public void toggleWallMode(Vertex point)
     {
-        points.removeVertex(point);
-        draggedToPoint = null;
-        if (point == null)
-            wallmode = !wallmode;
+        wallmode = !wallmode;
     }
 /**
  * Closes the polygon loop by chaining firstly created point
@@ -108,32 +93,9 @@ public class ChainPolygon extends MouseInput {
         prev = null;
         points.buildGraph();
     }
-/**
- * Draws information specific to mouse tool mode.
- * Draws the shortest path which was selected by buildPath()
- * @param g Graphics object.
- */
     @Override
-    public void drawInputSpecific(Graphics g)
+    public void close()
     {
-        drawShortestPath(g);
+        closeLoop();
     }
-/**
- * Draws the shortest path which was selected by buildPath().
- * @param g Graphics object.
- */
-    public void drawShortestPath(Graphics g)
-    {
-        if (previousPoint == null)  return;
-        
-        Vertex next = draggedToPoint;
-        while (next != null)
-        {
-            Vertex q = previousPoint.get(next);
-            if (q != null)
-                gui.drawEdge(g, Color.green, q, next);
-            next = q;
-        }
-    }
-
 }

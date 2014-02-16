@@ -24,15 +24,11 @@ public class FreeDraw extends MouseInput {
     private final double circleStep = 2 * Math.PI / Const.circlePrecision;
     private boolean startedDrawing;
     private Spline last;
-    private Vertex endA;
-    private Vertex endB;
-    private boolean toggleEnd;
-    private TreeMap<Vertex, Vertex> previousPoint;
 
     public FreeDraw(VertexContainer p, GraphicInterface gui) {
         super(p, gui);
         startedDrawing = false;
-        toggleEnd = false;
+        System.out.println("Free draw mode: Hold the left button to draw a polygon.");
     }
     @Override
     public void mousePressed(MouseEvent e)
@@ -49,26 +45,6 @@ public class FreeDraw extends MouseInput {
         {
             startedDrawing = false;
             constructPolygon();
-        }
-        else if (e.getButton() == MouseEvent.BUTTON2)
-        {
-            points.getVertices().clear();
-        }
-        else if (e.getButton() == MouseEvent.BUTTON3)
-        {
-            toggleEnd = !toggleEnd;
-            if (toggleEnd)
-            {
-                points.removeVertex(endA);
-                endA = points.addVertex(e.getX(), e.getY());
-            }
-            else
-            {
-                points.removeVertex(endB);
-                endB = points.addVertex(e.getX(), e.getY());
-            }
-            points.buildGraph();
-            buildPath();
         }
         gui.repaint();
     }
@@ -193,38 +169,6 @@ public class FreeDraw extends MouseInput {
                 g.drawLine(s.x, s.y, s.prev.x, s.prev.y);
             s = s.prev;
         }
-        drawShortestPath(g);
-    }
-    /**
-     * Finds the shortest path via mouse drag.
-     */
-    public void buildPath()
-    {
-        previousPoint = Dijkstra.getShortestPaths(endA, points.getVertices().toLinkedList());
-    }
-/**
- * Draws the shortest path which was selected by buildPath().
- * @param g Graphics object.
- */
-    public void drawShortestPath(Graphics g)
-    {
-        if (previousPoint == null)  return;
-        
-        Vertex next = endB;
-        while (next != null)
-        {
-            Vertex q = previousPoint.get(next);
-            if (q != null)
-                gui.drawEdge(g, Color.blue, q, next);
-            next = q;
-        }
-    }
-    @Override
-    public Color chooseColorByPoint(Vertex vertex)
-    {
-        if (vertex == endA) return Color.MAGENTA;
-        if (vertex == endB) return Color.red;
-        return super.chooseColorByPoint(vertex);
     }
     private class Spline
     {

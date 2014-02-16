@@ -18,7 +18,6 @@ import tiralabra.gui.MouseInput;
  */
 public class BuildGraph extends MouseInput {
     private Vertex edgeend;
-    private TreeMap<Vertex, Vertex> previousPoint;
     public BuildGraph(VertexContainer p, GraphicInterface gui)
         {super(p, gui);}
     @Override
@@ -31,20 +30,8 @@ public class BuildGraph extends MouseInput {
         else if (e.getButton() == MouseEvent.BUTTON2)
             removePoint(chosenPoint);
         else if (e.getButton() == MouseEvent.BUTTON3)
-        {
-            if (draggedFromPoint == chosenPoint)
-                joinPoints(chosenPoint);
-            else
-                buildPath();
-        }
+            joinPoints(chosenPoint);
         gui.repaint();
-    }
-    /**
-     * Finds the shortest path via mouse drag.
-     */
-    public void buildPath()
-    {
-        previousPoint = Dijkstra.getShortestPaths(draggedFromPoint, points.getVertices().toLinkedList());
     }
 /**
  * Adds a vertex.
@@ -82,16 +69,6 @@ public class BuildGraph extends MouseInput {
         }
     }
 /**
- * Draws information specific to mouse tool mode.
- * Draws the shortest path which was selected by buildPath()
- * @param g Graphics object.
- */
-    @Override
-    public void drawInputSpecific(Graphics g)
-    {
-        drawShortestPath(g);
-    }
-/**
  * Decides what color should the vertex be represented as.
  * Points that await to be connected with other vertex are colored magenta.
  * @param point Specific vertex
@@ -103,23 +80,6 @@ public class BuildGraph extends MouseInput {
         if (point == edgeend)
             return Color.magenta;
         return super.chooseColorByPoint(point);
-    }
-/**
- * Draws the shortest path which was selected by buildPath().
- * @param g Graphics object.
- */
-    public void drawShortestPath(Graphics g)
-    {
-        if (previousPoint == null)  return;
-
-        Vertex next = draggedToPoint;
-        while (next != null)
-        {
-            Vertex q = previousPoint.get(next);
-            if (q != null)
-                gui.drawEdge(g, Color.green, q, next);
-            next = q;
-        }
     }
 
 }

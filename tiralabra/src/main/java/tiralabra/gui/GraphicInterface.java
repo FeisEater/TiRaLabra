@@ -9,13 +9,16 @@ import javax.swing.JPanel;
 import javax.swing.WindowConstants;
 import tiralabra.VertexContainer;
 import tiralabra.algorithms.AngleElimination;
+import tiralabra.algorithms.Dijkstra;
 import tiralabra.datastructures.LinkedList;
 import tiralabra.datastructures.Point;
 import tiralabra.datastructures.Tree;
+import tiralabra.datastructures.TreeMap;
 import tiralabra.datastructures.Vertex;
 import tiralabra.gui.geometrytools.BuildGraph;
 import tiralabra.gui.geometrytools.ChainPolygon;
 import tiralabra.gui.geometrytools.FreeDraw;
+import tiralabra.gui.geometrytools.SetEndPoints;
 import tiralabra.util.Const;
 import tiralabra.util.VertexComparator;
 
@@ -28,6 +31,7 @@ public class GraphicInterface extends JPanel implements Runnable {
     private JFrame frame;
     private VertexContainer points;
     private MouseInput currentTool;
+    private ToolSwitcher toolswitcher;
 /**
  * Constructor.
  * @param points VertexContainer object.
@@ -35,10 +39,21 @@ public class GraphicInterface extends JPanel implements Runnable {
     public GraphicInterface(VertexContainer points)
     {
         super();
-        currentTool = new FreeDraw(points, this);
+        toolswitcher = new ToolSwitcher(points, this);
+        currentTool = new SetEndPoints(points, this);
         addMouseMotionListener(currentTool);
         addMouseListener(currentTool);
         this.points = points;
+    }
+    public void switchTool(MouseInput tool)
+    {
+        removeMouseListener(currentTool);
+        removeMouseMotionListener(currentTool);
+        currentTool.close();
+        currentTool = tool;
+        addMouseMotionListener(currentTool);
+        addMouseListener(currentTool);
+        repaint();
     }
     @Override
     public void run()
@@ -59,9 +74,29 @@ public class GraphicInterface extends JPanel implements Runnable {
         LinkedList<Vertex> vertices = points.getVertices().toLinkedList();
         while (vertices.hasNext())
             drawPoint(g, vertices.getNext());
-        currentTool.drawInputSpecific(g);   
+        currentTool.drawInputSpecific(g);
+        drawShortestPath(g);
         //AngleElimination.visualize(g);
         //points.getVertices().drawTree(g);
+    }
+/**
+ * Draws the shortest path which was selected by buildPath().
+ * @param g Graphics object.
+ */
+    public void drawShortestPath(Graphics g)
+    {
+        TreeMap<Vertex, Vertex> previousPoint = 
+                Dijkstra.getShortestPaths(points.endA, points.getVertices().toLinkedList());
+        if (previousPoint == null)  return;
+        
+        Vertex next = points.endB;
+        while (next != null)
+        {
+            Vertex q = previousPoint.get(next);
+            if (q != null)
+                drawEdge(g, Color.blue, q, next);
+            next = q;
+        }
     }
 /**
  * Draws certain vertex and its connections with other vertices.
@@ -70,9 +105,10 @@ public class GraphicInterface extends JPanel implements Runnable {
  */
     public void drawPoint(Graphics g, Vertex point)
     {
-        LinkedList<Vertex> list = point.getAdjacents().toLinkedList();
-        while (list.hasNext())
-            drawEdge(g, Color.LIGHT_GRAY, point, list.getNext());
+        //LinkedList<Vertex> list = point.getAdjacents().toLinkedList();
+        //while (list.hasNext())
+        //    drawEdge(g, Color.LIGHT_GRAY, point, list.getNext());
+        //if (point != points.endA && point != points.endB)   return;
         g.setColor(currentTool.chooseColorByPoint(point));
         g.fillOval((int)point.X() - Const.pointWidth / 2, 
             (int)point.Y() - Const.pointWidth / 2,
