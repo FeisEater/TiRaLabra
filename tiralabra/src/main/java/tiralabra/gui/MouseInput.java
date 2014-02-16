@@ -89,8 +89,8 @@ public class MouseInput implements MouseInputListener
         if (point == draggedToPoint)
             return Color.green;
         if (point.isVertex())
-            return Color.BLUE;
-        return Color.black;
+            return Color.BLACK;
+        return Color.gray;
     }
     @Override
     public void mousePressed(MouseEvent e)
