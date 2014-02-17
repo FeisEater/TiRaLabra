@@ -46,7 +46,7 @@ public class GraphicInterface extends JPanel implements Runnable {
     {
         removeMouseListener(currentTool);
         removeMouseMotionListener(currentTool);
-        currentTool.close();
+        if (currentTool != null)   currentTool.close();
         currentTool = tool;
         addMouseMotionListener(currentTool);
         addMouseListener(currentTool);
