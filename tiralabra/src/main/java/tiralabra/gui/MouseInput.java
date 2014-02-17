@@ -16,22 +16,28 @@ import tiralabra.util.Const;
  */
 public class MouseInput implements MouseInputListener
 {
-    protected VertexContainer points;
+    protected VertexContainer vertices;
+/** X coordinate where mouse was held down. */
     protected int draggedFromX;
+/** Y coordinate where mouse was held down. */
     protected int draggedFromY;
-    protected Vertex draggedFromPoint;
+/** Vertex where mouse was held down. */
+    protected Vertex draggedFromVertex;
+/** X coordinate where mouse was released. */
     protected int draggedToX;
+/** Y coordinate where mouse was released. */
     protected int draggedToY;
-    protected Vertex draggedToPoint;
+/** Vertex where mouse was released. */
+    protected Vertex draggedToVertex;
     protected GraphicInterface gui;
     /**
      * Constructor.
-     * @param p
-     * @param gui 
+     * @param p All vertices in the program.
+     * @param gui GraphicInterface object.
      */
     public MouseInput(VertexContainer p, GraphicInterface gui)
     {
-        points = p;
+        vertices = p;
         this.gui = gui;
     }
     /**
@@ -40,14 +46,14 @@ public class MouseInput implements MouseInputListener
      * @param y Y coordinate
      * @return Vertex that is located in given coordinates.
      */
-    public Vertex choosePoint(int x, int y)
+    public Vertex chooseVertex(int x, int y)
     {
         Vertex bestPoint = null;
         double bestDist = Const.pointWidth;
-        LinkedList<Vertex> vertices = points.getVertices().toLinkedList();
-        while (vertices.hasNext())
+        LinkedList<Vertex> list = vertices.getVertices().toLinkedList();
+        while (list.hasNext())
         {
-            Vertex p = vertices.getNext();
+            Vertex p = list.getNext();
             double dist = Math.sqrt(Math.pow(p.X() - x, 2) + 
                     Math.pow(p.Y() - y, 2));
             if (dist <= bestDist)
@@ -58,15 +64,18 @@ public class MouseInput implements MouseInputListener
         }
         return bestPoint;
     }
+/**
+ * Overriden method that handles the tool being switched out of.
+ */
     public void close() {}
 /**
  * Finds a vertex at mouse's coordinates.
  * @param e MouseEvent object.
- * @return Vertex that is located in mouse's coordinates.
+ * @return Vertex that is located at mouse's coordinates.
  */
-    public Vertex choosePoint(MouseEvent e)
+    public Vertex chooseVertex(MouseEvent e)
     {
-        return choosePoint(e.getX(), e.getY());
+        return chooseVertex(e.getX(), e.getY());
     }
 /**
  * Draws information specific to mouse tool mode.
@@ -75,30 +84,30 @@ public class MouseInput implements MouseInputListener
     public void drawInputSpecific(Graphics g) {}
 /**
  * Decides what color should the vertex be represented as.
- * @param point Specific vertex
+ * @param vertex Specific vertex
  * @return Color of the vertex.
  */
-    public Color chooseColorByPoint(Vertex point)
+    public Color chooseColorByPoint(Vertex vertex)
     {
-        if (point == points.endA)
+        if (vertex == vertices.endA)
             return Color.MAGENTA;
-        if (point == points.endB)
+        if (vertex == vertices.endB)
             return Color.red;
-        if (point == draggedFromPoint)
+        if (vertex == draggedFromVertex)
             return Color.orange;
-        if (point == draggedToPoint)
+        if (vertex == draggedToVertex)
             return Color.green;
-        if (point.isVertex())
+        if (vertex.isVertex())
             return Color.BLACK;
         return Color.gray;
     }
     @Override
     public void mousePressed(MouseEvent e)
     {
-        draggedToPoint = null;
+        draggedToVertex = null;
         draggedFromX = e.getX();
         draggedFromY = e.getY();
-        draggedFromPoint = choosePoint(e);
+        draggedFromVertex = chooseVertex(e);
         gui.repaint();
     }
     @Override
@@ -106,7 +115,7 @@ public class MouseInput implements MouseInputListener
     {
         draggedToX = e.getX();
         draggedToY = e.getY();
-        draggedToPoint = choosePoint(e);
+        draggedToVertex = chooseVertex(e);
         gui.repaint();
     }
     @Override

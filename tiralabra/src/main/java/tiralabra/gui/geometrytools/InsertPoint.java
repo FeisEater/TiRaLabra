@@ -10,11 +10,13 @@ import tiralabra.gui.GraphicInterface;
 import tiralabra.gui.MouseInput;
 
 /**
- *
+ * Tool for inserting a point between two points.
  * @author Pavel
  */
 public class InsertPoint extends MouseInput {
+/** Chosen left Point. */
     private Point leftPoint;
+/** Chosen right Point. */
     private Point rightPoint;
     public InsertPoint(VertexContainer p, GraphicInterface gui)
     {
@@ -28,19 +30,34 @@ public class InsertPoint extends MouseInput {
     {
         super.mouseReleased(e);
         if (leftPoint != null && rightPoint != null)
-        {
-            removePointsInBetween();
-            Point p = points.addPoint(e.getX(), e.getY());
-            leftPoint.setRight(p);
-            p.setLeft(leftPoint);
-            p.setRight(rightPoint);
-            rightPoint.setLeft(p);
-            leftPoint = null;
-            rightPoint = null;
-        }
+            insertPoint(draggedToX, draggedToY);
         else
-            choosePoints(draggedFromPoint, e);
+            choosePoints(draggedToVertex, e);
+        vertices.buildGraph();
+        gui.repaint();
     }
+/**
+ * Inserts a point between chosen left and right points.
+ * @param x X position where point is inserted.
+ * @param y Y position where point is inserted.
+ */
+    public void insertPoint(int x, int y)
+    {
+        removePointsInBetween();
+        Point p = vertices.addPoint(x, y);
+        leftPoint.setRight(p);
+        p.setLeft(leftPoint);
+        p.setRight(rightPoint);
+        rightPoint.setLeft(p);
+        leftPoint = null;
+        rightPoint = null;
+    }
+/**
+ * Choose a left Point, if already chose, choose a right Point.
+ * @param v Vertex to be chosen.
+ * @param e MouseEvent. If right button, points between left and right
+ *      points are removed and third mouse click is not prompted.
+ */
     public void choosePoints(Vertex v, MouseEvent e)
     {
         if (v == null)  return;
@@ -58,12 +75,15 @@ public class InsertPoint extends MouseInput {
             }
         }
     }
+/**
+ * Removes all points between chosen left and right points.
+ */
     public void removePointsInBetween()
     {
         Point q = leftPoint.getRight();
         while (q != rightPoint)
         {
-            points.removeVertex(q);
+            vertices.removeVertex(q);
             q = q.getRight();
         }
         leftPoint.setRight(rightPoint);
@@ -71,18 +91,18 @@ public class InsertPoint extends MouseInput {
     }
 /**
  * Decides what color should the vertex be represented as.
- * Points that await to be connected with other vertex are colored magenta.
- * @param point Specific vertex
+ * Left Point is green, right Point is yellow.
+ * @param vertex Specific vertex
  * @return Color of the vertex.
  */
     @Override
-    public Color chooseColorByPoint(Vertex point)
+    public Color chooseColorByPoint(Vertex vertex)
     {
-        if (point == leftPoint)
+        if (vertex == leftPoint)
             return Color.green;
-        if (point == rightPoint)
+        if (vertex == rightPoint)
             return Color.yellow;
-        return super.chooseColorByPoint(point);
+        return super.chooseColorByPoint(vertex);
     }
 
 }

@@ -7,7 +7,8 @@ import java.util.Comparator;
  * Binary heap. Contains elements in a binary tree, where every node
  * has to be bigger than both its children (assuming the comparator
  * defines the heap as maximum heap). Elements are stored in an array,
- * and all pointers are accessed via array indexes.
+ * and all pointers are accessed via array indexes. Optionally keeps elements
+ * in a treemap to retrieve indexes by element's pointer.
  * @author Pavel
  * @param <E> Class of stored elements.
  */
@@ -15,6 +16,7 @@ public class Heap<E> {
     private Object[] array;
     private int heapSize;
     private Comparator comparator;
+/** Map that retrieves an index by element's pointer. */
     private TreeMap<E, Integer> indexes;
 /**
  * Constructor
@@ -32,6 +34,7 @@ public class Heap<E> {
  * @param initialSize Initial size of heap's array.
  * @param comp Comparator class used in the heap.
  * @param ind TreeMap for retrieving indexes based on an element.
+ *      Must use a different comparator class than heap's comparator.
  */
     public Heap(int initialSize, Comparator comp, TreeMap<E, Integer> ind)
     {
@@ -109,37 +112,6 @@ public class Heap<E> {
         heapify(changeAt);
     }
 /**
- * Changes the value of an element.
- * @param oldV Elements current value.
- * @param newV Value to which the element is changed.
- */
-/*    public void changeValue(E oldV, E newV)
-    {
-        int i = findValue(oldV);
-        array[i] = newV;
-        valueChanged(i);
-    }*/
-/**
- * Finds the index of a specified element
- * @param e Given element
- * @return Index of the element
- */
-/*    public int findValue(E e)
-    {
-        for (int i = 0; i < heapSize; i++)
-            if (e == array[i])  return i;*/
-/*        int i = 0;
-        while (getLeft(i) < heapSize && comparator.compare(e, array[getLeft(i)]) > 0)
-            i = getLeft(i);
-        while (i < heapSize)
-        {
-            if (e == array[i])
-                return i;
-            i++;
-        }*/
-/*        return -1;
-    }*/
-/**
  * Doubles the size of the array.
  */
     private void increaseArray()
@@ -190,8 +162,10 @@ public class Heap<E> {
                 comparator.compare(array[cur], right) > 0)
             {
                 int min;
-                if (comparator.compare(left, right) < 0)    min = getLeft(cur);
+                if (comparator.compare(left, right) < 0)
+                    min = getLeft(cur);
                 else    min = getRight(cur);
+                
                 switchNodes(cur, min);
                 cur = min;
             }

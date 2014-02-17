@@ -1,14 +1,9 @@
 
 package tiralabra.gui.geometrytools;
 
-import java.awt.Color;
-import java.awt.Graphics;
 import java.awt.event.MouseEvent;
 import tiralabra.VertexContainer;
-import tiralabra.algorithms.AngleElimination;
-import tiralabra.algorithms.Dijkstra;
 import tiralabra.datastructures.Point;
-import tiralabra.datastructures.TreeMap;
 import tiralabra.datastructures.Vertex;
 import tiralabra.gui.GraphicInterface;
 import tiralabra.gui.MouseInput;
@@ -19,8 +14,11 @@ import tiralabra.gui.MouseInput;
  * @author Pavel
  */
 public class ChainPolygon extends MouseInput {
+/** First point placed for creating a polygon. */
     private Point begin;
+/** Last point that was placed for creating a polygon. */
     private Point prev;
+/** if true, polygons will be walls. */
     private boolean wallmode;
     public ChainPolygon(VertexContainer p, GraphicInterface gui)
     {
@@ -34,23 +32,15 @@ public class ChainPolygon extends MouseInput {
     public void mouseReleased(MouseEvent e)
     {
         super.mouseReleased(e);
-        Vertex chosenPoint = choosePoint(e);
+        Vertex chosenPoint = chooseVertex(e);
         if (e.getButton() == MouseEvent.BUTTON1)
             addPoint(draggedToX, draggedToY);
         else if (e.getButton() == MouseEvent.BUTTON2)
             toggleWallMode(chosenPoint);
         else if (e.getButton() == MouseEvent.BUTTON3)
-        {
-            if (begin == null)
-                traceAround(e.getX(), e.getY(), chosenPoint);
-            else
-                closeLoop();
-        }
+            closeLoop();
+        vertices.buildGraph();
         gui.repaint();
-    }
-    public void traceAround(int x, int y, Vertex point)
-    {
-        AngleElimination.findUnobstructedPoints(point, points.getVertices().toLinkedList());
     }
 /**
  * Adds a point and chains it to previously created point.
@@ -59,7 +49,7 @@ public class ChainPolygon extends MouseInput {
  */
     public void addPoint(int x, int y)
     {
-        Point p = points.addPoint(x,y);
+        Point p = vertices.addPoint(x,y);
         if (begin == null)  begin = p;
         else
         {
@@ -67,7 +57,7 @@ public class ChainPolygon extends MouseInput {
             prev.setRight(p);
         }
         prev = p;
-        draggedToPoint = null;
+        draggedToVertex = null;
     }
 /**
  * Removes given vertex.
@@ -88,10 +78,9 @@ public class ChainPolygon extends MouseInput {
             begin.setLeft(prev);
             prev.setRight(begin);
         }
-        points.setShapeMode(begin, wallmode);
+        vertices.setShapeMode(begin, wallmode);
         begin = null;
         prev = null;
-        points.buildGraph();
     }
     @Override
     public void close()

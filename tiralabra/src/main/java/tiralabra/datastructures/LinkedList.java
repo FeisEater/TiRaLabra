@@ -13,6 +13,7 @@ public class LinkedList<E> {
  */
     private class Node
     {
+/** Pointer to the next element in the list. */
         private Node next;
         private E value;
         public Node(E e)   {value = e;}
@@ -20,8 +21,11 @@ public class LinkedList<E> {
         public Node getNext()   {return next;}
         public void setNext(Node n)   {next = n;}
     }
+/** First element in the list. */
     private Node head;
+/** Last element in the list. */
     private Node tail;
+/** Current element in the iterating process. */
     private Node current;
     private int size;
     public LinkedList() {size = 0;}

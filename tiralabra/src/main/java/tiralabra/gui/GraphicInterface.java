@@ -15,10 +15,6 @@ import tiralabra.datastructures.Point;
 import tiralabra.datastructures.Tree;
 import tiralabra.datastructures.TreeMap;
 import tiralabra.datastructures.Vertex;
-import tiralabra.gui.geometrytools.BuildGraph;
-import tiralabra.gui.geometrytools.ChainPolygon;
-import tiralabra.gui.geometrytools.FreeDraw;
-import tiralabra.gui.geometrytools.SetEndPoints;
 import tiralabra.util.Const;
 import tiralabra.util.VertexComparator;
 
@@ -29,22 +25,23 @@ import tiralabra.util.VertexComparator;
  */
 public class GraphicInterface extends JPanel implements Runnable {
     private JFrame frame;
-    private VertexContainer points;
+    private VertexContainer vertices;
     private MouseInput currentTool;
     private ToolSwitcher toolswitcher;
 /**
  * Constructor.
- * @param points VertexContainer object.
+ * @param vertices VertexContainer object.
  */
-    public GraphicInterface(VertexContainer points)
+    public GraphicInterface(VertexContainer vertices)
     {
         super();
-        toolswitcher = new ToolSwitcher(points, this);
-        currentTool = new SetEndPoints(points, this);
-        addMouseMotionListener(currentTool);
-        addMouseListener(currentTool);
-        this.points = points;
+        toolswitcher = new ToolSwitcher(vertices, this);
+        this.vertices = vertices;
     }
+/**
+ * Changes geometry manipulation tool.
+ * @param tool new tool.
+ */
     public void switchTool(MouseInput tool)
     {
         removeMouseListener(currentTool);
@@ -71,13 +68,12 @@ public class GraphicInterface extends JPanel implements Runnable {
         super.paintComponent(g);
         fillPolygon(g);
         //fillUnobstructedArea(g, 4);
-        LinkedList<Vertex> vertices = points.getVertices().toLinkedList();
-        while (vertices.hasNext())
-            drawPoint(g, vertices.getNext());
+        //AngleElimination.visualize(g);
+        LinkedList<Vertex> vlist = vertices.getVertices().toLinkedList();
+        while (vlist.hasNext())
+            drawVertex(g, vlist.getNext());
         currentTool.drawInputSpecific(g);
         drawShortestPath(g);
-        //AngleElimination.visualize(g);
-        //points.getVertices().drawTree(g);
     }
 /**
  * Draws the shortest path which was selected by buildPath().
@@ -86,10 +82,10 @@ public class GraphicInterface extends JPanel implements Runnable {
     public void drawShortestPath(Graphics g)
     {
         TreeMap<Vertex, Vertex> previousPoint = 
-                Dijkstra.getShortestPaths(points.endA, points.getVertices().toLinkedList());
+                Dijkstra.getShortestPaths(vertices.endA, vertices.getVertices().toLinkedList());
         if (previousPoint == null)  return;
         
-        Vertex next = points.endB;
+        Vertex next = vertices.endB;
         while (next != null)
         {
             Vertex q = previousPoint.get(next);
@@ -101,21 +97,21 @@ public class GraphicInterface extends JPanel implements Runnable {
 /**
  * Draws certain vertex and its connections with other vertices.
  * @param g Graphics object.
- * @param point Vertex that is drawn.
+ * @param vertex Vertex that is drawn.
  */
-    public void drawPoint(Graphics g, Vertex point)
+    public void drawVertex(Graphics g, Vertex vertex)
     {
-        LinkedList<Vertex> list = point.getAdjacents().toLinkedList();
+        LinkedList<Vertex> list = vertex.getAdjacents().toLinkedList();
         while (list.hasNext())
-            drawEdge(g, Color.white, point, list.getNext());
-        //if (point != points.endA && point != points.endB)   return;
-        g.setColor(currentTool.chooseColorByPoint(point));
-        g.fillOval((int)point.X() - Const.pointWidth / 2, 
-            (int)point.Y() - Const.pointWidth / 2,
+            drawEdge(g, Color.white, vertex, list.getNext());
+        //if (vertex != vlist.endA && vertex != vlist.endB)   return;
+        g.setColor(currentTool.chooseColorByPoint(vertex));
+        g.fillOval((int)vertex.X() - Const.pointWidth / 2, 
+            (int)vertex.Y() - Const.pointWidth / 2,
             Const.pointWidth, Const.pointWidth);
-        if (point.getClass() == Point.class)
+        if (vertex.getClass() == Point.class)
         {
-            Point p = (Point)point;
+            Point p = (Point)vertex;
             drawEdge(g, Color.PINK, p, p.getLeft());
             drawEdge(g, Color.PINK, p, p.getRight());
             //g.setColor(Color.cyan);
@@ -142,10 +138,10 @@ public class GraphicInterface extends JPanel implements Runnable {
     public void fillPolygon(Graphics g)
     {
         Tree<Point> used = new Tree<>(new VertexComparator());
-        LinkedList<Vertex> vertices = points.getVertices().toLinkedList();
-        while (vertices.hasNext())
+        LinkedList<Vertex> vlist = vertices.getVertices().toLinkedList();
+        while (vlist.hasNext())
         {
-            Vertex v = vertices.getNext();
+            Vertex v = vlist.getNext();
             if (v.getClass() != Point.class)    continue;
             Point p = (Point)v;
             if (used.contains(p)) continue;
@@ -155,7 +151,7 @@ public class GraphicInterface extends JPanel implements Runnable {
             if (!retrieveCoordinatesFromPolygon(p, x, y, used))
                 continue;
             
-            g.setColor((points.shapeIsWall(p)) ? Color.PINK : Color.WHITE);
+            g.setColor((vertices.shapeIsWall(p)) ? Color.PINK : Color.WHITE);
             g.fillPolygon( convertLinkedListToArray(x),
                             convertLinkedListToArray(y),
                             x.size());
@@ -173,11 +169,11 @@ public class GraphicInterface extends JPanel implements Runnable {
         return result;
     }
 /**
- * Collects coordinates from all points in a polygon.
- * @param first A point in the polygon from which all other points are accessed.
+ * Collects coordinates from all vertices in a polygon.
+ * @param first A point in the polygon from which all other vertices are accessed.
  * @param x LinkedList of X coordinates.
  * @param y LinkedList of Y coordinates.
- * @param used Set of points that were already processed.
+ * @param used Set of vertices that were already processed.
  * @return true if coordinates were retrieved correctly.
  */
     public boolean retrieveCoordinatesFromPolygon(Point first, LinkedList<Integer> x, LinkedList<Integer> y, Tree<Point> used)

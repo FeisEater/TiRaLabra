@@ -17,20 +17,22 @@ import tiralabra.util.Tools;
  * @author Pavel
  */
 public class AngleElimination {
+    private static Vertex src;
     private static LinkedList<AngleInterval> list;
 /**
  * Finds all vertices that are unobstructed from a specified vertex's
  * point of view.
- * @param src Vertex from which algorithm is tracing.
+ * @param v Vertex from which algorithm is tracing.
  * @param vertices A set of all vertices in the program
  * @return Set of vertices that are unobstructed from src.
  */
-    public static LinkedList<Vertex> findUnobstructedPoints(Vertex src, LinkedList<Vertex> vertices)
+    public static LinkedList<Vertex> findUnobstructedPoints(Vertex v, LinkedList<Vertex> vertices)
     {
-        if (src == null)  return null;
-        Heap<AngleInterval> allIntervals = findIntervals(src, vertices);
-        list = flattenIntervals(src, allIntervals);
-        return getUnobstructedVertices(src, vertices);
+        if (v == null)  return null;
+        src = v;
+        Heap<AngleInterval> allIntervals = findIntervals(vertices);
+        list = flattenIntervals(allIntervals);
+        return getUnobstructedVertices(vertices);
     }
 /**
  * Visualizes generated angle intervals for debugging purposes.
@@ -46,10 +48,10 @@ public class AngleElimination {
             AngleInterval ai = list.getNext();
             if ((int)ai.leftDist == 0 && (int)ai.rightDist == 0)
                 continue;
-            g.drawLine((int)(ai.src.X() + Math.cos(ai.leftAngle) * ai.leftDist),
-                    (int)(ai.src.Y() + Math.sin(ai.leftAngle) * ai.leftDist),
-                    (int)(ai.src.X() + Math.cos(ai.rightAngle) * ai.rightDist),
-                    (int)(ai.src.Y() + Math.sin(ai.rightAngle) * ai.rightDist));
+            g.drawLine((int)(src.X() + Math.cos(ai.leftAngle) * ai.leftDist),
+                    (int)(src.Y() + Math.sin(ai.leftAngle) * ai.leftDist),
+                    (int)(src.X() + Math.cos(ai.rightAngle) * ai.rightDist),
+                    (int)(src.Y() + Math.sin(ai.rightAngle) * ai.rightDist));
         }
     }
 /**
@@ -72,16 +74,15 @@ public class AngleElimination {
 /**
  * Finds all polygon edges and divides field into sectors, where each
  * line fills the width of the sector.
- * @param src Vertex, which becomes a center of the sectors.
  * @param vertices A set of all vertices in the program
  */
-    private static Heap<AngleInterval> findIntervals(Vertex src, LinkedList<Vertex> vertices)
+    private static Heap<AngleInterval> findIntervals(LinkedList<Vertex> vertices)
     {
         Heap<AngleInterval> intervals = new Heap<>(15, new DirectionComparator());
 //if src is Point, wall part of the angle should be a sector where everything
 //is obstructed, no matter how close the other vertex is.
         if (src.getClass() == Point.class)
-            intervals.insert(new AngleInterval((Point)src));
+            intervals.insert(new AngleInterval());
         
         while (vertices.hasNext())
         {
@@ -91,7 +92,7 @@ public class AngleElimination {
             Point q = (Point)v;
             if (src == q || q.getRight() == null || q.getRight() == src)
                 continue;
-            AngleInterval ai = new AngleInterval(src,q);
+            AngleInterval ai = new AngleInterval(q);
             intervals.insert(ai);
         }
         vertices.reset();
@@ -100,14 +101,13 @@ public class AngleElimination {
 /**
  * Removes redundant sectors and overlapping.
  */
-    private static LinkedList<AngleInterval> flattenIntervals(Vertex src, Heap<AngleInterval> startAngles)
+    private static LinkedList<AngleInterval> flattenIntervals(Heap<AngleInterval> startAngles)
     {
         int opt = startAngles.size();
         Queue<AngleInterval> flat = new Queue<>();
-//Uncomment this if the code won't work!
+//Uncomment below if the code won't work!
         //while (!startAngles.isEmpty())
         //    flat.add(startAngles.pop());
-//Now, ladies and gentlemen, give it up for the shittiest code in the world!
         Heap<AngleInterval> endAngles = new Heap<>(15, new EndDirectionComparator());
         Tree<AngleInterval> distances = new Tree<>(new DistanceComparator());
         double lastAngle = -Math.PI;
@@ -125,7 +125,7 @@ public class AngleElimination {
                     lastAngle = newAngle.leftAngle;
                 else if (comp.compare(newAngle, distances.getMin()) < 0 && lastAngle != newAngle.leftAngle)
                 {
-                    flat.enqueue(new AngleInterval(src, lastAngle, distances.getMin().distanceFromLine(lastAngle),
+                    flat.enqueue(new AngleInterval(lastAngle, distances.getMin().distanceFromLine(lastAngle),
                         newAngle.leftAngle, distances.getMin().distanceFromLine(newAngle.leftAngle)));
                     lastAngle = newAngle.leftAngle;
                 }
@@ -139,7 +139,7 @@ public class AngleElimination {
                 distances.remove(oldAngle);
                 if (wasClosest && lastAngle != oldAngle.rightAngle)
                 {
-                    flat.enqueue(new AngleInterval(src, lastAngle, oldAngle.distanceFromLine(lastAngle),
+                    flat.enqueue(new AngleInterval(lastAngle, oldAngle.distanceFromLine(lastAngle),
                         oldAngle.rightAngle, oldAngle.rightDist));
                     lastAngle = oldAngle.rightAngle;
                 }
@@ -166,15 +166,13 @@ public class AngleElimination {
     }
 /**
  * Finds unobstructed vertices based on generated sectors.
- * @param src Vertex from which algorithm is tracing.
  * @param vertices A set of all vertices in the program
  * @return set of unobstructed vertices.
  */
-    private static LinkedList<Vertex> getUnobstructedVertices(Vertex src, LinkedList<Vertex> vertices)
+    private static LinkedList<Vertex> getUnobstructedVertices(LinkedList<Vertex> vertices)
     {
         LinkedList<Vertex> unobstructed = new LinkedList<>();
-        if (src.getClass() == Point.class)
-            addNeighbours((Point)src, unobstructed);
+        addNeighbours(unobstructed);
         while (vertices.hasNext())
         {
             Vertex q = vertices.getNext();
@@ -188,19 +186,20 @@ public class AngleElimination {
 /**
  * Adds point's neighbours to the list of unobstructed vertices if they
  * are fit to be vertices.
- * @param src Point, whose neighbours will be added.
  * @param unobstructed List of unobstructed vertices.
  */
-    private static void addNeighbours(Point src, LinkedList<Vertex> unobstructed)
+    private static void addNeighbours(LinkedList<Vertex> unobstructed)
     {
-        if (src.getLeft().isVertex())
-            unobstructed.add(src.getLeft());
-        if (src.getRight().isVertex())
-            unobstructed.add(src.getRight());
+        if (src.getClass() != Point.class) return;
+        Point p = (Point)src;
+        if (p.getLeft().isVertex())
+            unobstructed.add(p.getLeft());
+        if (p.getRight().isVertex())
+            unobstructed.add(p.getRight());
     }
 /**
  * Interval of angles, which forms a sector. Each edge of the sector
- * has a value, which is a distance from the point that caused the
+ * has a value, which is a distance from the vertex that caused the
  * creation of the sector. Anything beyond that distance is obstructed.
  */
     private static class AngleInterval
@@ -209,54 +208,49 @@ public class AngleElimination {
         public double rightAngle;
         public double leftDist;
         public double rightDist;
-        private Vertex src;
 /**
  * Constructor. Creates a sector based on specific attributes.
- * @param source Vertex from which algorithm is tracing.
  * @param la Left-most angle of the sector.
  * @param ld Maximum distance of the left-most angle.
  * @param ra Right-most angle of the sector.
  * @param rd Maximum distance of the right-most angle.
 */
-        public AngleInterval(Vertex source, double la, double ld, double ra, double rd)
+        public AngleInterval(double la, double ld, double ra, double rd)
         {
             leftAngle = la;
             rightAngle = ra;
             leftDist = ld;
             rightDist = rd;
-            src = source;
         }
 /**
  * Constructor. Creates a sector based on a line.
- * @param source Vertex from which algorithm is tracing.
  * @param p One point of the line. The other point is p.getRight()
  */
-        public AngleInterval(Vertex source, Point p)
+        public AngleInterval(Point p)
         {
-            Point[] directions = findLeftAndRightAngles(source, p);
-            setAttributes(source, directions[0], directions[1]);
+            Point[] directions = findLeftAndRightAngles(p);
+            setAttributes(directions[0], directions[1]);
         }
 /**
- * Constructor. Creates a sector for the angle of point's non-wall part.
+ * Constructor. Creates a sector for the angle of point's wall part.
  * Max distance is set to 0, that way everything is obstructed in that
- * angle interval.
- * @param src Point from which algorithm is tracing.
+ * angle interval. src must be implementing a Point class.
  */
-        public AngleInterval(Point src)
+        public AngleInterval()
         {
-            setAttributes(src, src.getRight(), src.getLeft());
+            if (src.getClass() != Point.class)  return;
+            Point p = (Point)src;
+            setAttributes(p.getRight(), p.getLeft());
             leftDist = 0;
             rightDist = 0;
         }
 /**
  * Initializes class attributes.
- * @param src Vertex from which algorithm is tracing.
  * @param leftest Left point of the line that caused the sector to be created.
  * @param rightest Right point of the line that caused the sector to be created.
  */
-        public void setAttributes(Vertex src, Point leftest, Point rightest)
+        public void setAttributes(Point leftest, Point rightest)
         {
-            this.src = src;
             if (leftest != null)
             {
                 leftAngle = Tools.round(src.getDirection(leftest), 10000);
@@ -271,16 +265,15 @@ public class AngleElimination {
 /**
  * Decides which of the two points of the line is considered the left
  * and right part of the sector.
- * @param source Vertex from which algorithm is tracing.
  * @param p One point of the line. The other point is p.getRight()
  * @return [0] - Point that is considered to be the left part of the sector.
  *          [1] - Point that is considered to be the right part of the sector.
  */
-        public Point[] findLeftAndRightAngles(Vertex source, Point p)
+        public Point[] findLeftAndRightAngles(Point p)
         {
             Point leftest;
             Point rightest;
-            if (source.getDirection(p) < source.getDirection(p.getRight()))
+            if (src.getDirection(p) < src.getDirection(p.getRight()))
             {
                 leftest = p;
                 rightest = p.getRight();
@@ -292,7 +285,7 @@ public class AngleElimination {
             }
 //If line crosses the part where direction calculation jumps the cycle,
 //switch sides.
-            if (anglesCrossoverDirectionLoop(source, p))
+            if (anglesCrossoverDirectionLoop(p))
             {
                 Point q = leftest;
                 leftest = rightest;
@@ -305,20 +298,15 @@ public class AngleElimination {
  * Checks if the line crosses the loop jump of the direction calculation.
  * Calculated angle value jumps from -PI to +PI in the left direction.
  * This complicates deciding which of sector's two sides is left or right side.
- * @param source Vertex from which algortihm is tracing.
+ * Current implementation only supports straight lines.
  * @param p One point of the line. The other point is p.getRight()
  * @return True if line is causing a cycle jump.
  */
-        public boolean anglesCrossoverDirectionLoop(Vertex source, Point p)
+        public boolean anglesCrossoverDirectionLoop(Point p)
         {
 //Difference in angles between two points can't be more than 180 degrees.
 //If this is detected, it's interperted as if line crosses the loop jump point.
-            return (Math.abs(source.getDirection(p) - source.getDirection(p.getRight())) > Math.PI);
-/*            return (p.Y() - source.Y()) * (p.getRight().Y() - source.Y()) < 0 && //Points of the line are on the opposite sides of the crosspoint Y coordinate.
-                    source.X() > p.X() + 
-                    Math.cos(p.getDirection(p.getRight())) *
-                    Math.abs(source.Y() - p.Y()); //Checks if source's X coordinate is on the right of the crosspoint.
-*/
+            return (Math.abs(src.getDirection(p) - src.getDirection(p.getRight())) > Math.PI);
         }
 /**
  * Checks if specified vertex is obstructed based on this sector.
@@ -339,7 +327,7 @@ public class AngleElimination {
  * Calculates the distance from the line that caused the sector to be
  * created at a specified direction.
  * @param testAngle Direction at which the line is crossed.
- * @return Distance from source point to the line crosspoint at given direction.
+ * @return Distance from source vertex to the line crosspoint at given direction.
  */
         public double distanceFromLine(double testAngle)
         {

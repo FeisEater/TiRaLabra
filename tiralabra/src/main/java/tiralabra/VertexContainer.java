@@ -2,11 +2,9 @@
 package tiralabra;
 
 import tiralabra.algorithms.AngleElimination;
-import tiralabra.algorithms.Dijkstra;
 import tiralabra.datastructures.LinkedList;
 import tiralabra.datastructures.Point;
 import tiralabra.datastructures.Tree;
-import tiralabra.datastructures.TreeMap;
 import tiralabra.datastructures.Vertex;
 import tiralabra.util.Tools;
 import tiralabra.util.VertexComparator;
@@ -16,10 +14,13 @@ import tiralabra.util.VertexComparator;
  * @author Pavel
  */
 public class VertexContainer {
+/** All vertices created in the program. */
     private Tree<Vertex> vertices = new Tree<>(new VertexComparator());
     public Tree<Vertex> getVertices()  {return vertices;}
         
+/** A point of the generated path. */
     public Vertex endA;
+/** B point of the generated path. */
     public Vertex endB;
     
 /**
@@ -83,7 +84,8 @@ public class VertexContainer {
         {
             Vertex v = vlist.getNext();
             if (!v.isVertex())  continue;
-            LinkedList<Vertex> graphList = AngleElimination.findUnobstructedPoints(v, vertices.toLinkedList());
+            LinkedList<Vertex> graphList =
+                AngleElimination.findUnobstructedPoints(v, vertices.toLinkedList());
             while (graphList.hasNext())
                 v.addAdjacent(graphList.getNext());
         }

@@ -86,7 +86,7 @@ public class Vertex {
 
 /**
  * Checks if should be considered as a vertex in the graph.
- * If Vertex class is not extended, is always considered as vertex in the graph.
+ * If Vertex class is not extended, it's always considered as vertex in the graph.
  * @return always true.
  */
     public boolean isVertex()

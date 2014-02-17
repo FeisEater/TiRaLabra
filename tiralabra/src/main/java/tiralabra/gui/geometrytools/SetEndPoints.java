@@ -3,12 +3,11 @@ package tiralabra.gui.geometrytools;
 
 import java.awt.event.MouseEvent;
 import tiralabra.VertexContainer;
-import tiralabra.datastructures.Vertex;
 import tiralabra.gui.GraphicInterface;
 import tiralabra.gui.MouseInput;
 
 /**
- *
+ * Sets A and B points for building the shortest path between them.
  * @author Pavel
  */
 public class SetEndPoints extends MouseInput {
@@ -24,15 +23,15 @@ public class SetEndPoints extends MouseInput {
         super.mouseReleased(e);
         if (e.getButton() == MouseEvent.BUTTON1)
         {
-            points.removeVertex(points.endA);
-            points.endA = points.addVertex(draggedToX, draggedToY);
+            vertices.removeVertex(vertices.endA);
+            vertices.endA = vertices.addVertex(draggedToX, draggedToY);
         }
         else if (e.getButton() == MouseEvent.BUTTON3)
         {
-            points.removeVertex(points.endB);
-            points.endB = points.addVertex(draggedToX, draggedToY);
+            vertices.removeVertex(vertices.endB);
+            vertices.endB = vertices.addVertex(draggedToX, draggedToY);
         }
-        points.buildGraph();
+        vertices.buildGraph();
         gui.repaint();
     }
 

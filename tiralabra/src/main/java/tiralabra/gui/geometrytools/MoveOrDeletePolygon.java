@@ -9,7 +9,7 @@ import tiralabra.gui.GraphicInterface;
 import tiralabra.gui.MouseInput;
 
 /**
- *
+ * Tool for moving or deleting entire polygons.
  * @author Pavel
  */
 public class MoveOrDeletePolygon extends MouseInput {
@@ -26,19 +26,27 @@ public class MoveOrDeletePolygon extends MouseInput {
     {
         super.mouseReleased(e);
         if (e.getButton() == MouseEvent.BUTTON1)
-            movePolygon(draggedFromPoint);
+            movePolygon(draggedFromVertex);
         else if (e.getButton() == MouseEvent.BUTTON2)
-            copyPolygon(draggedFromPoint);
+            copyPolygon(draggedFromVertex);
         else if (e.getButton() == MouseEvent.BUTTON3)
-            deletePolygon(draggedToPoint);
-        points.buildGraph();
+            deletePolygon(draggedToVertex);
+        vertices.buildGraph();
         gui.repaint();
     }
+/**
+ * Moves a polygon.
+ * @param v Point of a polygon to be moved.
+ */
     public void movePolygon(Vertex v)
     {
         copyPolygon(v);
         deletePolygon(v);
     }
+/**
+ * Copies a polygon at a mouse cursor location.
+ * @param v Point of a polygon to be copied.
+ */
     public void copyPolygon(Vertex v)
     {
         if (v == null)  return;
@@ -50,7 +58,7 @@ public class MoveOrDeletePolygon extends MouseInput {
         Point prev = null;
         Point begin = null;
         do {
-            Point next = points.addPoint(q.X() + xDiff, q. Y() + yDiff);
+            Point next = vertices.addPoint(q.X() + xDiff, q. Y() + yDiff);
             if (prev != null)
             {
                 prev.setRight(next);
@@ -63,6 +71,10 @@ public class MoveOrDeletePolygon extends MouseInput {
         prev.setRight(begin);
         begin.setLeft(prev);
     }
+/**
+ * Deletes a polygon.
+ * @param v Point of a polygon to be deleted.
+ */
     public void deletePolygon(Vertex v)
     {
         if (v == null)  return;
@@ -70,7 +82,7 @@ public class MoveOrDeletePolygon extends MouseInput {
         Point p = (Point)v;
         Point q = p;
         do {
-            points.removeVertex(q);
+            vertices.removeVertex(q);
             q = q.getRight();
         } while (q != p);
     }

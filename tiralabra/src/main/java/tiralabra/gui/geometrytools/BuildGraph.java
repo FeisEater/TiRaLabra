@@ -2,11 +2,8 @@
 package tiralabra.gui.geometrytools;
 
 import java.awt.Color;
-import java.awt.Graphics;
 import java.awt.event.MouseEvent;
 import tiralabra.VertexContainer;
-import tiralabra.algorithms.Dijkstra;
-import tiralabra.datastructures.TreeMap;
 import tiralabra.datastructures.Vertex;
 import tiralabra.gui.GraphicInterface;
 import tiralabra.gui.MouseInput;
@@ -17,6 +14,7 @@ import tiralabra.gui.MouseInput;
  * @author Pavel
  */
 public class BuildGraph extends MouseInput {
+/** Vertex that waits to be connected with other vertex in a graph. */
     private Vertex edgeend;
     public BuildGraph(VertexContainer p, GraphicInterface gui)
         {super(p, gui);}
@@ -24,13 +22,12 @@ public class BuildGraph extends MouseInput {
     public void mouseReleased(MouseEvent e)
     {
         super.mouseReleased(e);
-        Vertex chosenPoint = choosePoint(e);
         if (e.getButton() == MouseEvent.BUTTON1)
-            addPoint(draggedToX, draggedToY);
+            addVertex(draggedToX, draggedToY);
         else if (e.getButton() == MouseEvent.BUTTON2)
-            removePoint(chosenPoint);
+            removeVertex(draggedToVertex);
         else if (e.getButton() == MouseEvent.BUTTON3)
-            joinPoints(chosenPoint);
+            joinPoints(draggedToVertex);
         gui.repaint();
     }
 /**
@@ -38,18 +35,18 @@ public class BuildGraph extends MouseInput {
  * @param x X coordinate where vertex is created.
  * @param y Y coordinate where vertex is created.
  */
-    public void addPoint(int x, int y)
+    public void addVertex(int x, int y)
     {
-        Vertex p = points.addVertex(x,y);
+        Vertex p = vertices.addVertex(x,y);
         edgeend = null;
     }
 /**
  * Removes given vertex.
  * @param point given vertex.
  */
-    public void removePoint(Vertex point)
+    public void removeVertex(Vertex point)
     {
-        points.removeVertex(point);
+        vertices.removeVertex(point);
     }
 /**
  * Selects vertex to connect with other vertex. If one was already selected,
@@ -64,7 +61,7 @@ public class BuildGraph extends MouseInput {
             edgeend = point;
         else
         {
-            points.toggleEdge(point, edgeend);
+            vertices.toggleEdge(point, edgeend);
             edgeend = null;
         }
     }

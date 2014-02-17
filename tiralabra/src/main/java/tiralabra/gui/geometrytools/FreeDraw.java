@@ -5,24 +5,23 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.event.MouseEvent;
 import tiralabra.VertexContainer;
-import tiralabra.algorithms.Dijkstra;
 import tiralabra.datastructures.Point;
 import tiralabra.datastructures.Stack;
-import tiralabra.datastructures.TreeMap;
-import tiralabra.datastructures.Vertex;
 import tiralabra.gui.GraphicInterface;
 import tiralabra.gui.MouseInput;
 import tiralabra.util.Const;
 import tiralabra.util.Tools;
-import tiralabra.util.VertexComparator;
 
 /**
- *
+ * Tool that lets user form polygons as if user used a thick brush
+ * to draw shapes. Some restrictions apply in this implementation.
  * @author Pavel
  */
 public class FreeDraw extends MouseInput {
     private final double circleStep = 2 * Math.PI / Const.circlePrecision;
+/** true if mouse is held. */
     private boolean startedDrawing;
+/** last position where mouse cursor was located. */
     private Spline last;
 
     public FreeDraw(VertexContainer p, GraphicInterface gui) {
@@ -46,6 +45,7 @@ public class FreeDraw extends MouseInput {
             startedDrawing = false;
             constructPolygon();
         }
+        vertices.buildGraph();
         gui.repaint();
     }
     @Override
@@ -57,6 +57,11 @@ public class FreeDraw extends MouseInput {
             gui.repaint();
         }
     }
+/**
+ * Marks location as a part of a polygon.
+ * @param x X coordinate.
+ * @param y Y coordinate.
+ */
     public void addSpline(int x, int y)
     {
         if (last != null && Math.sqrt(Math.pow(x - last.x, 2) + Math.pow(y - last.y, 2)) < Const.brushWidth)
@@ -72,6 +77,11 @@ public class FreeDraw extends MouseInput {
         if (isStraightAngle())
             last.prev = last.prev.prev;
     }
+/**
+ * Checks if previous spline was a straight angle. If so, the spline is
+ * redundant and shouldn't be accounted for.
+ * @return true if previous spline forms a straight angle.
+ */
     public boolean isStraightAngle()
     {
         if (last.prev == null || last.prev.prev == null)
@@ -80,10 +90,19 @@ public class FreeDraw extends MouseInput {
             return true;
         return getAngle(last) == getAngle(last.prev);
     }
+/**
+ * Calculates an angle the spline forms with its previous spline.
+ * @param s Given spline.
+ * @return Absolute direction between s and s.prev
+ */
     private double getAngle(Spline s)
     {
         return Tools.round(Math.atan2(s.y - s.prev.y, s.x - s.prev.x), 10000);
     }
+/**
+ * Constructs a polygon from marked splines and resets tool for the
+ * next brush stroke.
+ */
     public void constructPolygon()
     {
         if (last == null)   return;
@@ -98,9 +117,9 @@ public class FreeDraw extends MouseInput {
             s = s.prev;
             if (s.prev != null)
             {
-                Point q = points.addPoint(s.x + Const.brushWidth * Math.cos(s.angle + Math.PI / 2),
+                Point q = vertices.addPoint(s.x + Const.brushWidth * Math.cos(s.angle + Math.PI / 2),
                         s.y + Const.brushWidth * Math.sin(s.angle + Math.PI / 2));
-                stack.add(points.addPoint(s.x + Const.brushWidth * Math.cos(s.angle - Math.PI / 2),
+                stack.add(vertices.addPoint(s.x + Const.brushWidth * Math.cos(s.angle - Math.PI / 2),
                         s.y + Const.brushWidth * Math.sin(s.angle - Math.PI / 2)));
                 if (p != null)
                 {
@@ -127,8 +146,15 @@ public class FreeDraw extends MouseInput {
         begin.setLeft(p);
         p.setRight(begin);
         last = null;
-        points.buildGraph();
+        vertices.buildGraph();
     }
+/**
+ * Forms a circle at a given spline.
+ * @param s Given spline.
+ * @param ignoredAngle Angle for which points shouldn't be formed.
+ * @param p Previous point that was chained for a polygon.
+ * @return Next point that should be chained for the polygon.
+ */
     private Point constructCircle(Spline s, double ignoredAngle, Point p)
     {
         if (ignoredAngle < -Math.PI)   ignoredAngle += Math.PI * 2;
@@ -145,7 +171,7 @@ public class FreeDraw extends MouseInput {
                 looped = true;
                 i -= Math.PI * 2;
             }
-            Point q = points.addPoint(s.x + Const.brushWidth * Math.cos(i), s.y + Const.brushWidth * Math.sin(i));
+            Point q = vertices.addPoint(s.x + Const.brushWidth * Math.cos(i), s.y + Const.brushWidth * Math.sin(i));
             if (p != null)
             {
                 p.setRight(q);
@@ -170,11 +196,16 @@ public class FreeDraw extends MouseInput {
             s = s.prev;
         }
     }
+/**
+ * Marked position that will be represented as a brush stroke.
+ */
     private class Spline
     {
         private int x;
         private int y;
+/** Previous spline that was marked. */
         private Spline prev;
+/** Angle between previous and next spline. */
         private double angle;
         public Spline(int ix, int iy, Spline iprev)
         {

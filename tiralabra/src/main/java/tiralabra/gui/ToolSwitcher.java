@@ -4,7 +4,6 @@ package tiralabra.gui;
 import java.awt.KeyEventDispatcher;
 import java.awt.KeyboardFocusManager;
 import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
 import tiralabra.VertexContainer;
 import tiralabra.gui.geometrytools.ChainPolygon;
 import tiralabra.gui.geometrytools.FreeDraw;
@@ -15,12 +14,18 @@ import tiralabra.gui.geometrytools.MoveOrDeletePolygon;
 import tiralabra.gui.geometrytools.MoveOrDeletePoint;
 
 /**
- *
+ * ToolSwitcher class that listens for keyboard input and
+ * changes mouse tools accordingly.
  * @author Pavel
  */
 public class ToolSwitcher implements KeyEventDispatcher {
     private VertexContainer vertices;
     private GraphicInterface gui;
+/**
+ * Constructor.
+ * @param v Set of vertices in the program.
+ * @param g GraphicsInterface object.
+ */
     public ToolSwitcher(VertexContainer v, GraphicInterface g)
     {
         vertices = v;
@@ -31,8 +36,16 @@ public class ToolSwitcher implements KeyEventDispatcher {
         System.out.println("C - chain polygons mode.");
         System.out.println("F - free draw mode.");
         System.out.println("S - set end points mode.");
+        System.out.println("D - move/delete polygons mode.");
+        System.out.println("E - move/delete points mode.");
+        System.out.println("A - join polygons mode.");
+        System.out.println("Q - insert points mode.");
+        gui.switchTool(new SetEndPoints(vertices, gui));
     }
-
+/**
+ * Handles events when key is released.
+ * @param e KeyEvent that triggered this method.
+ */
     public void keyReleased(KeyEvent e)
     {
         switch (e.getKeyCode())

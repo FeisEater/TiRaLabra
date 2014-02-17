@@ -9,13 +9,17 @@ import tiralabra.gui.GraphicInterface;
 import tiralabra.gui.MouseInput;
 
 /**
- *
+ * Tool for joining two separate polygons.
  * @author Pavel
  */
 public class JoinPolygons extends MouseInput {
+/** Left point of polygon #1. */
     private Point firstLeft;
+/** Right point of polygon #1. */
     private Point firstRight;
+/** Left point of polygon #2. */
     private Point lastLeft;
+/** Right point of polygon #2. */
     private Point lastRight;
     public JoinPolygons(VertexContainer p, GraphicInterface gui)
     {
@@ -26,9 +30,16 @@ public class JoinPolygons extends MouseInput {
     public void mouseReleased(MouseEvent e)
     {
         super.mouseReleased(e);
-        choosePoints(draggedToPoint, e);
+        choosePoints(draggedToVertex, e);
+        vertices.buildGraph();
         gui.repaint();
     }
+/**
+ * Chooses points for merging.
+ * @param v Chosen vertex.
+ * @param e MouseEvent. On left button choose points from polygon #1.
+ *      On right button choose points from polygon #2.
+ */
     public void choosePoints(Vertex v, MouseEvent e)
     {
         if (v == null)  return;
@@ -49,18 +60,21 @@ public class JoinPolygons extends MouseInput {
         if (firstLeft != null && firstRight != null && lastLeft != null && lastRight != null)
             joinPolygons();
     }
+/**
+ * Merges polygons at chosen points.
+ */
     public void joinPolygons()
     {
         Point p = firstLeft.getRight();
         while (p != firstRight)
         {
-            points.removeVertex(p);
+            vertices.removeVertex(p);
             p = p.getRight();
         }
         p = lastLeft.getRight();
         while (p != lastRight)
         {
-            points.removeVertex(p);
+            vertices.removeVertex(p);
             p = p.getRight();
         }
         firstLeft.setRight(lastRight);

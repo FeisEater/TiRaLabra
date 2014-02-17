@@ -12,6 +12,7 @@ public class Queue<E> {
  */
     private class Node
     {
+/** Pointer to the next element in the queue. */
         private Node next;
         private E value;
         public Node(E e)   {value = e;}
@@ -19,7 +20,9 @@ public class Queue<E> {
         public Node getNext()   {return next;}
         public void setNext(Node n)   {next = n;}
     }
+/** First element in the queue. */
     private Node head;
+/** Last element in the queue. */
     private Node tail;
 /**
  * Enqueues an element to the end of the queue.

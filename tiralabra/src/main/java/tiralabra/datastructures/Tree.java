@@ -19,10 +19,14 @@ public class Tree<E> {
  */
     protected class Node
     {
+/** Pointer to the left child. */
         public Node left;
+/** Pointer to the right child. */
         public Node right;
+/** Pointer to the parent. */
         public Node parent;
         public E key;
+/** true if node's color is considered to be red. */
         public boolean isRed;
         public Node(E e)
         {
@@ -31,8 +35,10 @@ public class Tree<E> {
         }
     }
     private Comparator comparator;
+/** Root element of the tree. */
     protected Node root;
     private int size;
+/** Pointer to the smallest element in the tree. */
     private Node min;
 /**
  * Constructor.

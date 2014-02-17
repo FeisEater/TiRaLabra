@@ -2,7 +2,7 @@
 package tiralabra.datastructures;
 
 /**
- * Point of the geometry. Connected with another point, forms a line
+ * Point in geometry. Connected with another point, forms a line
  * which separates a wall and non-wall part of the geometry.
  * Extends vertex class, but is not always a vertex in the graph.
  * Has a left and right neighbour, which are chained to form a polygon.
