@@ -93,4 +93,25 @@ public class ToolsTest {
     {
         assertTrue(Tools.round(2.9999999945, 10000) == 3);
     }
+    @Test
+    public void directionIsBetweenAngles()
+    {
+        assertTrue(Tools.hasAngleBetween(-Math.PI / 4, Math.PI / 4, 0));
+    }
+    @Test
+    public void directionIsBetweenAnglesAtLoopJump()
+    {
+        assertTrue(Tools.hasAngleBetween(3 * Math.PI / 4, -3 * Math.PI / 4, Math.PI));
+    }
+    @Test
+    public void directionIsNotBetweenAngles()
+    {
+        assertTrue(!Tools.hasAngleBetween(-Math.PI / 4, Math.PI / 4, -Math.PI));
+    }
+    @Test
+    public void directionIsNotBetweenAnglesAtLoopJump()
+    {
+        assertTrue(!Tools.hasAngleBetween(3 * Math.PI / 4, -3 * Math.PI / 4, 0));
+    }
+
 }

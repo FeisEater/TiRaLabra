@@ -1,11 +1,13 @@
 
 package tiralabra;
 
+import java.io.File;
 import tiralabra.algorithms.AngleElimination;
 import tiralabra.datastructures.LinkedList;
 import tiralabra.datastructures.Point;
 import tiralabra.datastructures.Tree;
 import tiralabra.datastructures.Vertex;
+import tiralabra.util.StatWriter;
 import tiralabra.util.Tools;
 import tiralabra.util.VertexComparator;
 
@@ -76,6 +78,11 @@ public class VertexContainer {
  */
     public void buildGraph()
     {
+        StatWriter writer = null;
+        try {
+            writer = new StatWriter(new File("stats.txt"), true);
+        }   catch (Throwable e) {}
+
         LinkedList<Vertex> vlist = vertices.toLinkedList();
         while (vlist.hasNext())
             vlist.getNext().removeAllAdjacents();
@@ -85,10 +92,14 @@ public class VertexContainer {
             Vertex v = vlist.getNext();
             if (!v.isVertex())  continue;
             LinkedList<Vertex> graphList =
-                AngleElimination.findUnobstructedPoints(v, vertices.toLinkedList());
+                AngleElimination.findUnobstructedPoints(v, vertices.toLinkedList(), writer);
             while (graphList.hasNext())
                 v.addAdjacent(graphList.getNext());
         }
+
+        try {
+            writer.close();
+        }   catch (Throwable e) {}
     }
 /**
  * Configures polygon to act as a wall or non-wall.

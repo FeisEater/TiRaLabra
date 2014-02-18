@@ -10,6 +10,7 @@ import tiralabra.datastructures.Point;
 import tiralabra.datastructures.Queue;
 import tiralabra.datastructures.Tree;
 import tiralabra.datastructures.Vertex;
+import tiralabra.util.StatWriter;
 import tiralabra.util.Tools;
 
 /**
@@ -24,14 +25,15 @@ public class AngleElimination {
  * point of view.
  * @param v Vertex from which algorithm is tracing.
  * @param vertices A set of all vertices in the program
+ * @param writer Writer that stores results of flattenIntervals() method.
  * @return Set of vertices that are unobstructed from src.
  */
-    public static LinkedList<Vertex> findUnobstructedPoints(Vertex v, LinkedList<Vertex> vertices)
+    public static LinkedList<Vertex> findUnobstructedPoints(Vertex v, LinkedList<Vertex> vertices, StatWriter writer)
     {
         if (v == null)  return null;
         src = v;
         Heap<AngleInterval> allIntervals = findIntervals(vertices);
-        list = flattenIntervals(allIntervals);
+        list = flattenIntervals(allIntervals, writer);
         return getUnobstructedVertices(vertices);
     }
 /**
@@ -100,14 +102,14 @@ public class AngleElimination {
     }
 /**
  * Removes redundant sectors and overlapping.
+ * @param startAngles Heap of angles in an order where lowest leftAngle is on top.
+ * @param writer Writer object for storing stats of this algorithm.
+ * @return 
  */
-    private static LinkedList<AngleInterval> flattenIntervals(Heap<AngleInterval> startAngles)
+    private static LinkedList<AngleInterval> flattenIntervals(Heap<AngleInterval> startAngles, StatWriter writer)
     {
         int opt = startAngles.size();
         Queue<AngleInterval> flat = new Queue<>();
-//Uncomment below if the code won't work!
-        //while (!startAngles.isEmpty())
-        //    flat.add(startAngles.pop());
         Heap<AngleInterval> endAngles = new Heap<>(15, new EndDirectionComparator());
         Tree<AngleInterval> distances = new Tree<>(new DistanceComparator());
         double lastAngle = -Math.PI;
@@ -161,7 +163,9 @@ public class AngleElimination {
         LinkedList<AngleInterval> result = new LinkedList<>();
         while (!flat.isEmpty())
             result.add(flat.dequeue());
-        //System.out.println(opt + " -> " + result.size());
+        try {
+            writer.writeAngleEliminations(opt, result.size());
+        } catch (Throwable e)   {}
         return result;
     }
 /**
