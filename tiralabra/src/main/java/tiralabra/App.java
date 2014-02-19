@@ -16,12 +16,13 @@ public class App
         VertexContainer vc = new VertexContainer();
         GraphicInterface g = new GraphicInterface(vc);
         SwingUtilities.invokeLater(g);
-        fetchStats();
+        fetchStats(10);
     }
     /**
      * Fetches Angle Elimination stats and distributes it by frequency.
+     * @param histagram Precision of the histogramm.
      */
-    public static void fetchStats()
+    public static void fetchStats(int histagram)
     {
         Scanner sc;
         try {
@@ -32,19 +33,19 @@ public class App
             return;
         }
         int total = 0;
-        int[] count = new int[10];
+        int[] count = new int[histagram];
         while (sc.hasNextLine())
         {
             String line = sc.nextLine();
             String[] str = line.split(" ");
             double ratio =
                 (double)(Integer.parseInt(str[1])) / (double)(Integer.parseInt(str[0]));
-            if (ratio == 1) count[9]++;
-            else    count[(int)Math.floor(ratio * 10)]++;
+            if (ratio == 1) count[histagram - 1]++;
+            else    count[(int)Math.floor(ratio * histagram)]++;
             total++;
         }
-        for (int i = 0; i < 10; i++)
-            System.out.println(i + ": " + count[i]);
+        for (int i = 0; i < histagram; i++)
+            System.out.println(((double)i / (double)histagram) + "-" + ((double)(i+1) / (double)histagram) + ": " + count[i]);
         System.out.println("Total: " + total);
     }
 }
