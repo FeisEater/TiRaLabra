@@ -88,7 +88,7 @@ public class FreeDraw extends MouseInput {
             return false;
         if (last.x == last.prev.x && last.y == last.prev.y)
             return true;
-        return getAngle(last) == getAngle(last.prev);
+        return Math.abs(getAngle(last) - getAngle(last.prev)) < Const.fdAngleTolerance;
     }
 /**
  * Calculates an angle the spline forms with its previous spline.
