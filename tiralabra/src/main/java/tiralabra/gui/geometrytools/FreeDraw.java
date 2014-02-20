@@ -131,7 +131,11 @@ public class FreeDraw extends MouseInput {
             }
         }
         if (next != null)
-            p = constructCircle(s, Math.PI + getAngle(next), p);
+        {
+            Point[] ar = constructCircle(s, Math.PI + getAngle(next), p);
+            p = ar[0];
+            if (begin == null)  begin = ar[1];
+        }
         while (!stack.isEmpty())
         {
             Point q = stack.pop();
@@ -142,7 +146,7 @@ public class FreeDraw extends MouseInput {
             }
             p = q;
         }
-        p = constructCircle(last, getAngle(last), p);
+        p = constructCircle(last, getAngle(last), p)[0];
         begin.setLeft(p);
         p.setRight(begin);
         last = null;
@@ -153,9 +157,11 @@ public class FreeDraw extends MouseInput {
  * @param s Given spline.
  * @param ignoredAngle Angle for which points shouldn't be formed.
  * @param p Previous point that was chained for a polygon.
- * @return Next point that should be chained for the polygon.
+ * @return [0] - Next point that should be chained for the polygon.
+ *          [1] - First point constructed for the circle. [1] will
+ *          be null if p isn't null.
  */
-    private Point constructCircle(Spline s, double ignoredAngle, Point p)
+    private Point[] constructCircle(Spline s, double ignoredAngle, Point p)
     {
         if (ignoredAngle < -Math.PI)   ignoredAngle += Math.PI * 2;
         else if (ignoredAngle > Math.PI)   ignoredAngle -= Math.PI * 2;
@@ -164,6 +170,7 @@ public class FreeDraw extends MouseInput {
         double right = ignoredAngle + Math.PI / 2 + circleStep / 2;
         if (right > Math.PI)    right -= Math.PI * 2;
         boolean looped = (left < right);
+        Point begin = null;
         for (double i = left; !looped || i <= right; i += circleStep)
         {
             if (i > Math.PI)
@@ -177,9 +184,11 @@ public class FreeDraw extends MouseInput {
                 p.setRight(q);
                 q.setLeft(p);
             }
+            else    begin = q;
             p = q;
         }
-        return p;
+        Point[] result = {p, begin};
+        return result;
     }
     @Override
     public void drawInputSpecific(Graphics g)
