@@ -6,10 +6,6 @@
 
 package tiralabra.algorithms;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -19,6 +15,7 @@ import static org.junit.Assert.*;
 import tiralabra.datastructures.Tree;
 import tiralabra.datastructures.TreeMap;
 import tiralabra.datastructures.Vertex;
+import tiralabra.util.VertexComparator;
 
 /**
  *
@@ -44,19 +41,6 @@ public class DijkstraTest {
     @After
     public void tearDown() {
     }
-
-    private class VertexComparator implements Comparator
-    {
-        @Override
-        public int compare(Object o1, Object o2)
-        {
-            Vertex v1 = (Vertex)o1;
-            Vertex v2 = (Vertex)o2;
-            if (v1.X() == v2.X())   return (v1.Y() < v2.Y()) ? -1 : 1;
-            return (v1.X() < v2.X()) ? -1 : 1;
-        }
-    }
-
     @Test
     public void findsShortestPath()
     {
@@ -75,6 +59,55 @@ public class DijkstraTest {
         v4.addAdjacent(v3);
 
         TreeMap<Vertex, Vertex> paths = Dijkstra.getShortestPaths(v2, vertices.toLinkedList());
-        assertTrue(""+paths, paths.get(v3) == v1 && paths.get(v1) == v2);
+        assertTrue(paths.get(v3) == v1 && paths.get(v1) == v2);
+    }
+    @Test
+    public void findsShortestPath2()
+    {
+        Tree<Vertex> vertices = new Tree<>(new VertexComparator());
+        Vertex v1 = new Vertex(0,0);
+        Vertex v2 = new Vertex(1,0);
+        Vertex v3 = new Vertex(1,1);
+        Vertex v4 = new Vertex(2,1);
+        Vertex v5 = new Vertex(2,2);
+        vertices.add(v1);
+        vertices.add(v2);
+        vertices.add(v3);
+        vertices.add(v4);
+        vertices.add(v5);
+        v1.addAdjacent(v2);
+        v2.addAdjacent(v3);
+        v3.addAdjacent(v4);
+        v4.addAdjacent(v5);
+        v1.addAdjacent(v5);
+
+        TreeMap<Vertex, Vertex> paths = Dijkstra.getShortestPaths(v1, vertices.toLinkedList());
+        assertTrue(paths.get(v5) == v1);
+    }
+    @Test
+    public void findsShortestPath3()
+    {
+        Tree<Vertex> vertices = new Tree<>(new VertexComparator());
+        Vertex v1 = new Vertex(0,0);
+        Vertex v2 = new Vertex(1,0);
+        Vertex v3 = new Vertex(1,1);
+        Vertex v4 = new Vertex(2,1);
+        Vertex v5 = new Vertex(2,2);
+        Vertex v6 = new Vertex(0,3);
+        vertices.add(v1);
+        vertices.add(v2);
+        vertices.add(v3);
+        vertices.add(v4);
+        vertices.add(v5);
+        vertices.add(v6);
+        v1.addAdjacent(v2);
+        v2.addAdjacent(v3);
+        v3.addAdjacent(v4);
+        v4.addAdjacent(v5);
+        v1.addAdjacent(v6);
+        v6.addAdjacent(v5);
+
+        TreeMap<Vertex, Vertex> paths = Dijkstra.getShortestPaths(v1, vertices.toLinkedList());
+        assertTrue(paths.get(v5) == v4 && paths.get(v4) == v3 && paths.get(v3) == v2 && paths.get(v2) == v1);
     }
 }

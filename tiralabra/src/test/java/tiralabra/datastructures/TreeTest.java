@@ -3,6 +3,7 @@ package tiralabra.datastructures;
 
 import java.lang.reflect.Field;
 import java.util.Comparator;
+import java.util.Random;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -155,5 +156,47 @@ public class TreeTest {
         tree.clear();
         assertTrue(tree.getMin() == null);
     }
-    //Test contains method
+    @Test
+    public void sizeIsCorrect()
+    {
+        boolean test = true;
+        for (int i = 0; i < 1000; i++)
+        {
+            tree.clear();
+            Random rand = new Random();
+            int r = rand.nextInt(1000);
+            for (int j = 0; j < r; j++) tree.add(j);
+            int b = (r <= 0) ? 0 : rand.nextInt(r);
+            for (int j = 0; j < b; j++) tree.remove(j);
+            if (tree.size() != r - b)
+            {
+                test = false;
+                break;
+            }
+        }
+        assertTrue(test);
+    }
+    @Test
+    public void containsWorks()
+    {
+        boolean test = true;
+        for (int i = 0; i < 1000; i++)
+        {
+            tree.clear();
+            for (int j = 0; j < 1000; j++) tree.add(j);
+            int r = (int)(Math.random() * 1000);
+            if (!tree.contains(r))
+            {
+                test = false;
+                break;
+            }
+        }
+        assertTrue(test);
+    }
+    @Test
+    public void containsIsFalseIfDoesntContain()
+    {
+        for (int j = 0; j < 1000; j++) tree.add(j);
+        assertTrue(!tree.contains(-1));
+    }
 }

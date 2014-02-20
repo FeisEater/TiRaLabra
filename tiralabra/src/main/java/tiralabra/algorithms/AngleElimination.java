@@ -108,27 +108,27 @@ public class AngleElimination {
  */
     private static LinkedList<AngleInterval> flattenIntervals(Heap<AngleInterval> startAngles, StatWriter writer)
     {
-        int opt = startAngles.size();
-        Queue<AngleInterval> flat = new Queue<>();
-        Heap<AngleInterval> endAngles = new Heap<>(15, new EndDirectionComparator());
-        Tree<AngleInterval> distances = new Tree<>(new DistanceComparator());
-        double lastAngle = -Math.PI;
-        while (!startAngles.isEmpty() || !endAngles.isEmpty())
+        int opt = startAngles.size();   //Original amount of sectors is stored for stats collecting.
+        Queue<AngleInterval> flat = new Queue<>();  //This will be returned.
+        Heap<AngleInterval> endAngles = new Heap<>(15, new EndDirectionComparator());   //This holds sectors in between which lastAngle lies.
+        Tree<AngleInterval> distances = new Tree<>(new DistanceComparator());   //Same as endAngles but with different comparatot, telling which sector is closer to src.
+        double lastAngle = -Math.PI;    //Angle marker which makes a full rotation from -PI to +PI.
+        
+        while (!sectorsAreExhausted(startAngles, endAngles))
         {
             AngleInterval newAngle = startAngles.peek();
-            while (!endAngles.isEmpty() && lastAngle > endAngles.peek().rightAngle && (endAngles.peek().leftAngle < endAngles.peek().rightAngle || lastAngle < endAngles.peek().leftAngle))
+            while (sectorsRightAngleBeforeLastAngle(endAngles, lastAngle))
                 distances.remove(endAngles.pop());
-            if (startAngles.isEmpty() && endAngles.isEmpty())    break;
+            if (sectorsAreExhausted(startAngles, endAngles))    break;
             AngleInterval oldAngle = endAngles.peek();
-            Comparator comp = new DistanceComparator();
-            if (newAngle != null && (oldAngle == null || ((oldAngle.leftAngle < oldAngle.rightAngle && newAngle.leftAngle < oldAngle.rightAngle) || oldAngle.leftAngle > oldAngle.rightAngle)))
+            
+            if (newAngleBeforeOldAngle(newAngle, oldAngle))
             {
                 if (endAngles.isEmpty())
                     lastAngle = newAngle.leftAngle;
-                else if (comp.compare(newAngle, distances.getMin()) < 0 && lastAngle != newAngle.leftAngle)
+                else if (nextSectorIsClosest(newAngle, distances, lastAngle))
                 {
-                    flat.enqueue(new AngleInterval(lastAngle, distances.getMin().distanceFromLine(lastAngle),
-                        newAngle.leftAngle, distances.getMin().distanceFromLine(newAngle.leftAngle)));
+                    flat.enqueue(createSectorBeforeNewAngle(lastAngle, distances.getMin(), newAngle));
                     lastAngle = newAngle.leftAngle;
                 }
                 distances.add(newAngle);
@@ -141,32 +141,131 @@ public class AngleElimination {
                 distances.remove(oldAngle);
                 if (wasClosest && lastAngle != oldAngle.rightAngle)
                 {
-                    flat.enqueue(new AngleInterval(lastAngle, oldAngle.distanceFromLine(lastAngle),
-                        oldAngle.rightAngle, oldAngle.rightDist));
+                    flat.enqueue(closeOldSector(lastAngle, oldAngle));
                     lastAngle = oldAngle.rightAngle;
                 }
-                //got nullpointer
-                while (oldAngle.leftAngle > oldAngle.rightAngle && oldAngle.distanceFromLine(flat.peek().leftAngle) < flat.peek().leftDist && flat.peek().leftAngle < oldAngle.rightAngle)
-                {
-                    if (flat.peek().rightAngle > oldAngle.rightAngle)
-                    {
-                        double newDist = flat.peek().distanceFromLine(oldAngle.rightDist);
-                        flat.peek().leftAngle = oldAngle.rightAngle;
-                        flat.peek().leftDist = newDist;
-                        flat.enqueue(flat.dequeue());
-                    }
-                    else    flat.dequeue();
-                }
+                overWriteFirstSectorsAfterLoop(oldAngle, flat);
                 endAngles.pop();
             }
         }
-        LinkedList<AngleInterval> result = new LinkedList<>();
-        while (!flat.isEmpty())
-            result.add(flat.dequeue());
+        
+        writeStats(writer, opt, flat.size());
+        return flat.toLinkedList();
+    }
+/**
+ * Checks if endAngles.peek()'s right angle is before lastAngle even on loop jump.
+ * @param endAngles Heap of angles left angles of which are before lastAngle.
+ * @param lastAngle Current angle marker of flattenIntervals algorithm.
+ * @return true if endAngles.peek()'s right angle is before lastAngle.
+ */
+    private static boolean sectorsRightAngleBeforeLastAngle(Heap<AngleInterval> endAngles, double lastAngle)
+    {
+        return !endAngles.isEmpty() && lastAngle > endAngles.peek().rightAngle && 
+                (endAngles.peek().leftAngle < endAngles.peek().rightAngle || 
+                    lastAngle < endAngles.peek().leftAngle);
+    }
+/**
+ * 
+ * @param startAngles Sectors that are yet to be passed by lastAngle.
+ * @param endAngles Sectors that were passed by lastAngle.
+ * @return true if both heaps of sectors are exhausted.
+ */
+    private static boolean sectorsAreExhausted(Heap<AngleInterval> startAngles, Heap<AngleInterval> endAngles)
+    {
+        return startAngles.isEmpty() && endAngles.isEmpty();
+    }
+/**
+ * 
+ * @param newAngle
+ * @param oldAngle
+ * @return true if newAngle opens before oldAngle closes.
+ */
+    private static boolean newAngleBeforeOldAngle(AngleInterval newAngle, AngleInterval oldAngle)
+    {
+        return newAngle != null &&
+            (oldAngle == null || 
+                ((oldAngle.leftAngle < oldAngle.rightAngle && newAngle.leftAngle < oldAngle.rightAngle) ||
+                    oldAngle.leftAngle > oldAngle.rightAngle));
+    }
+/**
+ * Overwrites beginning of flattened sectors by the leftovers of the loop jump.
+ * @param oldAngle  Angle that passes the loop jump.
+ * @param flat Queue of flattened sectors.
+ */
+    private static void overWriteFirstSectorsAfterLoop(AngleInterval oldAngle, Queue<AngleInterval> flat)
+    {
+        //got nullpointer
+        while (canOverWriteFirstSectorsAfterLoop(oldAngle, flat))
+        {
+            if (flat.peek().rightAngle > oldAngle.rightAngle)
+            {
+                double newDist = flat.peek().distanceFromLine(oldAngle.rightDist);
+                flat.peek().leftAngle = oldAngle.rightAngle;
+                flat.peek().leftDist = newDist;
+                flat.enqueue(flat.dequeue());
+            }
+            else    flat.dequeue();
+        }
+    }
+/**
+ * Checks if beginning of sectors can be overwritten by sectors that pass the loop jump.
+ * @param oldAngle Angle that passes the loop jump.
+ * @param flat Queue of flattened sectors.
+ * @return true if beginning of sectors can be overwritten by sectors that pass the loop jump.
+ */
+    private static boolean canOverWriteFirstSectorsAfterLoop(AngleInterval oldAngle, Queue<AngleInterval> flat)
+    {
+        return oldAngle.leftAngle > oldAngle.rightAngle && 
+                oldAngle.distanceFromLine(flat.peek().leftAngle) < flat.peek().leftDist && 
+                flat.peek().leftAngle < oldAngle.rightAngle;
+    }
+/**
+ * 
+ * @param newAngle Checked sector.
+ * @param distances Sectors that are due process.
+ * @param lastAngle Angle marker.
+ * @return true if newAngle is closer to src than any sector stored in distances-Tree.
+ */
+    private static boolean nextSectorIsClosest(AngleInterval newAngle, Tree<AngleInterval> distances, double lastAngle)
+    {
+        Comparator comp = new DistanceComparator();
+        return comp.compare(newAngle, distances.getMin()) < 0 &&
+                lastAngle != newAngle.leftAngle;
+    }
+/**
+ * 
+ * @param lastAngle Angle marker.
+ * @param closestSector Closest stored sector besides newAngle.
+ * @param newAngle
+ * @return Appropriate sector that bridges the gap before marking lastAngle as newAngle.leftAngle
+ */
+    private static AngleInterval createSectorBeforeNewAngle(double lastAngle, AngleInterval closestSector, AngleInterval newAngle)
+    {
+        return new AngleInterval(lastAngle, closestSector.distanceFromLine(lastAngle),
+                    newAngle.leftAngle, closestSector.distanceFromLine(newAngle.leftAngle));
+    }
+/**
+ * 
+ * @param lastAngle Angle marker.
+ * @param oldAngle  Sector that is closed off.
+ * @return Appropriate sector that ends where oldAngle ends.
+ */
+    private static AngleInterval closeOldSector(double lastAngle, AngleInterval oldAngle)
+    {
+        return new AngleInterval(lastAngle, oldAngle.distanceFromLine(lastAngle),
+                        oldAngle.rightAngle, oldAngle.rightDist);
+    }
+/**
+ * Writes statistics of flattenIntervals performance.
+ * @param writer Writer object.
+ * @param originalSize Amount of sectors before optimization.
+ * @param reducedSize   Amount of sectors after optimization.
+ */
+    private static void writeStats(StatWriter writer, int originalSize, int reducedSize)
+    {
         try {
-            writer.writeAngleEliminations(opt, result.size());
+            writer.writeAngleEliminations(originalSize, reducedSize);
         } catch (Throwable e)   {}
-        return result;
     }
 /**
  * Finds unobstructed vertices based on generated sectors.
@@ -322,7 +421,7 @@ public class AngleElimination {
             if (src.hasPointBetween(leftAngle, rightAngle, test))
             {
                 if (leftDist <= 0 && rightDist <= 0)    return true;
-                if (src.getDistance(test) > distanceFromLine(src.getDirection(test)))
+                if (src.getDistance(test) > distanceFromLine(src.getDirection(test)) + 0.01)
                     return true;
             }
             return false;

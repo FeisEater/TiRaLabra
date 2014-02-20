@@ -17,4 +17,5 @@ public class App
         //Runnable g = new Histagram();
         SwingUtilities.invokeLater(g);
     }
+
 }

@@ -24,17 +24,22 @@ public class Queue<E> {
     private Node head;
 /** Last element in the queue. */
     private Node tail;
+/** Size of the queue. */
+    private int size;
+    public Queue()  {size = 0;}
 /**
  * Enqueues an element to the end of the queue.
  * @param e given element.
  */
     public void enqueue(E e)
     {
+        if (e == null)  return;
         Node u = new Node(e);
         if (tail != null)   tail.setNext(u);
         tail = u;
         if (isEmpty())
             head = tail;
+        size++;
     }
 /**
  * Dequeues the first element in the queue.
@@ -46,6 +51,7 @@ public class Queue<E> {
         E result = head.getValue();
         head = head.getNext();
         if (isEmpty())  tail = null;
+        size--;
         return result;
     }
 /**
@@ -65,6 +71,7 @@ public class Queue<E> {
     {
         head = null;
         tail = null;
+        size = 0;
     }
 /**
  * 
@@ -74,4 +81,24 @@ public class Queue<E> {
     {
         return head == null;
     }
+/**
+ * Converts queue into a linkedlist.
+ * @return LinkedList containing all data that is in the queue.
+ */
+    public LinkedList<E> toLinkedList()
+    {
+        LinkedList<E> result = new LinkedList<>();
+        Node n = head;
+        while (n != null)
+        {
+            result.add(n.value);
+            n = n.next;
+        }
+        return result;
+    }
+/**
+ * 
+ * @return size of the queue.
+ */
+    public int size()   {return size;}
 }

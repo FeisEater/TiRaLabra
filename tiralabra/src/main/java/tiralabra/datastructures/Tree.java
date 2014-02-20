@@ -457,7 +457,7 @@ public class Tree<E> {
         if (isEmpty())
             return null;
         Node u = root;
-        while (u.key != e)
+        while (u.key != e && comparator.compare(e, u.key) != 0)
         {
             if (comparator.compare(e, u.key) < 0)
                 u = u.left;

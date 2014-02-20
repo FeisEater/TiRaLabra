@@ -1,6 +1,7 @@
 
 package tiralabra.datastructures;
 
+import java.util.Random;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -69,6 +70,22 @@ public class QueueTest {
         queue.enqueue("nice shoes");
         assertTrue(queue.dequeue().equals("nice shoes") &&
                 queue.dequeue() == null);
+    }
+    @Test
+    public void sizeIsCorrect()
+    {
+        boolean test = true;
+        for (int i = 0; i < 10000; i++)
+        {
+            queue.clear();
+            Random rand = new Random();
+            int r = rand.nextInt(1000);
+            for (int j = 0; j < r; j++) queue.enqueue("allo");
+            int b = (r <= 0) ? 0 : rand.nextInt(r);
+            for (int j = 0; j < b; j++) queue.dequeue();
+            if (queue.size() != r - b)  test = false;
+        }
+        assertTrue(test);
     }
 
 }
