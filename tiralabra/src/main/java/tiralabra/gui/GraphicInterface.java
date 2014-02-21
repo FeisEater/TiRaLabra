@@ -28,6 +28,7 @@ public class GraphicInterface extends JPanel implements Runnable {
     private VertexContainer vertices;
     private MouseInput currentTool;
     private ToolSwitcher toolswitcher;
+    private Vertex traceSrc;
 /**
  * Constructor.
  * @param vertices VertexContainer object.
@@ -67,8 +68,6 @@ public class GraphicInterface extends JPanel implements Runnable {
     {
         super.paintComponent(g);
         fillPolygon(g);
-        //fillUnobstructedArea(g, 4);
-        //AngleElimination.visualize(g);
         LinkedList<Vertex> vlist = vertices.getVertices().toLinkedList();
         while (vlist.hasNext())
             drawVertex(g, vlist.getNext());
@@ -82,16 +81,30 @@ public class GraphicInterface extends JPanel implements Runnable {
     public void drawShortestPath(Graphics g)
     {
         TreeMap<Vertex, Vertex> previousPoint = 
-                Dijkstra.getShortestPaths(vertices.endA, vertices.getVertices().toLinkedList());
+                Dijkstra.getShortestPaths(vertices.endA, vertices.endB, vertices.getVertices().toLinkedList());
         if (previousPoint == null)  return;
         
+        TreeMap<Vertex, Vertex> shortestPath = new TreeMap(new VertexComparator());
         Vertex next = vertices.endB;
         while (next != null)
         {
             Vertex q = previousPoint.get(next);
             if (q != null)
                 drawEdge(g, Color.blue, q, next);
+            shortestPath.put(next, q);
             next = q;
+        }
+        
+        while (!previousPoint.isEmpty())
+        {
+            Vertex p = (Vertex)previousPoint.getMin();
+            if (p != null)
+            {
+                Vertex q = previousPoint.get(p);
+                if (q != shortestPath.get(p))
+                    drawEdge(g, Color.GRAY, p, q);
+                previousPoint.remove(p);
+            }
         }
     }
 /**
@@ -189,19 +202,5 @@ public class GraphicInterface extends JPanel implements Runnable {
             q = q.getRight();
         } while (first != q);
         return true;
-    }
-/**
- * Visualises the area that is unobstructed from the point of view
- * of the point that was the last one that called the tracing algorithm.
- * @param g Graphics object.
- * @param pixelsize Size of the pixel.
- */
-    public void fillUnobstructedArea(Graphics g, int pixelsize)
-    {
-        g.setColor(Color.green);
-        for (int i = 0; i < frame.getWidth(); i += pixelsize)
-            for (int j = 0; j < frame.getHeight(); j += pixelsize)
-                if (!AngleElimination.isObstructed(new Vertex(i+pixelsize/2, j+pixelsize/2)))
-                    g.fillRect(i, j, pixelsize, pixelsize);
     }
 }

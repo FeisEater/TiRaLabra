@@ -64,10 +64,16 @@ public class Histagram extends JPanel implements Runnable {
  */
     public double getRatio(String line)
     {
-        String[] str = line.split(" ");
-        double a = (double)Integer.parseInt(str[1]);
-        double b = (double)Integer.parseInt(str[0]);
-        return a / b;
+        try {
+            String[] str = line.split(" ");
+            double a = (double)Integer.parseInt(str[1]);
+            double b = (double)Integer.parseInt(str[0]);
+            return a / b;
+        }   catch (NumberFormatException e)
+        {
+            System.out.println(e);
+            return 0;
+        }
     }
     @Override
     public void run()

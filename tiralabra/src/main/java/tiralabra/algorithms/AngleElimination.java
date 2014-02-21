@@ -44,7 +44,7 @@ public class AngleElimination {
     {
         if (list == null)   return;
         list.reset();
-        g.setColor(Color.black);
+        g.setColor(Color.cyan);
         while (list.hasNext())
         {
             AngleInterval ai = list.getNext();

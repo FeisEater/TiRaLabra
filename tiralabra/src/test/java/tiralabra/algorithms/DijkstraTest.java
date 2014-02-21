@@ -58,7 +58,7 @@ public class DijkstraTest {
         v4.addAdjacent(v2);
         v4.addAdjacent(v3);
 
-        TreeMap<Vertex, Vertex> paths = Dijkstra.getShortestPaths(v2, vertices.toLinkedList());
+        TreeMap<Vertex, Vertex> paths = Dijkstra.getShortestPaths(v2, v3, vertices.toLinkedList());
         assertTrue(paths.get(v3) == v1 && paths.get(v1) == v2);
     }
     @Test
@@ -81,7 +81,7 @@ public class DijkstraTest {
         v4.addAdjacent(v5);
         v1.addAdjacent(v5);
 
-        TreeMap<Vertex, Vertex> paths = Dijkstra.getShortestPaths(v1, vertices.toLinkedList());
+        TreeMap<Vertex, Vertex> paths = Dijkstra.getShortestPaths(v1, v5, vertices.toLinkedList());
         assertTrue(paths.get(v5) == v1);
     }
     @Test
@@ -107,7 +107,7 @@ public class DijkstraTest {
         v1.addAdjacent(v6);
         v6.addAdjacent(v5);
 
-        TreeMap<Vertex, Vertex> paths = Dijkstra.getShortestPaths(v1, vertices.toLinkedList());
+        TreeMap<Vertex, Vertex> paths = Dijkstra.getShortestPaths(v1, v5, vertices.toLinkedList());
         assertTrue(paths.get(v5) == v4 && paths.get(v4) == v3 && paths.get(v3) == v2 && paths.get(v2) == v1);
     }
 }

@@ -2,6 +2,7 @@
 package tiralabra.datastructures;
 
 import java.util.Comparator;
+import java.util.Random;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -227,5 +228,23 @@ public class HeapTest {
             j = heap.peek();
         assertTrue(j == 1 && heap.size() == 1337);
     }
-    //Test treemap stuff
+    @Test
+    public void treeMapRetrievesIndexes()
+    {
+        Random r = new Random();
+        for (int i = 0; i < 1000; i++)
+        {
+            MyInteger m = new MyInteger(r.nextInt(10000));
+            if (!tree.contains(m))
+                treeHeap.insert(m);
+        }
+        Object[] array = treeHeap.getArray();
+        boolean test = true;
+        for (int i = 0; i < treeHeap.size(); i++)
+        {
+            if (tree.get((MyInteger)array[i]) != i)
+                test = false;
+        }
+        assertTrue(test);
+    }
 }

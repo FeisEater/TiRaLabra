@@ -12,6 +12,7 @@ import tiralabra.gui.geometrytools.JoinPolygons;
 import tiralabra.gui.geometrytools.SetEndPoints;
 import tiralabra.gui.geometrytools.MoveOrDeletePolygon;
 import tiralabra.gui.geometrytools.MoveOrDeletePoint;
+import tiralabra.gui.geometrytools.ShowUnobstructed;
 
 /**
  * ToolSwitcher class that listens for keyboard input and
@@ -70,6 +71,9 @@ public class ToolSwitcher implements KeyEventDispatcher {
                 break;
             case KeyEvent.VK_Q:
                 gui.switchTool(new InsertPoint(vertices, gui));
+                break;
+            case KeyEvent.VK_X:
+                gui.switchTool(new ShowUnobstructed(vertices, gui));
                 break;
             default:
                 break;
