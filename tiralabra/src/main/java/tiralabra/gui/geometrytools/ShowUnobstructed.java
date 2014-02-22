@@ -11,13 +11,15 @@ import tiralabra.gui.GraphicInterface;
 import tiralabra.gui.MouseInput;
 
 /**
- *
+ * Trace mode. Vertex can be chosen, after which the area that is accessible from
+ * that vertex is colored.
  * @author Pavel
  */
 public class ShowUnobstructed extends MouseInput {
 
     public ShowUnobstructed(VertexContainer p, GraphicInterface gui) {
         super(p, gui);
+        System.out.println("Trace mode. Left button to choose a vertex from which trace is visualized.");
     }
     @Override
     public void mouseReleased(MouseEvent e)

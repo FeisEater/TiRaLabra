@@ -41,6 +41,7 @@ public class ToolSwitcher implements KeyEventDispatcher {
         System.out.println("E - move/delete points mode.");
         System.out.println("A - join polygons mode.");
         System.out.println("Q - insert points mode.");
+        System.out.println("X - Trace from vertex mode.");
         gui.switchTool(new SetEndPoints(vertices, gui));
     }
 /**

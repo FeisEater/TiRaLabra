@@ -106,26 +106,39 @@ public class FreeDraw extends MouseInput {
     public void constructPolygon()
     {
         if (last == null)   return;
-        Spline s = last;
-        Spline next = null;
+        Stack<Point> stack = new Stack<>();
+        
+        Point[] ar = progressSplines(stack);
+        Point p = ar[0];
+        Point begin = ar[1];
+        p = backTrackTheStack(p, stack);
+        p = constructCircle(last, getAngle(last), p)[0];
+        connect(p, begin);
+        
+        last = null;
+        vertices.buildGraph();
+    }
+/**
+ * Goes through all the splines and constructs a circle at the end.
+ * @param stack Stack where points to be backtracked are collected.
+ * @return Next point to connect.
+ */
+    private Point[] progressSplines(Stack<Point> stack)
+    {
         Point p = null;
         Point begin = null;
-        Stack<Point> stack = new Stack<>();
+        Spline s = last;
+        Spline next = null;
         while (s.prev != null)
         {
             next = s;
             s = s.prev;
             if (s.prev != null)
             {
-                Point q = vertices.addPoint(s.x + Const.brushWidth * Math.cos(s.angle + Math.PI / 2),
-                        s.y + Const.brushWidth * Math.sin(s.angle + Math.PI / 2));
-                stack.add(vertices.addPoint(s.x + Const.brushWidth * Math.cos(s.angle - Math.PI / 2),
-                        s.y + Const.brushWidth * Math.sin(s.angle - Math.PI / 2)));
+                Point q = addPointForMiddleSpline(s, true);
+                stack.add(addPointForMiddleSpline(s, false));
                 if (p != null)
-                {
-                    p.setRight(q);
-                    q.setLeft(p);
-                }
+                    connect(p,q);
                 else    begin = q;
                 p = q;
             }
@@ -136,21 +149,37 @@ public class FreeDraw extends MouseInput {
             p = ar[0];
             if (begin == null)  begin = ar[1];
         }
+        Point[] result = {p, begin};
+        return result;
+    }
+/**
+ * Converts middle spline into a point.
+ * @param s Given spline.
+ * @param right if true, point is added to the right. Otherwise to the left.
+ * @return Converted point.
+ */
+    private Point addPointForMiddleSpline(Spline s, boolean right)
+    {
+        double ang = s.angle + (right ? Math.PI / 2 : -Math.PI / 2);
+        return vertices.addPoint(s.x + Const.brushWidth * Math.cos(ang),
+                        s.y + Const.brushWidth * Math.sin(ang));
+    }
+/**
+ * Chains points on the way back.
+ * @param p Starting point to connect.
+ * @param stack Stack of points to be connected.
+ * @return Lastly connected point.
+ */
+    private Point backTrackTheStack(Point p, Stack<Point> stack)
+    {
         while (!stack.isEmpty())
         {
             Point q = stack.pop();
             if (p != null)
-            {
-                p.setRight(q);
-                q.setLeft(p);
-            }
+                connect(p,q);
             p = q;
         }
-        p = constructCircle(last, getAngle(last), p)[0];
-        begin.setLeft(p);
-        p.setRight(begin);
-        last = null;
-        vertices.buildGraph();
+        return p;
     }
 /**
  * Forms a circle at a given spline.
@@ -178,17 +207,25 @@ public class FreeDraw extends MouseInput {
                 looped = true;
                 i -= Math.PI * 2;
             }
-            Point q = vertices.addPoint(s.x + Const.brushWidth * Math.cos(i), s.y + Const.brushWidth * Math.sin(i));
+            Point q = vertices.addPoint(s.x + Const.brushWidth * Math.cos(i),
+                    s.y + Const.brushWidth * Math.sin(i));
             if (p != null)
-            {
-                p.setRight(q);
-                q.setLeft(p);
-            }
+                connect(p,q);
             else    begin = q;
             p = q;
         }
         Point[] result = {p, begin};
         return result;
+    }
+/**
+ * Chains points.
+ * @param p Left point
+ * @param q Right point.
+ */
+    private void connect(Point p, Point q)
+    {
+        p.setRight(q);
+        q.setLeft(p);
     }
     @Override
     public void drawInputSpecific(Graphics g)

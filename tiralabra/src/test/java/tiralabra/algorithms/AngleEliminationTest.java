@@ -1,6 +1,5 @@
 package tiralabra.algorithms;
 
-import java.util.Comparator;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
