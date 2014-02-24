@@ -18,7 +18,7 @@ public class MoveOrDeletePolygon extends MouseInput {
     {
         super(p, gui);
         System.out.println("Reposition/Delete polygon mode. Drag left button to reposition polygon.\n"
-                + "Middle button to copy polygon.\n"
+                + "Drag middle button to copy polygon.\n"
                 + "Right button to delete polygon.");
     }
     @Override

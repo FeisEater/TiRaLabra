@@ -1,9 +1,6 @@
 package tiralabra.datastructures;
 
-import org.junit.After;
-import org.junit.AfterClass;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -13,16 +10,6 @@ import static org.junit.Assert.*;
  */
 public class StackTest {
     private Stack<Integer> stack;
-    public StackTest() {
-    }
-    
-    @BeforeClass
-    public static void setUpClass() {
-    }
-    
-    @AfterClass
-    public static void tearDownClass() {
-    }
     
     @Before
     public void setUp() {
@@ -33,10 +20,6 @@ public class StackTest {
         stack.add(1);
     }
     
-    @After
-    public void tearDown() {
-    }
-
     @Test
     public void addsAndPopsLikeAGoodStack()
     {

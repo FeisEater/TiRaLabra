@@ -3,10 +3,7 @@ package tiralabra.datastructures;
 
 import java.util.Comparator;
 import java.util.Random;
-import org.junit.After;
-import org.junit.AfterClass;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -61,17 +58,6 @@ public class HeapTest {
             return (int)o1 - (int)o2;
         }
     }
-
-    public HeapTest() {
-    }
-    
-    @BeforeClass
-    public static void setUpClass() {
-    }
-    
-    @AfterClass
-    public static void tearDownClass() {
-    }
     
     @Before
     public void setUp() {
@@ -80,9 +66,6 @@ public class HeapTest {
         treeHeap = new Heap<>(15, new MyIntegerComparator(), tree);
     }
     
-    @After
-    public void tearDown() {
-    }
 
     @Test
     public void poppingReturnsSmallestElements()

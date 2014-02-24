@@ -1,0 +1,21 @@
+\documentclass[a4paper,12pt]{article}
+\usepackage{graphicx}
+\begin{document}
+
+\centerline{\huge \textbf{README}} \hspace*{\fill}
+\\
+The program is compiled by a Java compiler, main class is located at tiralabra.App. Program can be run by executing the .jar file by double clicking (in windows) or through terminal: \emph{java -jar tiralabra-1.0-SNAPSHOT}.\\
+\\
+Program was not exactly designed to be user friendly. Geometry can be modified by mouse input using different tools, which can be switched with the keyboard. Parts of these instructions are printed in the terminal in run-time.\\
+\\
+\textbf{S - set end points mode:} \emph{This tool is activated when program starts.} Set path end points. Left and right buttons to place an end point.\\
+\textbf{C - chain polygons mode:} Chain Polygon mode: Left button to place and string points together. Middle button to toggle wall mode. Right button to close the polygon of placed points.\\
+\textbf{F - free draw mode:} Free draw mode: Hold the left button to draw a polygon. If stroke is too small, program will crash. Making too sharp turns will cause broken polygons, which will need to be fixed by user with \emph{move points} tool. Crossing over polygons is not supported.\\
+\textbf{D - move/delete polygons mode:} Reposition/Delete polygon mode. Drag left button to reposition polygon. Drag middle button to copy polygon. Right button to delete polygon.\\
+\textbf{E - move/delete points mode:} Reposition/Delete point mode. Drag left button to move point. Middle button to invert polygon. Right button to delete point from the polygon.\\
+\textbf{A - join polygons mode:} Join polygons mode. Left and right buttons to choose two points of different polygons to connect. Crash may occur if user chooses points from different polygons with same button, or chooses points from the same polygon with different buttons. First chosen point must be on the left of the secondly chosen point. \textbf{So in total, four points are selected: two with left button from polygon \emph{A}, and two with right button from polygon \emph{B}}\\
+\textbf{Q - insert points mode:} Inserts or deletes points inbetween polygon. Left button to choose two points to insert a point in between them. Right button to choose two points to remove all points between them. First chosen point must be on the left from secondly chosen point. Note: when \emph{inserting} a point, three clicks are needed.\\
+\textbf{X - Trace from vertex mode:} Trace mode. Left button to choose a vertex from which trace is visualized.\\
+
+
+\end{document}

@@ -68,7 +68,7 @@ Heap in question is a \emph{binary tree}, which stores elements in an \emph{arra
 \textbf{pop:} First element in the Heap is replaced by the last element, which is then swapped with one of the childs if heap rules are violated. This takes O(log(n)) time without TreeMap, with it it's O($log^{2}$(n)) as TreeMap is updated on every swap. Memory requirement is O(1).
 \\
 
-\textbf{valueChanged:} First, element's index is searched from the treeMap, which takes O(log(n)) time. Then, element is moved up or down on the heap at a correct position in the heap. On eaxh position swap, TreeMap is updated. Overall, time requirement is O($log^{2}$(n)) and memory requirement is O(1).
+\textbf{valueChanged:} First, element's index is searched from the treeMap, which takes O(log(n)) time. Then, element is moved up or down on the heap at a correct position in the heap. On each position swap, TreeMap is updated. Overall, time requirement is O($log^{2}$(n)) and memory requirement is O(1).
 \\
 
 \emph{peek, clear, isEmpty} and \emph{size} perform at constant time and memory. Heap allocates memory for elements in the array and TreeMap. Heap also has constant amount of variables. Overall, memory requirement for the Heap is O(n).\\
@@ -83,7 +83,7 @@ Algorithm's rough progression:\\
 3. Repeat 2 until Heap is empty. Now we have found all shortest paths from a given starting vertex. Overall time requirement is O((v + e) * $log^{3}$(v)), where \emph{v} is amount of vertices and \emph{e} is amount of edges in the graph. Memory requirement is O(v).\\
 \\
 Implemented algorithm mimics A* by using a simple \emph{heuristic} to check less edges in the graph. Heuristic in question is \emph{chebyshev distance}. Vertices with smaller chebyshev distance are preferred to vertices with bigger chebyshev distance. Algorithm \emph{terminates} itself when end vertex is popped from the heap.\\
-Implemented algorithm requires more than O((v + e) * log(v)) time, which is widely considered to be Dijkstra's algorithm's requirement. To achieve that time, TreeMap should be replaced with HashMap for Heap's index retrieval and keeping distance estimations. Hashmap's \emph{get} and \emph{put} methods perform at constant time instead of logarithmic time.
+Implemented algorithm requires more than O((v + e) * log(v)) time, which is widely considered to be Dijkstra's algorithm's requirement. To achieve that time, TreeMap should be replaced with HashMap for Heap's index retrieval and keeping distance estimations. HashMap's \emph{get} and \emph{put} methods perform at constant time instead of logarithmic time.
 
 \paragraph{\large Graph building with tracing} \hspace{0pt} \\
 \\

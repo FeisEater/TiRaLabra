@@ -2,10 +2,7 @@
 package tiralabra.datastructures;
 
 import java.util.Comparator;
-import org.junit.After;
-import org.junit.AfterClass;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -25,16 +22,6 @@ public class TreeMapTest {
             return s1.compareTo(s2);
         }
     }
-    public TreeMapTest() {
-    }
-    
-    @BeforeClass
-    public static void setUpClass() {
-    }
-    
-    @AfterClass
-    public static void tearDownClass() {
-    }
     
     @Before
     public void setUp() {
@@ -42,10 +29,6 @@ public class TreeMapTest {
         map.put("key1", "value1");
         map.put("key2", "value2");
         map.put("key3", "value3");
-    }
-    
-    @After
-    public void tearDown() {
     }
 
     @Test

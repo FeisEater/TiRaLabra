@@ -1,10 +1,7 @@
 
 package tiralabra.datastructures;
 
-import org.junit.After;
-import org.junit.AfterClass;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -14,24 +11,9 @@ import static org.junit.Assert.*;
  */
 public class LinkedListTest {
     private LinkedList<String> list;
-    public LinkedListTest() {
-    }
-    
-    @BeforeClass
-    public static void setUpClass() {
-    }
-    
-    @AfterClass
-    public static void tearDownClass() {
-    }
-    
     @Before
     public void setUp() {
         list = new LinkedList<>();
-    }
-    
-    @After
-    public void tearDown() {
     }
 
     @Test

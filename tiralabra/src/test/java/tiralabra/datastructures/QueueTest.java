@@ -2,10 +2,7 @@
 package tiralabra.datastructures;
 
 import java.util.Random;
-import org.junit.After;
-import org.junit.AfterClass;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -15,16 +12,6 @@ import static org.junit.Assert.*;
  */
 public class QueueTest {
     private Queue<String> queue;
-    public QueueTest() {
-    }
-    
-    @BeforeClass
-    public static void setUpClass() {
-    }
-    
-    @AfterClass
-    public static void tearDownClass() {
-    }
     
     @Before
     public void setUp() {
@@ -33,10 +20,6 @@ public class QueueTest {
         queue.enqueue("oranges");
         queue.enqueue("pickles");
         queue.enqueue("tommytoes");
-    }
-    
-    @After
-    public void tearDown() {
     }
 
     @Test

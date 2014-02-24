@@ -4,10 +4,7 @@ package tiralabra.datastructures;
 import java.lang.reflect.Field;
 import java.util.Comparator;
 import java.util.Random;
-import org.junit.After;
-import org.junit.AfterClass;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -25,24 +22,10 @@ public class TreeTest {
             return (int)o1 - (int)o2;
         }
     }
-    public TreeTest() {
-    }
-    
-    @BeforeClass
-    public static void setUpClass() {
-    }
-    
-    @AfterClass
-    public static void tearDownClass() {
-    }
     
     @Before
     public void setUp() {
         tree = new Tree<>(new IntegerComparator());
-    }
-    
-    @After
-    public void tearDown() {
     }
 
     public int getTreeHeight(int height, Object n) throws Throwable
