@@ -1,9 +1,5 @@
 package tiralabra.algorithms;
 
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import tiralabra.VertexContainer;
@@ -18,25 +14,6 @@ import tiralabra.util.VertexComparator;
  * @author Pavel
  */
 public class AngleEliminationTest {
-    
-    public AngleEliminationTest() {
-    }
-    
-    @BeforeClass
-    public static void setUpClass() {
-    }
-    
-    @AfterClass
-    public static void tearDownClass() {
-    }
-    
-    @Before
-    public void setUp() {
-    }
-    
-    @After
-    public void tearDown() {
-    }
 
     public void addTriangle(Point p1, Point p2, Point p3)
     {

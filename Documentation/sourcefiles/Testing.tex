@@ -4,5 +4,15 @@
 
 \centerline{\huge \textbf{Testing documentation}} \hspace*{\fill}
 \\
-Most of the code's classes have a set of unit tests that are run automatically after compiling. GUI and geometry tools are not tested.
+Most of the code's classes have a set of unit tests that are run automatically after compiling. GUI and geometry tools are not tested. Following are the descriptions of all implemented automatic tests, all of which pass everytime.\\
+\paragraph{\large VertexContainer} \hspace{0pt} \\
+Tests if Vertex and Point are added at coordinates (3,5)\\
+Tests if Vertex and Point can be removed.\\
+Checks if an edge between two vertices can be toggled. toggleEdge is called two times, after first call edge should exist but after second call it shouldn't. Another test calls toggleEdge 1000 times.\\ Another test calls buildGraph, simultaneously testing AngleElimination algorithm. Test places points at static positions, calls buildGraph and checks if the graph is correct.\\
+Places three points on a triangle clockwise, which should form a wall polygon. Also places three points counter clockwise, which should form a non-wall polygon.\\
+Another test places points to form a non-wall triangle and then calls invertShape, after which triangle should be a wall.\\
+\paragraph{\large AngleElimination} \hspace{0pt} \\
+Places a vertex v and several triangles in a specific way, after which AngleElimination is called from the point of view of v. Test checks if algorithm returned a correct set of unobstructed points.\\
+\paragraph{\large Dijkstra} \hspace{0pt} \\
+Three different graph's are built with end points, after which test checks if Dijkstra's returned path is the shortest one.
 \end{document}

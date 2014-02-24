@@ -1,10 +1,7 @@
 
 package tiralabra;
 
-import org.junit.After;
-import org.junit.AfterClass;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import tiralabra.datastructures.Point;
@@ -18,24 +15,9 @@ import tiralabra.util.VertexComparator;
  */
 public class VertexContainerTest {
     private VertexContainer vc;
-    public VertexContainerTest() {
-    }
-    
-    @BeforeClass
-    public static void setUpClass() {
-    }
-    
-    @AfterClass
-    public static void tearDownClass() {
-    }
-    
     @Before
     public void setUp() {
         vc = new VertexContainer();
-    }
-    
-    @After
-    public void tearDown() {
     }
 
     @Test
@@ -127,8 +109,6 @@ public class VertexContainerTest {
         Tree<Vertex> testadj6 = new Tree<>(new VertexComparator());
         testadj1.add(p2);
         testadj1.add(p3);
-        //testadj1.add(p5);   //remove this
-        //testadj1.add(p6);   //remove this
         testadj2.add(p1);
         testadj2.add(p5);
         testadj2.add(p4);
@@ -144,11 +124,9 @@ public class VertexContainerTest {
         testadj5.add(p2);
         testadj5.add(p4);
         testadj5.add(p6);
-        //testadj5.add(p1);   //remove this
         testadj6.add(p5);
         testadj6.add(p4);
         testadj6.add(p3);
-        //testadj6.add(p1);   //remove this
         
         assertTrue(p1.getAdjacents().equals(testadj1) &&
                 p2.getAdjacents().equals(testadj2) &&
