@@ -34,6 +34,12 @@ public class ToolSwitcher implements KeyEventDispatcher {
         KeyboardFocusManager manager = 
                 KeyboardFocusManager.getCurrentKeyboardFocusManager();
         manager.addKeyEventDispatcher(this);
+        printHelp();
+        gui.switchTool(new SetEndPoints(vertices, gui));
+    }
+    
+    private void printHelp()
+    {
         System.out.println("C - chain polygons mode.");
         System.out.println("F - free draw mode.");
         System.out.println("S - set end points mode.");
@@ -41,8 +47,8 @@ public class ToolSwitcher implements KeyEventDispatcher {
         System.out.println("E - move/delete points mode.");
         System.out.println("A - join polygons mode.");
         System.out.println("Q - insert points mode.");
-        System.out.println("X - Trace from vertex mode.");
-        gui.switchTool(new SetEndPoints(vertices, gui));
+        System.out.println("X - trace from vertex mode.");
+        System.out.println("H - print this help message again.");        
     }
 /**
  * Handles events when key is released.
@@ -75,6 +81,9 @@ public class ToolSwitcher implements KeyEventDispatcher {
                 break;
             case KeyEvent.VK_X:
                 gui.switchTool(new ShowUnobstructed(vertices, gui));
+                break;
+            case KeyEvent.VK_H:
+                printHelp();
                 break;
             default:
                 break;

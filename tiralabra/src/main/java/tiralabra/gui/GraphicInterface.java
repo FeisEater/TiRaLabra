@@ -102,7 +102,7 @@ public class GraphicInterface extends JPanel implements Runnable {
             {
                 Vertex q = previousPoint.get(p);
                 if (q != shortestPath.get(p))
-                    drawEdge(g, Color.GRAY, p, q);
+                    drawEdge(g, Color.LIGHT_GRAY, p, q);
                 previousPoint.remove(p);
             }
         }
